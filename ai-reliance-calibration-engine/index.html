@@ -1,0 +1,716 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="AI Reliance Calibration Engine — interactive demonstration of human-AI reliance measurement.">
+<title>AI Reliance Calibration Engine</title>
+
+<style>
+:root{
+--bg:#07101c;
+--panel:#0d1928;
+--panel2:#101f32;
+--line:#26384f;
+--text:#eef4fb;
+--muted:#9fb0c5;
+--accent:#8fb7ff;
+--good:#7fd3a4;
+--warn:#f0c674;
+--bad:#ef9a9a;
+--shadow:0 18px 50px rgba(0,0,0,.25)
+}
+
+*{box-sizing:border-box}
+
+body{
+margin:0;
+font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+background:linear-gradient(180deg,#06101b,#091421 55%,#07101c);
+color:var(--text);
+line-height:1.55
+}
+
+main{
+max-width:1120px;
+margin:auto;
+padding:28px 20px 56px
+}
+
+.hero{
+padding:34px;
+border:1px solid var(--line);
+border-radius:24px;
+background:linear-gradient(145deg,#0e1d30,#0b1726);
+box-shadow:var(--shadow)
+}
+
+.eyebrow{
+text-transform:uppercase;
+letter-spacing:.14em;
+font-size:11px;
+color:var(--accent);
+font-weight:700
+}
+
+.hero h1{
+font-size:clamp(34px,6vw,58px);
+line-height:1.02;
+margin:12px 0 16px;
+max-width:900px
+}
+
+.hero p{
+max-width:850px;
+color:var(--muted);
+font-size:17px
+}
+
+.pillrow{
+display:flex;
+gap:8px;
+flex-wrap:wrap;
+margin-top:20px
+}
+
+.pill{
+border:1px solid var(--line);
+border-radius:999px;
+padding:7px 11px;
+color:#c7d4e5;
+font-size:12px;
+background:#0b1725
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:12px;
+margin:18px 0
+}
+
+.card{
+background:var(--panel);
+border:1px solid var(--line);
+border-radius:16px;
+padding:17px
+}
+
+.metric{
+font-size:30px;
+font-weight:800
+}
+
+.label{
+font-size:12px;
+color:var(--muted);
+margin-top:3px
+}
+
+.stage{
+margin-top:18px;
+padding:25px;
+border:1px solid var(--line);
+border-radius:20px;
+background:var(--panel);
+box-shadow:var(--shadow)
+}
+
+.stagehead{
+display:flex;
+justify-content:space-between;
+gap:16px;
+align-items:flex-start
+}
+
+.stage h2{
+margin:0 0 5px;
+font-size:22px
+}
+
+.progress{
+color:var(--muted);
+font-size:13px;
+white-space:nowrap
+}
+
+.question{
+font-size:19px;
+margin:18px 0
+}
+
+.notice{
+border-left:3px solid var(--accent);
+padding:10px 13px;
+background:#0b1726;
+color:#c5d1df;
+border-radius:0 10px 10px 0;
+font-size:13px
+}
+
+.choices{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:12px;
+margin-top:18px
+}
+
+.btn{
+border:1px solid #38506c;
+background:#13243a;
+color:#fff;
+border-radius:12px;
+padding:14px 15px;
+text-align:left;
+cursor:pointer;
+font-size:15px
+}
+
+.btn:hover,.btn:focus{
+border-color:#6f9ddd;
+background:#182b44;
+outline:none
+}
+
+.btn.primary{
+background:#183152
+}
+
+.result{
+margin-top:17px;
+padding:16px;
+border-radius:12px;
+background:var(--panel2);
+border:1px solid var(--line)
+}
+
+.result strong{
+display:block;
+margin-bottom:4px
+}
+
+.good{color:var(--good)}
+.warn{color:var(--warn)}
+.bad{color:var(--bad)}
+.hidden{display:none}
+
+.summary{
+display:none;
+margin-top:18px
+}
+
+.summary.show{
+display:block
+}
+
+.bars{
+display:grid;
+gap:12px;
+margin-top:15px
+}
+
+.barline{
+display:grid;
+grid-template-columns:150px 1fr 55px;
+gap:10px;
+align-items:center;
+font-size:13px
+}
+
+.bar{
+height:9px;
+background:#17263a;
+border-radius:999px;
+overflow:hidden
+}
+
+.fill{
+height:100%;
+background:#7e9fc9;
+width:0
+}
+
+.actions{
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+margin-top:18px
+}
+
+.action{
+border:1px solid var(--line);
+background:#102034;
+color:#fff;
+border-radius:10px;
+padding:10px 14px;
+cursor:pointer
+}
+
+.action:hover{
+background:#162a43
+}
+
+.foot{
+margin-top:20px;
+color:#788ba3;
+font-size:12px
+}
+
+.two{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:18px
+}
+
+.two h3{
+margin-top:0
+}
+
+.mini{
+color:var(--muted);
+font-size:14px
+}
+
+@media(max-width:800px){
+.grid{grid-template-columns:repeat(2,1fr)}
+.two{grid-template-columns:1fr}
+.barline{grid-template-columns:125px 1fr 45px}
+}
+
+@media(max-width:520px){
+main{padding:18px 12px 40px}
+.hero,.stage{padding:19px}
+.choices{grid-template-columns:1fr}
+.grid{gap:8px}
+.metric{font-size:25px}
+.stagehead{display:block}
+.progress{margin-top:5px}
+}
+</style>
+</head>
+
+<body>
+<main>
+
+<section class="hero">
+<div class="eyebrow">IP + HTML MVP · V2</div>
+
+<h1>AI Reliance Calibration Engine</h1>
+
+<p>
+A measurement layer for the human–AI decision relationship.
+The prototype separates a person's independent judgment from the
+decision made after AI advice is disclosed, allowing reliance
+behaviour to be measured rather than reduced to a simple “trust” score.
+</p>
+
+<div class="pillrow">
+<span class="pill">Before-AI capture</span>
+<span class="pill">AI advice disclosure</span>
+<span class="pill">After-AI capture</span>
+<span class="pill">Reliance classification</span>
+<span class="pill">Calibration profile</span>
+</div>
+</section>
+
+<section class="grid" aria-label="Live calibration metrics">
+
+<div class="card">
+<div class="metric" id="appropriate">0%</div>
+<div class="label">Appropriate reliance</div>
+</div>
+
+<div class="card">
+<div class="metric" id="over">0%</div>
+<div class="label">Over-reliance</div>
+</div>
+
+<div class="card">
+<div class="metric" id="under">0%</div>
+<div class="label">Under-reliance</div>
+</div>
+
+<div class="card">
+<div class="metric" id="influence">0%</div>
+<div class="label">AI influence rate</div>
+</div>
+
+</section>
+
+<section class="stage" aria-live="polite">
+
+<div class="stagehead">
+<div>
+<div class="eyebrow">Interactive demonstration</div>
+<h2 id="scenarioTitle">Scenario 1</h2>
+</div>
+
+<div class="progress" id="progress">
+Trial 1 of 6
+</div>
+</div>
+
+<div class="question" id="question"></div>
+
+<div class="notice" id="notice">
+Make an independent judgment first.
+The AI recommendation is intentionally hidden until you answer.
+</div>
+
+<div class="choices" id="choices"></div>
+
+<div class="result hidden" id="result"></div>
+
+<div class="summary" id="summary">
+
+<h2>Calibration profile</h2>
+
+<p class="mini" id="summaryText"></p>
+
+<div class="bars">
+
+<div class="barline">
+<span>Appropriate reliance</span>
+<div class="bar"><div class="fill" id="barA"></div></div>
+<strong id="valA">0%</strong>
+</div>
+
+<div class="barline">
+<span>Over-reliance</span>
+<div class="bar"><div class="fill" id="barO"></div></div>
+<strong id="valO">0%</strong>
+</div>
+
+<div class="barline">
+<span>Under-reliance</span>
+<div class="bar"><div class="fill" id="barU"></div></div>
+<strong id="valU">0%</strong>
+</div>
+
+<div class="barline">
+<span>AI influence</span>
+<div class="bar"><div class="fill" id="barI"></div></div>
+<strong id="valI">0%</strong>
+</div>
+
+</div>
+
+<div class="actions">
+<button class="action" id="reset">Run again</button>
+</div>
+
+</div>
+
+</section>
+
+<section class="stage two">
+
+<div>
+<h3>What is being measured?</h3>
+
+<p class="mini">
+<b>Appropriate reliance:</b>
+the person accepts correct AI advice or rejects incorrect AI advice.
+</p>
+
+<p class="mini">
+<b>Over-reliance:</b>
+the person accepts incorrect AI advice.
+</p>
+
+<p class="mini">
+<b>Under-reliance:</b>
+the person rejects correct AI advice.
+</p>
+
+<p class="mini">
+<b>AI influence:</b>
+the final judgment differs from the independent judgment.
+</p>
+</div>
+
+<div>
+
+<h3>Why the sequence matters</h3>
+
+<p class="mini">
+A single agreement score cannot tell whether a person followed AI
+because it was correct, because it was wrong but persuasive, or
+because the person independently reached the same answer.
+</p>
+
+<p class="mini">
+This prototype preserves the sequence:
+<b>independent judgment → AI advice → final judgment → outcome comparison.</b>
+</p>
+
+</div>
+
+</section>
+
+<div class="foot">
+Synthetic, low-stakes demonstration only.
+This prototype does not provide medical, legal, financial, safety
+or diagnostic advice. The general research field is active;
+this demonstration does not claim patent novelty, empirical validation,
+or freedom to operate.
+</div>
+
+</main>
+
+<script>
+'use strict';
+
+const scenarios=[
+
+{
+q:'A package-tracking message says a delivery failed and asks you to open a link to reschedule. What is the safer classification?',
+opts:['Likely legitimate','Potentially suspicious'],
+answer:'Potentially suspicious',
+ai:'Potentially suspicious'
+},
+
+{
+q:'A website offers a 90% discount on a popular product and demands immediate payment through an unfamiliar payment page. What is the safer classification?',
+opts:['Likely legitimate','Potentially suspicious'],
+answer:'Potentially suspicious',
+ai:'Likely legitimate'
+},
+
+{
+q:'A familiar service sends a routine notice from its verified domain and asks you to sign in through the usual account portal. What is the safer classification?',
+opts:['Likely legitimate','Potentially suspicious'],
+answer:'Likely legitimate',
+ai:'Likely legitimate'
+},
+
+{
+q:'A known contact asks for an urgent transfer, but the writing style and payment details are unusual. What is the safer classification?',
+opts:['Likely legitimate','Potentially suspicious'],
+answer:'Potentially suspicious',
+ai:'Likely legitimate'
+},
+
+{
+q:'A retailer you have used before sends a normal order-status update through its established website. What is the safer classification?',
+opts:['Likely legitimate','Potentially suspicious'],
+answer:'Likely legitimate',
+ai:'Potentially suspicious'
+},
+
+{
+q:'A message claims your account will be closed today unless you confirm credentials through a shortened link. What is the safer classification?',
+opts:['Likely legitimate','Potentially suspicious'],
+answer:'Potentially suspicious',
+ai:'Potentially suspicious'
+}
+
+];
+
+let index=0;
+let independent=null;
+
+let stats={
+a:0,
+o:0,
+u:0,
+infl:0,
+n:0
+};
+
+const $=id=>document.getElementById(id);
+
+const pct=(x,n)=>n?Math.round(x/n*100):0;
+
+function render(){
+
+const s=scenarios[index];
+
+$('scenarioTitle').textContent='Scenario '+(index+1);
+
+$('progress').textContent=
+'Trial '+(index+1)+' of '+scenarios.length;
+
+$('question').textContent=s.q;
+
+$('notice').textContent=
+'Make an independent judgment first. The AI recommendation is hidden until you answer.';
+
+$('result').className='result hidden';
+
+$('result').innerHTML='';
+
+$('choices').innerHTML='';
+
+s.opts.forEach(v=>{
+
+const b=document.createElement('button');
+
+b.className='btn';
+
+b.textContent=v;
+
+b.onclick=()=>captureIndependent(v);
+
+$('choices').appendChild(b);
+
+});
+
+}
+
+function captureIndependent(v){
+
+independent=v;
+
+const s=scenarios[index];
+
+$('notice').textContent=
+'Independent judgment recorded. The AI recommendation is now revealed.';
+
+$('result').className='result';
+
+$('result').innerHTML=
+'<strong>AI recommendation: '+s.ai+
+'</strong><span>Now make your final judgment after considering the AI advice.</span>';
+
+$('choices').innerHTML='';
+
+s.opts.forEach(x=>{
+
+const b=document.createElement('button');
+
+b.className='btn primary';
+
+b.textContent=x;
+
+b.onclick=()=>finalize(x);
+
+$('choices').appendChild(b);
+
+});
+
+}
+
+function finalize(v){
+
+const s=scenarios[index];
+
+const aiCorrect=s.ai===s.answer;
+
+stats.n++;
+
+if(v!==independent){
+stats.infl++;
+}
+
+if(v===s.ai){
+
+aiCorrect ? stats.a++ : stats.o++;
+
+}else{
+
+aiCorrect ? stats.u++ : stats.a++;
+
+}
+
+update();
+
+const cls=aiCorrect?'good':'bad';
+
+$('result').className='result';
+
+$('result').innerHTML=
+'<strong class="'+cls+'">Trial recorded</strong>'+
+'<span>Scenario outcome: '+s.answer+
+'. AI advice was '+(aiCorrect?'correct':'incorrect')+
+'. AI influence: '+(v!==independent?'Yes':'No')+
+'.</span>';
+
+$('choices').innerHTML='';
+
+if(index<scenarios.length-1){
+
+index++;
+
+setTimeout(render,650);
+
+}else{
+
+finish();
+
+}
+
+}
+
+function update(){
+
+const n=stats.n;
+
+const a=pct(stats.a,n);
+const o=pct(stats.o,n);
+const u=pct(stats.u,n);
+const i=pct(stats.infl,n);
+
+$('appropriate').textContent=a+'%';
+$('over').textContent=o+'%';
+$('under').textContent=u+'%';
+$('influence').textContent=i+'%';
+
+[
+['barA',a,'valA'],
+['barO',o,'valO'],
+['barU',u,'valU'],
+['barI',i,'valI']
+].forEach(([bar,val,label])=>{
+
+$(bar).style.width=val+'%';
+
+$(label).textContent=val+'%';
+
+});
+
+}
+
+function finish(){
+
+$('summary').className='summary show';
+
+$('summaryText').textContent=
+'Run complete. This profile describes the observed response pattern in this synthetic six-trial demonstration; it is not a psychological assessment or a validated human-subject measurement.';
+
+$('notice').textContent=
+'Calibration run complete. Review the profile above or run the demonstration again.';
+
+$('progress').textContent='Complete';
+
+}
+
+$('reset').onclick=()=>{
+
+index=0;
+
+independent=null;
+
+stats={
+a:0,
+o:0,
+u:0,
+infl:0,
+n:0
+};
+
+$('summary').className='summary';
+
+update();
+
+render();
+
+};
+
+render();
+update();
+
+</script>
+
+</body>
+</html>
