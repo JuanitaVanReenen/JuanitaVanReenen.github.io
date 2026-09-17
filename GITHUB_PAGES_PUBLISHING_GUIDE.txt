@@ -1,0 +1,27 @@
+JUANITA VAN REENEN — WEBSITE PUBLISHING GUIDE
+
+This folder is a ready-to-publish static HTML website.
+
+IMPORTANT:
+- Do not upload confidential technical specifications, buyer lists, private outreach records, or unreleased project files.
+- The public website is the portfolio/front door only.
+- Project-specific acquisition presentations remain separate attachments.
+
+FREE GITHUB PAGES SETUP
+1. Create/sign in to a GitHub account.
+2. Create a new PUBLIC repository named:
+   YOUR-GITHUB-USERNAME.github.io
+3. Upload everything in this folder to the repository.
+4. Make sure index.html is in the top level of the repository.
+5. Open Settings -> Pages.
+6. Under Build and deployment, choose Deploy from a branch.
+7. Select the main branch and the / (root) folder, then Save.
+8. GitHub will publish the site. The address will be:
+   https://YOUR-GITHUB-USERNAME.github.io/
+
+The site may take several minutes to appear.
+
+FUTURE PROJECTS
+The website is intended to be the permanent portfolio.
+When Project 17 is ready, we can add Project 17 as its own card without replacing the whole site.
+Keep Project 17's cover/presentation in its own project folder and attach the presentation separately to acquisition emails.
