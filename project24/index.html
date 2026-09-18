@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Capital Decision Analyzer — Investment Decision Calculator</title>
+<meta name="description" content="Capital Decision Analyzer is a browser-based investment decision calculator for NPV, IRR, MIRR, ROI, payback, scenarios, sensitivity and break-even analysis.">
+<style>
+:root{--navy:#0b1f3a;--navy2:#12345b;--gold:#c79a3b;--ink:#172033;--muted:#64748b;--line:#dbe3ee;--bg:#f4f7fb;--white:#fff;--good:#13795b;--warn:#a15c00;--bad:#a33434;--shadow:0 14px 40px rgba(15,35,60,.10)}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.45}
+header{background:linear-gradient(135deg,var(--navy),#17406c);color:#fff;padding:34px 22px 28px;position:sticky;top:0;z-index:5;box-shadow:0 4px 18px #07162940}
+.wrap{max-width:1200px;margin:auto}.brand{display:flex;justify-content:space-between;gap:24px;align-items:flex-start}.eyebrow{letter-spacing:.18em;text-transform:uppercase;font-size:12px;opacity:.8}.brand h1{font-size:clamp(28px,4vw,48px);margin:5px 0 3px}.tag{font-size:18px;color:#e9eef5}.nav{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}.nav button{border:1px solid #ffffff33;background:#ffffff12;color:#fff;border-radius:9px;padding:9px 13px;cursor:pointer}.nav button.active,.nav button:hover{background:#fff;color:var(--navy)}
+main{padding:28px 18px 60px}.grid{display:grid;grid-template-columns:370px 1fr;gap:22px}.card{background:var(--white);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:20px}.card h2,.card h3{margin:0 0 14px}.section{margin-bottom:22px}.section:last-child{margin-bottom:0}.label{display:block;font-weight:700;font-size:13px;margin:11px 0 5px}.hint{font-size:12px;color:var(--muted)}input,select,textarea{width:100%;border:1px solid #cbd5e1;border-radius:9px;padding:10px 11px;font:inherit;background:#fff}input:focus,select:focus{outline:2px solid #c79a3b55;border-color:var(--gold)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.cashflows{display:grid;gap:8px;margin-top:8px}.cf{display:grid;grid-template-columns:55px 1fr 1fr 38px;gap:7px;align-items:center}.cf span{font-size:12px;font-weight:700;color:var(--muted)}.iconbtn{border:1px solid var(--line);background:#fff;border-radius:8px;height:38px;cursor:pointer}.btn{border:0;border-radius:10px;padding:11px 15px;font-weight:800;cursor:pointer}.primary{background:var(--navy);color:#fff}.gold{background:var(--gold);color:#10233e}.ghost{background:#eef3f8;color:var(--navy)}.btns{display:flex;gap:9px;flex-wrap:wrap;margin-top:15px}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.metric{border:1px solid var(--line);border-radius:12px;padding:14px;background:#fbfdff}.metric .k{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:800}.metric .v{font-size:22px;font-weight:900;margin-top:3px;color:var(--navy)}.metric.good .v{color:var(--good)}.metric.warn .v{color:var(--warn)}.metric.bad .v{color:var(--bad)}
+.tab{display:none}.tab.active{display:block}.subgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}.tablewrap{overflow:auto;border:1px solid var(--line);border-radius:12px}table{width:100%;border-collapse:collapse;background:#fff}th,td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:right;font-size:13px}th:first-child,td:first-child{text-align:left}th{background:#f1f5f9;color:#475569;font-size:11px;text-transform:uppercase;letter-spacing:.05em}
+.notice{padding:12px 14px;border-radius:10px;background:#f7f1e5;border:1px solid #ead7ad;color:#604b1f;font-size:13px}.empty{padding:32px;text-align:center;color:var(--muted);border:1px dashed #cbd5e1;border-radius:12px}
+.bar{height:12px;background:#e8edf4;border-radius:99px;overflow:hidden}.bar i{display:block;height:100%;background:var(--gold);border-radius:99px}.sensrow{display:grid;grid-template-columns:150px 1fr 90px;gap:10px;align-items:center;margin:10px 0;font-size:13px}
+.scenarios{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.scenario{padding:14px;border:1px solid var(--line);border-radius:12px}.scenario strong{display:block;font-size:13px}.scenario b{font-size:20px;color:var(--navy)}
+footer{max-width:1200px;margin:0 auto;padding:0 18px 40px;color:var(--muted);font-size:12px}
+@media(max-width:900px){.grid{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(2,1fr)}.subgrid{grid-template-columns:1fr}.scenarios{grid-template-columns:1fr 1fr}.brand{display:block}}
+@media(max-width:560px){.metrics{grid-template-columns:1fr 1fr}.row{grid-template-columns:1fr}.cf{grid-template-columns:45px 1fr 1fr 38px}.scenarios{grid-template-columns:1fr}}
+@media print{header{position:static;background:#fff;color:#000;box-shadow:none}header .nav,header .tag{display:none}main{padding:10px}.grid{grid-template-columns:1fr}.card{box-shadow:none;break-inside:avoid}.input-card{display:none}.tab:not(#analysis){display:none!important}.tab#analysis{display:block!important}footer{display:none}}
+</style>
+</head>
+<body>
+<header>
+<div class="wrap">
+<div class="brand">
+<div><div class="eyebrow">Investment Decision Calculator</div><h1>Capital Decision Analyzer</h1><div class="tag">See the numbers before you commit the capital.</div></div>
+<div class="eyebrow">ANALYZE · COMPARE · EXPLORE · DECIDE</div>
+</div>
+<div class="nav">
+<button class="active" data-tab="analysis">Analysis</button><button data-tab="scenarios">Scenarios</button><button data-tab="comparison">Comparison</button><button data-tab="sensitivity">Sensitivity</button><button data-tab="report">Report</button>
+</div>
+</div>
+</header>
+
+<main class="wrap">
+<div class="grid">
+<section class="card input-card">
+<h2>Investment inputs</h2>
+<div class="section">
+<label class="label">Project / investment name</label><input id="name" value="New Investment">
+<div class="row">
+<div><label class="label">Currency</label><select id="currency"><option>USD</option><option>EUR</option><option>GBP</option><option>ZAR</option><option>NAD</option></select></div>
+<div><label class="label">Discount rate (%)</label><input id="rate" type="number" value="10" step="0.1"></div>
+</div>
+<label class="label">Initial investment</label><input id="initial" type="number" value="250000" step="1000">
+<div class="row">
+<div><label class="label">Annual revenue / inflow</label><input id="revenue" type="number" value="120000" step="1000"></div>
+<div><label class="label">Annual operating cost</label><input id="cost" type="number" value="45000" step="1000"></div>
+</div>
+<div class="row">
+<div><label class="label">Project life (years)</label><input id="years" type="number" value="5" min="1" max="30"></div>
+<div><label class="label">Terminal / resale value</label><input id="terminal" type="number" value="0" step="1000"></div>
+</div>
+</div>
+<div class="section">
+<h3>Cash-flow assumptions</h3>
+<div class="hint">Annual net cash flow is revenue minus operating cost. You can override individual years below.</div>
+<div id="cashflows" class="cashflows"></div>
+<div class="btns"><button class="btn ghost" id="addYear">+ Add year</button><button class="btn ghost" id="resetYears">Reset years</button></div>
+</div>
+<div class="btns"><button class="btn primary" id="calculate">Run analysis</button><button class="btn gold" id="example">Load example</button></div>
+<div class="notice" style="margin-top:14px">Decision-support only. Results depend entirely on the assumptions entered and are not personal investment advice.</div>
+</section>
+
+<section>
+<div id="analysis" class="tab active">
+<div class="card">
+<h2>Key results</h2>
+<div id="metrics" class="metrics"></div>
+</div>
+<div class="subgrid">
+<div class="card"><h3>Cash-flow overview</h3><div id="cashTable"></div></div>
+<div class="card"><h3>Decision context</h3><div id="decisionText" class="empty">Run an analysis to generate the decision context.</div></div>
+</div>
+</div>
+
+<div id="scenarios" class="tab">
+<div class="card"><h2>Scenario analysis</h2><p class="hint">Scenarios change revenue and operating costs around the same investment structure. They show how the calculated result responds to different assumptions.</p><div id="scenarioCards" class="scenarios"></div></div>
+<div class="card" style="margin-top:16px"><h3>Scenario detail</h3><div id="scenarioTable"></div></div>
+</div>
+
+<div id="comparison" class="tab">
+<div class="card"><h2>Compare investments</h2><p class="hint">Enter up to three projects using the same model. The tool reports metrics side by side without selecting a winner.</p><div id="compareInputs"></div><div class="btns"><button class="btn primary" id="runCompare">Compare</button></div></div>
+<div class="card" style="margin-top:16px"><div id="compareResults" class="empty">Enter projects and click Compare.</div></div>
+</div>
+
+<div id="sensitivity" class="tab">
+<div class="card"><h2>Sensitivity analysis</h2><p class="hint">Shows how NPV changes when one key assumption is varied while the others remain at the base case.</p><div id="sensitivityBody"></div></div>
+</div>
+
+<div id="report" class="tab">
+<div class="card"><h2>Decision report</h2><div id="reportBody" class="empty">Run an analysis to generate a report.</div><div class="btns"><button class="btn primary" id="print">Print / Save PDF</button></div></div>
+</div>
+</section>
+</div>
+</main>
+<footer>Capital Decision Analyzer · Browser-based decision-support software · Calculations are estimates based on user-entered assumptions.</footer>
+
+<script>
+const $=id=>document.getElementById(id);
+const fmt=(n,c='USD')=>{if(!Number.isFinite(n))return '—';return new Intl.NumberFormat(undefined,{style:'currency',currency:c,maximumFractionDigits:0}).format(n)};
+const pct=n=>Number.isFinite(n)?(n*100).toFixed(1)+'%':'—';
+function cashRows(){const y=Math.max(1,Math.min(30,+$('years').value||5));const old=[...document.querySelectorAll('.cf input:nth-of-type(2)')].map(x=>+x.value);$('cashflows').innerHTML='';for(let i=1;i<=y;i++){const d=document.createElement('div');d.className='cf';d.innerHTML='<span>Y'+i+'</span><input class="cf-rev" type="number" value="'+(old[i-1]??(+$('revenue').value||0))+'" step="1000" aria-label="Year '+i+' cash flow"><input class="cf-terminal" type="number" value="'+(i===y?(+$('terminal').value||0):0)+'" step="1000" aria-label="Year '+i+' terminal value"><button class="iconbtn removeYear" title="Remove year">×</button>';d.querySelector('.removeYear').onclick=()=>{if(document.querySelectorAll('.cf').length>1){d.remove();renumber()}};$('cashflows').appendChild(d)}}
+function renumber(){[...document.querySelectorAll('.cf')].forEach((r,i)=>r.querySelector('span').textContent='Y'+(i+1))}
+function flows(){return [...document.querySelectorAll('.cf')].map(r=>(+r.querySelector('.cf-rev').value||0)+(+r.querySelector('.cf-terminal').value||0))}
+function npv(rate, cfs){return cfs.reduce((s,cf,t)=>s+cf/Math.pow(1+rate,t),0)}
+function irr(cfs){if(!cfs.some(x=>x>0)||!cfs.some(x=>x<0))return NaN;let roots=[];const f=r=>npv(r,cfs);let prevR=-.9999,prev=f(prevR);for(let i=1;i<=2000;i++){let r=-.9999+ i*(20.9999/2000),v=f(r);if(!Number.isFinite(v))continue;if(v===0||(prev*v<0)){let a=prevR,b=r,fa=prev;for(let k=0;k<80;k++){let m=(a+b)/2,fm=f(m);if(fa*fm<=0){b=m}else{a=m;fa=fm}}roots.push((a+b)/2)}prevR=r;prev=v}roots=[...new Set(roots.map(x=>x.toFixed(8)))].map(Number);return roots.length?roots[0]:NaN}
+function mirr(cfs,finance,reinvest){let pvOut=0,fvIn=0,n=cfs.length-1;for(let t=0;t<=n;t++){if(cfs[t]<0)pvOut+=cfs[t]/Math.pow(1+finance,t);if(cfs[t]>0)fvIn+=cfs[t]*Math.pow(1+reinvest,n-t)}if(!pvOut||!fvIn)return NaN;return Math.pow(fvIn/(-pvOut),1/n)-1}
+function payback(cfs){let cum=cfs[0]||0;if(cum>=0)return 0;for(let t=1;t<cfs.length;t++){let prev=cum;cum+=cfs[t];if(cum>=0)return (t-1)+(-prev/cfs[t])}return NaN}
+function discountedPayback(cfs,r){let cum=cfs[0]||0;if(cum>=0)return 0;for(let t=1;t<cfs.length;t++){let pv=cfs[t]/Math.pow(1+r,t),prev=cum;cum+=pv;if(cum>=0)return (t-1)+(-prev/pv)}return NaN}
+function metrics(cfs,r){const n=cfs.length-1, investment=Math.abs(cfs[0]);const pvIn=cfs.slice(1).reduce((s,x,t)=>s+Math.max(0,x)/Math.pow(1+r,t+1),0);const net=cfs.reduce((a,b)=>a+b,0);return {npv:npv(r,cfs),irr:irr(cfs),mirr:mirr(cfs,r,r),pay:payback(cfs),dpp:discountedPayback(cfs,r),roi:investment?net/investment:NaN,pi:investment?pvIn/investment:NaN,total:net,n}}
+function getBase(){const rate=(+$('rate').value||0)/100, initial=+$('initial').value||0, fs=flows();return {name:$('name').value||'Investment',currency:$('currency').value,rate,initial,revenue:+$('revenue').value||0,cost:+$('cost').value||0,terminal:+$('terminal').value||0,years:fs.length,fs:[-initial,...fs]}}
+function metricCard(k,v,cls=''){return '<div class="metric '+cls+'"><div class="k">'+k+'</div><div class="v">'+v+'</div></div>'}
+function render(){const b=getBase(),m=metrics(b.fs,b.rate),c=b.currency;$('metrics').innerHTML=metricCard('NPV',fmt(m.npv,c),m.npv>=0?'good':'bad')+metricCard('IRR',pct(m.irr),m.irr>=b.rate?'good':'warn')+metricCard('Payback',Number.isFinite(m.pay)?m.pay.toFixed(1)+' yrs':'—')+metricCard('ROI',pct(m.roi));$('cashTable').innerHTML='<div class="tablewrap"><table><thead><tr><th>Period</th><th>Cash flow</th><th>PV</th><th>Cumulative</th></tr></thead><tbody>'+b.fs.map((cf,t)=>{const pv=cf/Math.pow(1+b.rate,t);const cum=b.fs.slice(0,t+1).reduce((a,x)=>a+x,0);return '<tr><td>Year '+t+'</td><td>'+fmt(cf,c)+'</td><td>'+fmt(pv,c)+'</td><td>'+fmt(cum,c)+'</td></tr>'}).join('')+'</tbody></table></div>';let context='At the selected discount rate of '+pct(b.rate)+', the calculated NPV is '+fmt(m.npv,c)+'. ';context+=m.npv>=0?'The projected cash flows exceed the selected hurdle on an NPV basis. ':'The projected cash flows fall short of the selected hurdle on an NPV basis. ';context+='This is a model result, not a recommendation.';$('decisionText').className='notice';$('decisionText').textContent=context;renderScenarios();renderSensitivity();renderReport()}
+function scenario(name,revMult,costMult){const b=getBase(),fs=[-b.initial,...b.fs.slice(1).map((x,i)=>{const base=(+document.querySelectorAll('.cf-rev')[i]?.value||0),term=(+document.querySelectorAll('.cf-terminal')[i]?.value||0);return base*revMult-(+$('cost').value||0)*costMult+term})];return {name,fs,m:metrics(fs,b.rate)}}
+function renderScenarios(){const s=[scenario('Optimistic',1.15,.9),scenario('Base',1,1),scenario('Conservative',.85,1.1),scenario('Stress',.7,1.25)];$('scenarioCards').innerHTML=s.map(x=>'<div class="scenario"><strong>'+x.name+'</strong><b>'+fmt(x.m.npv,getBase().currency)+'</b><div class="hint">IRR '+pct(x.m.irr)+' · Payback '+(Number.isFinite(x.m.pay)?x.m.pay.toFixed(1)+' yrs':'—')+'</div></div>').join('');$('scenarioTable').innerHTML='<div class="tablewrap"><table><thead><tr><th>Scenario</th><th>NPV</th><th>IRR</th><th>MIRR</th><th>Payback</th><th>ROI</th></tr></thead><tbody>'+s.map(x=>'<tr><td>'+x.name+'</td><td>'+fmt(x.m.npv,getBase().currency)+'</td><td>'+pct(x.m.irr)+'</td><td>'+pct(x.m.mirr)+'</td><td>'+(Number.isFinite(x.m.pay)?x.m.pay.toFixed(1)+' yrs':'—')+'</td><td>'+pct(x.m.roi)+'</td></tr>').join('')+'</tbody></table></div>'}
+function renderSensitivity(){const b=getBase(),base=metrics(b.fs,b.rate),vars=[['Revenue',x=>{const fs=[-b.initial,...b.fs.slice(1).map((_,i)=>{const r=+document.querySelectorAll('.cf-rev')[i]?.value||0;const t=+document.querySelectorAll('.cf-terminal')[i]?.value||0;return r*x-(+$('cost').value||0)+t})];return metrics(fs,b.rate).npv}],['Operating costs',x=>{const fs=[-b.initial,...b.fs.slice(1).map((_,i)=>{const r=+document.querySelectorAll('.cf-rev')[i]?.value||0;const t=+document.querySelectorAll('.cf-terminal')[i]?.value||0;return r-(+$('cost').value||0)*x+t})];return metrics(fs,b.rate).npv}],['Initial investment',x=>{const fs=[-b.initial*x,...b.fs.slice(1)];return metrics(fs,b.rate).npv}],['Discount rate',x=>npv(x,b.fs)]];let html='';for(const [name,fn] of vars){let low=fn(.8),high=fn(1.2);if(name==='Discount rate'){low=fn(Math.max(0,b.rate-.02));high=fn(b.rate+.02)}const delta=Math.max(Math.abs(low-base.npv),Math.abs(high-base.npv));html+='<div class="sensrow"><strong>'+name+'</strong><div class="bar"><i style="width:'+Math.min(100,Math.max(8,delta/(Math.abs(base.npv)||1)*100))+'%"></i></div><span>'+fmt(delta,b.currency)+'</span></div>'}$('sensitivityBody').innerHTML='<p>Base NPV: <strong>'+fmt(base.npv,b.currency)+'</strong></p>'+html+'<div class="tablewrap" style="margin-top:18px"><table><thead><tr><th>Discount rate</th><th>NPV</th></tr></thead><tbody>'+[-.04,-.02,0,.02,.04].map(d=>{const r=Math.max(0,b.rate+d);return '<tr><td>'+pct(r)+'</td><td>'+fmt(npv(r,b.fs),b.currency)+'</td></tr>'}).join('')+'</tbody></table></div>'}
+function setupCompare(){let h='';for(let i=1;i<=3;i++)h+='<div class="subgrid" style="margin-top:12px"><div><label class="label">Investment '+i+' name</label><input id="cn'+i+'" value="'+(i===1?'Project A':i===2?'Project B':'Project C')+'"></div><div><label class="label">Initial investment</label><input id="ci'+i+'" type="number" value="'+(i===1?250000:i===2?300000:0)+'"></div><div><label class="label">Annual net cash flow</label><input id="cc'+i+'" type="number" value="'+(i===1?75000:i===2?90000:0)+'"></div><div><label class="label">Years</label><input id='cy'+i+' type="number" value="'+(i===1?5:i===2?5:5)+'"></div></div>';return h}
+function runCompare(){const b=getBase(),arr=[];for(let i=1;i<=3;i++){const inv=+$('ci'+i).value||0,cf=+$('cc'+i).value||0,yrs=+$('cy'+i).value||0;if(inv>0&&cf!==0&&yrs>0)arr.push({name:$('cn'+i).value, m:metrics([-inv,...Array(yrs).fill(cf)],b.rate)})}$('compareResults').innerHTML=arr.length?'<div class="tablewrap"><table><thead><tr><th>Investment</th><th>NPV</th><th>IRR</th><th>Payback</th><th>ROI</th><th>PI</th></tr></thead><tbody>'+arr.map(x=>'<tr><td>'+x.name+'</td><td>'+fmt(x.m.npv,b.currency)+'</td><td>'+pct(x.m.irr)+'</td><td>'+(Number.isFinite(x.m.pay)?x.m.pay.toFixed(1)+' yrs':'—')+'</td><td>'+pct(x.m.roi)+'</td><td>'+x.m.pi.toFixed(2)+'</td></tr>').join('')+'</tbody></table></div>':'<div class="empty">Enter at least one complete investment.</div>'}
+function renderReport(){const b=getBase(),m=metrics(b.fs,b.rate);$('reportBody').className='';$('reportBody').innerHTML='<h3>'+b.name+'</h3><p class="hint">Generated '+new Date().toLocaleString()+'</p><div class="metrics">'+metricCard('NPV',fmt(m.npv,b.currency))+metricCard('IRR',pct(m.irr))+metricCard('MIRR',pct(m.mirr))+metricCard('Discounted payback',Number.isFinite(m.dpp)?m.dpp.toFixed(1)+' yrs':'—')+'</div><h3 style="margin-top:22px">Assumptions</h3><p>Initial investment: <strong>'+fmt(b.initial,b.currency)+'</strong> · Discount rate: <strong>'+pct(b.rate)+'</strong> · Modelled years: <strong>'+b.years+'</strong></p><p class="hint">This report presents calculated outputs from the assumptions entered. It does not constitute financial advice or a guarantee of future performance.</p>'}
+document.querySelectorAll('.nav button').forEach(btn=>btn.onclick=()=>{document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));btn.classList.add('active');$(btn.dataset.tab).classList.add('active')});
+$('years').onchange=cashRows;$('revenue').onchange=cashRows;$('terminal').onchange=cashRows;$('addYear').onclick=()=>{$('years').value=+$('years').value+1;cashRows()};$('resetYears').onclick=cashRows;$('calculate').onclick=render;$('runCompare').onclick=runCompare;$('print').onclick=()=>window.print();
+$('example').onclick=()=>{$('name').value='Equipment Expansion';$('initial').value=250000;$('revenue').value=120000;$('cost').value=45000;$('years').value=5;$('terminal').value=25000;$('rate').value=10;$('currency').value='USD';cashRows();render()};
+$('compareInputs').innerHTML=setupCompare();cashRows();render();
+</script>
+</body></html>
