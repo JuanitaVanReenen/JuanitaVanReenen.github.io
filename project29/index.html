@@ -80,6 +80,18 @@ function actionCost(text){
  if(/search|latest|current|today/.test(q))return {cost:3,label:'HIGH'};
  return {cost:1,label:'LOW'};
 }
+function goalReassessment(text){
+ const s=stateMemory(),q=text.toLowerCase();
+ let goal=s.goal||text;
+ if(/actually|instead|what i really want|my goal is/.test(q)) goal=text;
+ const intent=classifyIntent(text);
+ s.goal=goal;s.intent=intent;s.loopStage='GOAL_REASSESSED';saveState(s);
+ return {goal,intent};
+}
+function goalCard(text){
+ const g=goalReassessment(text);
+ return '<div class="decision"><strong>Goal reassessment</strong><br>Current goal: '+escapeHtml(g.goal)+'<br>Intent: '+g.intent+'</div>';
+}
 function userCorrection(text){
  const q=text.toLowerCase();
  if(/that's wrong|that is wrong|incorrect|not what i meant|you misunderstood|wrong assumption/.test(q)){
@@ -315,7 +327,7 @@ function resolutionProgress(text){
 }
 function renderProgress(text){
  const p=resolutionProgress(text);
- return '<div class="decision"><strong>Resolution progress:</strong> '+p.stage+' · '+p.score+'/5<br>'+p.next+'</div>'+conclusionGate(text)+finalDecisionCard(text)+answerFrame(text)+supportCard(text)+ledgerCard(text)+priorityCard(text)+smallestStepCard(text)+efficientAction(text)+chosenActionCard(text)+actionLoopCard(text)+actionResultCard(text)+reassessCard(text)+loopDecisionCard(text)+snapshotCard()+stateChangeCard()+checkpointCard()+explainDecision(text)+correctionCard(text);
+ return '<div class="decision"><strong>Resolution progress:</strong> '+p.stage+' · '+p.score+'/5<br>'+p.next+'</div>'+conclusionGate(text)+finalDecisionCard(text)+answerFrame(text)+supportCard(text)+ledgerCard(text)+priorityCard(text)+smallestStepCard(text)+efficientAction(text)+chosenActionCard(text)+actionLoopCard(text)+actionResultCard(text)+reassessCard(text)+loopDecisionCard(text)+snapshotCard()+stateChangeCard()+checkpointCard()+explainDecision(text)+correctionCard(text)+goalCard(text);
 }
 function nextStateFromAction(text){
  const r=routeReason(text);
@@ -354,7 +366,7 @@ function resolveConflict(choice){
 function conflictActions(){
  return '<div class="actions"><button onclick="resolveConflict(\'new\')">Use new information</button><button onclick="resolveConflict(\'previous\')">Keep previous information</button></div>';
 }
-function send(text){text=text.trim();if(!text)return;welcome.classList.add('hidden');const correction=userCorrection(text);const s=updateMemory(text);const confidence=assessConfidence(text);s.confidence=confidence;saveState(s);addUser(text);setTimeout(()=>{if(s.conflicts&&s.conflicts.length){addShileen('I noticed information that may conflict with something you said earlier. Before I answer, let’s resolve that point first.');addShileen(contradictionDetail(s));addShileen(conflictActions());}else {addShileen(analyze(text));const plan=evidencePlan(text),route=routeReason(text),nextState=nextStateFromAction(text);addShileen('<div class="decision"><strong>Evidence plan:</strong> '+plan.label+'<br>'+plan.detail+'</div><div class="decision"><strong>Why this action:</strong> '+route.action+' — '+route.why+'</div><div class="decision"><strong>Next state:</strong> '+nextState.stage+'<br>'+nextState.instruction+'</div>'+renderProgress(text));if(confidence.level==='LOW')addShileen('<div class="decision"><strong>Confidence check:</strong> '+confidence.reason+' A specific source or fact would help before treating the answer as settled.</div>');}refreshMemory();},180)}
+function send(text){text=text.trim();if(!text)return;welcome.classList.add('hidden');const correction=userCorrection(text);const g=goalReassessment(text);const s=updateMemory(text);const confidence=assessConfidence(text);s.confidence=confidence;saveState(s);addUser(text);setTimeout(()=>{if(s.conflicts&&s.conflicts.length){addShileen('I noticed information that may conflict with something you said earlier. Before I answer, let’s resolve that point first.');addShileen(contradictionDetail(s));addShileen(conflictActions());}else {addShileen(analyze(text));const plan=evidencePlan(text),route=routeReason(text),nextState=nextStateFromAction(text);addShileen('<div class="decision"><strong>Evidence plan:</strong> '+plan.label+'<br>'+plan.detail+'</div><div class="decision"><strong>Why this action:</strong> '+route.action+' — '+route.why+'</div><div class="decision"><strong>Next state:</strong> '+nextState.stage+'<br>'+nextState.instruction+'</div>'+renderProgress(text));if(confidence.level==='LOW')addShileen('<div class="decision"><strong>Confidence check:</strong> '+confidence.reason+' A specific source or fact would help before treating the answer as settled.</div>');}refreshMemory();},180)}
 function stateMemory(){
   try{return JSON.parse(sessionStorage.getItem('shileenState')||'{}')}catch(e){return {}}
 }
