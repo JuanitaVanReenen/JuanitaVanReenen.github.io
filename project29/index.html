@@ -51,6 +51,16 @@ const conversation=document.getElementById('conversation'), welcome=document.get
 function addUser(t){conversation.insertAdjacentHTML('beforeend',`<div class="message user"><div class="bubble"><div class="label">You</div>${escapeHtml(t)}</div></div>`)}
 function addShileen(t){conversation.insertAdjacentHTML('beforeend',`<div class="message"><div class="bubble"><div class="label">Shileen</div>${t}</div></div>`)}
 function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function assessConfidence(t){
+ const q=t.toLowerCase();
+ if(/not sure|maybe|probably|i think|unsure|guess/.test(q)) return {level:'LOW',reason:'The wording signals uncertainty.'};
+ if(/source|document|evidence|data|proof/.test(q)) return {level:'MEDIUM',reason:'Supporting material is referenced, but it has not yet been checked.'};
+ return {level:'UNASSESSED',reason:'Evidence strength has not yet been established.'};
+}
+function contradictionDetail(s){
+ if(!s.conflicts||!s.conflicts.length)return '';
+ return '<div class="decision"><strong>Conflict to resolve</strong><br>Earlier: '+escapeHtml(s.conflicts[s.conflicts.length-1])+'<br><br>Latest: '+escapeHtml(s.lastFacts&&s.lastFacts.length?s.lastFacts[s.lastFacts.length-1]:'new information')+'</div>';
+}
 function analyze(t){
  const q=t.toLowerCase();
  let gap='The goal is not yet specific enough to determine the right next step.';
@@ -73,7 +83,7 @@ function resolveConflict(choice){
 function conflictActions(){
  return '<div class="actions"><button onclick="resolveConflict(\'new\')">Use new information</button><button onclick="resolveConflict(\'previous\')">Keep previous information</button></div>';
 }
-function send(text){text=text.trim();if(!text)return;welcome.classList.add('hidden');const s=updateMemory(text);addUser(text);setTimeout(()=>{if(s.conflicts&&s.conflicts.length){addShileen('I noticed information that may conflict with something you said earlier. Before I answer, let’s resolve that point first.'); addShileen(conflictActions());}else addShileen(analyze(text));refreshMemory();},180)}
+function send(text){text=text.trim();if(!text)return;welcome.classList.add('hidden');const s=updateMemory(text);const confidence=assessConfidence(text);s.confidence=confidence;saveState(s);addUser(text);setTimeout(()=>{if(s.conflicts&&s.conflicts.length){addShileen('I noticed information that may conflict with something you said earlier. Before I answer, let’s resolve that point first.');addShileen(contradictionDetail(s));addShileen(conflictActions());}else {addShileen(analyze(text));if(confidence.level==='LOW')addShileen('<div class="decision"><strong>Confidence check:</strong> '+confidence.reason+' A specific source or fact would help before treating the answer as settled.</div>');}refreshMemory();},180)}
 function stateMemory(){
   try{return JSON.parse(sessionStorage.getItem('shileenState')||'{}')}catch(e){return {}}
 }
@@ -124,7 +134,7 @@ function routeAction(text){
 document.getElementById('form').addEventListener('submit',e=>{e.preventDefault();send(input.value);input.value='';});
 document.querySelectorAll('.example').forEach(b=>b.addEventListener('click',()=>send(b.textContent)));
 conversation.addEventListener('click',e=>{const b=e.target.closest('[data-follow]');if(b){input.value=b.dataset.follow;input.focus();}});
-function refreshMemory(){const s=stateMemory();const el=document.getElementById('memoryLine');if(el)el.innerHTML='<span>Session state: '+(s.intent||'ready')+'</span><span>'+(s.turns||0)+' turns</span>'}
+function refreshMemory(){const s=stateMemory();const el=document.getElementById('memoryLine');if(el)el.innerHTML='<span>Session state: '+(s.conflicts&&s.conflicts.length?'CONFLICT DETECTED':(s.intent||'ready'))+'</span><span>'+(s.confidence&&s.confidence.level&&s.confidence.level!=='UNASSESSED'?'Confidence: '+s.confidence.level+' · ':'')+(s.turns||0)+' turns</span>'}
 refreshMemory();
 const originalSend=send;
 send=function(text){originalSend(text);setTimeout(refreshMemory,220)};
