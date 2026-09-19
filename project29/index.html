@@ -80,6 +80,20 @@ function actionCost(text){
  if(/search|latest|current|today/.test(q))return {cost:3,label:'HIGH'};
  return {cost:1,label:'LOW'};
 }
+function uncertaintyBudget(text){
+ const s=stateMemory(),items=[];
+ if(s.conflicts&&s.conflicts.length)items.push('unresolved conflict');
+ if(s.confidence&&s.confidence.level==='LOW')items.push('low-confidence input');
+ if(!s.goalLocked)items.push('goal not locked');
+ if(s.lastActionResult&&s.lastActionResult.result==='RESULT UNCLEAR')items.push('unclear action result');
+ const level=items.length===0?'LOW':items.length===1?'MEDIUM':'HIGH';
+ s.uncertaintyBudget={level,items};saveState(s);
+ return {level,items};
+}
+function uncertaintyCard(text){
+ const u=uncertaintyBudget(text);
+ return '<div class="decision"><strong>Uncertainty budget:</strong> '+u.level+(u.items.length?'<br>'+u.items.map(escapeHtml).join(' · '):'<br>No major uncertainty flags detected.')+'</div>';
+}
 function finalAssessment(text){
  const s=stateMemory(),r=answerReadiness(text);
  if(r.readiness!=='READY TO ASSESS') return '<div class="decision"><strong>Final assessment:</strong> DEFERRED<br>Resolve the remaining blocker before concluding.</div>';
@@ -377,7 +391,7 @@ function resolutionProgress(text){
 }
 function renderProgress(text){
  const p=resolutionProgress(text);
- return '<div class="decision"><strong>Resolution progress:</strong> '+p.stage+' · '+p.score+'/5<br>'+p.next+'</div>'+conclusionGate(text)+finalDecisionCard(text)+answerFrame(text)+supportCard(text)+ledgerCard(text)+priorityCard(text)+smallestStepCard(text)+efficientAction(text)+chosenActionCard(text)+actionLoopCard(text)+actionResultCard(text)+reassessCard(text)+loopDecisionCard(text)+snapshotCard()+stateChangeCard()+checkpointCard()+explainDecision(text)+correctionCard(text)+goalCard(text)+goalStabilityCard(text)+goalLockCard(text)+readinessCard()+completionGate(text)+finalAssessment(text);
+ return '<div class="decision"><strong>Resolution progress:</strong> '+p.stage+' · '+p.score+'/5<br>'+p.next+'</div>'+conclusionGate(text)+finalDecisionCard(text)+answerFrame(text)+supportCard(text)+ledgerCard(text)+priorityCard(text)+smallestStepCard(text)+efficientAction(text)+chosenActionCard(text)+actionLoopCard(text)+actionResultCard(text)+reassessCard(text)+loopDecisionCard(text)+snapshotCard()+stateChangeCard()+checkpointCard()+explainDecision(text)+correctionCard(text)+goalCard(text)+goalStabilityCard(text)+goalLockCard(text)+readinessCard()+completionGate(text)+finalAssessment(text)+uncertaintyCard(text);
 }
 function nextStateFromAction(text){
  const r=routeReason(text);
