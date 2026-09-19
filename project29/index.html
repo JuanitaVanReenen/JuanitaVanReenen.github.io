@@ -80,6 +80,13 @@ function actionCost(text){
  if(/search|latest|current|today/.test(q))return {cost:3,label:'HIGH'};
  return {cost:1,label:'LOW'};
 }
+function completionGate(text){
+ const s=stateMemory(),r=s.answerReadiness||answerReadiness(text);
+ const complete=r.readiness==='READY TO ASSESS' && s.loopStage!=='ACTION_SELECTED';
+ const status=complete?'READY FOR FINAL ASSESSMENT':'WORK IN PROGRESS';
+ const reason=complete?'The goal is stable and no current blocker prevents reassessment.':'The reasoning process still has an unresolved prerequisite.';
+ return '<div class="decision"><strong>Completion gate:</strong> '+status+'<br>'+reason+'</div>';
+}
 function answerReadiness(text){
  const s=stateMemory();
  const blockers=[];
@@ -360,7 +367,7 @@ function resolutionProgress(text){
 }
 function renderProgress(text){
  const p=resolutionProgress(text);
- return '<div class="decision"><strong>Resolution progress:</strong> '+p.stage+' · '+p.score+'/5<br>'+p.next+'</div>'+conclusionGate(text)+finalDecisionCard(text)+answerFrame(text)+supportCard(text)+ledgerCard(text)+priorityCard(text)+smallestStepCard(text)+efficientAction(text)+chosenActionCard(text)+actionLoopCard(text)+actionResultCard(text)+reassessCard(text)+loopDecisionCard(text)+snapshotCard()+stateChangeCard()+checkpointCard()+explainDecision(text)+correctionCard(text)+goalCard(text)+goalStabilityCard(text)+goalLockCard(text)+readinessCard();
+ return '<div class="decision"><strong>Resolution progress:</strong> '+p.stage+' · '+p.score+'/5<br>'+p.next+'</div>'+conclusionGate(text)+finalDecisionCard(text)+answerFrame(text)+supportCard(text)+ledgerCard(text)+priorityCard(text)+smallestStepCard(text)+efficientAction(text)+chosenActionCard(text)+actionLoopCard(text)+actionResultCard(text)+reassessCard(text)+loopDecisionCard(text)+snapshotCard()+stateChangeCard()+checkpointCard()+explainDecision(text)+correctionCard(text)+goalCard(text)+goalStabilityCard(text)+goalLockCard(text)+readinessCard()+completionGate(text);
 }
 function nextStateFromAction(text){
  const r=routeReason(text);
