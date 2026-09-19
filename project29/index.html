@@ -80,6 +80,24 @@ function actionCost(text){
  if(/search|latest|current|today/.test(q))return {cost:3,label:'HIGH'};
  return {cost:1,label:'LOW'};
 }
+function chooseNextAction(text){
+ const p=priorityGap(text),c=actionCost(text);
+ const options=[
+  {name:'ASK',cost:1,fit:/should i|decide|choose|which/.test(text.toLowerCase())},
+  {name:'VERIFY',cost:1,fit:/trust|true|accurate|source|evidence|proof/.test(text.toLowerCase())},
+  {name:'INSPECT',cost:2,fit:/document|pdf|file|contract|invoice/.test(text.toLowerCase())},
+  {name:'CALCULATE',cost:1,fit:/calculate|cost|price|percent|how much/.test(text.toLowerCase())},
+  {name:'COMPARE',cost:1,fit:/compare|versus|vs|difference/.test(text.toLowerCase())},
+  {name:'SEARCH',cost:3,fit:/latest|current|today|recent|news/.test(text.toLowerCase())}
+ ];
+ const valid=options.filter(o=>o.fit).sort((a,b)=>a.cost-b.cost);
+ const pick=valid[0]||{name:'ASK',cost:1};
+ return {name:pick.name,cost:pick.cost,priority:p.priority};
+}
+function chosenActionCard(text){
+ const a=chooseNextAction(text);
+ return '<div class="decision"><strong>Selected next action:</strong> '+a.name+'<br>Priority '+a.priority+'/5 · Estimated effort '+a.cost+'/3</div>';
+}
 function efficientAction(text){
  const p=priorityGap(text),c=actionCost(text);
  return '<div class="decision"><strong>Resolution efficiency:</strong> '+c.label+' effort<br>Priority '+p.priority+'/5 → '+p.action+'</div>';
@@ -188,7 +206,7 @@ function resolutionProgress(text){
 }
 function renderProgress(text){
  const p=resolutionProgress(text);
- return '<div class="decision"><strong>Resolution progress:</strong> '+p.stage+' · '+p.score+'/5<br>'+p.next+'</div>'+conclusionGate(text)+finalDecisionCard(text)+answerFrame(text)+supportCard(text)+ledgerCard(text)+priorityCard(text)+smallestStepCard(text)+efficientAction(text);
+ return '<div class="decision"><strong>Resolution progress:</strong> '+p.stage+' · '+p.score+'/5<br>'+p.next+'</div>'+conclusionGate(text)+finalDecisionCard(text)+answerFrame(text)+supportCard(text)+ledgerCard(text)+priorityCard(text)+smallestStepCard(text)+efficientAction(text)+chosenActionCard(text);
 }
 function nextStateFromAction(text){
  const r=routeReason(text);
