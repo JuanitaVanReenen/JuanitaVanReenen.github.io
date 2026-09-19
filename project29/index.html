@@ -80,6 +80,20 @@ function actionCost(text){
  if(/search|latest|current|today/.test(q))return {cost:3,label:'HIGH'};
  return {cost:1,label:'LOW'};
 }
+function stateChangeLog(){
+ const s=stateMemory(),log=s.stateChanges||[];
+ return log.slice(-5);
+}
+function recordStateChange(reason){
+ const s=stateMemory(),prev=s.lastLoggedLoop||'READY',now=s.loopStage||'READY';
+ if(prev!==now){s.stateChanges=s.stateChanges||[];s.stateChanges.push({from:prev,to:now,reason:reason||'State updated'});s.lastLoggedLoop=now;saveState(s);}
+}
+function stateChangeCard(){
+ recordStateChange('Reasoning state changed after the latest interaction.');
+ const log=stateChangeLog();
+ const rows=log.length?log.map(x=>'<div>'+escapeHtml(x.from)+' → '+escapeHtml(x.to)+'</div>').join(''):'<div>No state transitions recorded yet.</div>';
+ return '<div class="decision"><strong>State changes</strong>'+rows+'</div>';
+}
 function stateSnapshot(){
  const s=stateMemory();
  return {goal:s.goal||'',intent:s.intent||'GENERAL',turns:s.turns||0,conflict:!!(s.conflicts&&s.conflicts.length),action:s.selectedAction||'NONE',result:s.lastActionResult?s.lastActionResult.result:'NONE',loop:s.loopStage||'READY'};
@@ -262,7 +276,7 @@ function resolutionProgress(text){
 }
 function renderProgress(text){
  const p=resolutionProgress(text);
- return '<div class="decision"><strong>Resolution progress:</strong> '+p.stage+' · '+p.score+'/5<br>'+p.next+'</div>'+conclusionGate(text)+finalDecisionCard(text)+answerFrame(text)+supportCard(text)+ledgerCard(text)+priorityCard(text)+smallestStepCard(text)+efficientAction(text)+chosenActionCard(text)+actionLoopCard(text)+actionResultCard(text)+reassessCard(text)+loopDecisionCard(text)+snapshotCard();
+ return '<div class="decision"><strong>Resolution progress:</strong> '+p.stage+' · '+p.score+'/5<br>'+p.next+'</div>'+conclusionGate(text)+finalDecisionCard(text)+answerFrame(text)+supportCard(text)+ledgerCard(text)+priorityCard(text)+smallestStepCard(text)+efficientAction(text)+chosenActionCard(text)+actionLoopCard(text)+actionResultCard(text)+reassessCard(text)+loopDecisionCard(text)+snapshotCard()+stateChangeCard();
 }
 function nextStateFromAction(text){
  const r=routeReason(text);
