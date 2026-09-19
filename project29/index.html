@@ -80,6 +80,15 @@ function actionCost(text){
  if(/search|latest|current|today/.test(q))return {cost:3,label:'HIGH'};
  return {cost:1,label:'LOW'};
 }
+function goalLock(text){
+ const s=stateMemory();
+ const stable=goalStability(text)==='STABLE';
+ s.goalLocked=stable;saveState(s);
+ return stable;
+}
+function goalLockCard(text){
+ return '<div class="decision"><strong>Goal lock:</strong> '+(goalLock(text)?'ACTIVE':'NOT LOCKED')+'<br>'+((stateMemory().goalLocked)?'The current goal is stable enough to guide the next action.':'The goal should be reassessed before locking the reasoning path.')+'</div>';
+}
 function goalStability(text){
  const s=stateMemory(), changes=(s.stateChanges||[]).length;
  const stable=changes<3 && !s.correction;
@@ -336,7 +345,7 @@ function resolutionProgress(text){
 }
 function renderProgress(text){
  const p=resolutionProgress(text);
- return '<div class="decision"><strong>Resolution progress:</strong> '+p.stage+' · '+p.score+'/5<br>'+p.next+'</div>'+conclusionGate(text)+finalDecisionCard(text)+answerFrame(text)+supportCard(text)+ledgerCard(text)+priorityCard(text)+smallestStepCard(text)+efficientAction(text)+chosenActionCard(text)+actionLoopCard(text)+actionResultCard(text)+reassessCard(text)+loopDecisionCard(text)+snapshotCard()+stateChangeCard()+checkpointCard()+explainDecision(text)+correctionCard(text)+goalCard(text)+goalStabilityCard(text);
+ return '<div class="decision"><strong>Resolution progress:</strong> '+p.stage+' · '+p.score+'/5<br>'+p.next+'</div>'+conclusionGate(text)+finalDecisionCard(text)+answerFrame(text)+supportCard(text)+ledgerCard(text)+priorityCard(text)+smallestStepCard(text)+efficientAction(text)+chosenActionCard(text)+actionLoopCard(text)+actionResultCard(text)+reassessCard(text)+loopDecisionCard(text)+snapshotCard()+stateChangeCard()+checkpointCard()+explainDecision(text)+correctionCard(text)+goalCard(text)+goalStabilityCard(text)+goalLockCard(text);
 }
 function nextStateFromAction(text){
  const r=routeReason(text);
