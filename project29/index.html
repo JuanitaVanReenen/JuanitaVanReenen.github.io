@@ -80,6 +80,11 @@ function actionCost(text){
  if(/search|latest|current|today/.test(q))return {cost:3,label:'HIGH'};
  return {cost:1,label:'LOW'};
 }
+function evidenceGapPriority(text){
+ const u=uncertaintyBudget(text),items=(u.items||[]).slice(0,3);
+ if(!items.length)return '<div class="decision"><strong>Gap priority</strong><br>Nothing currently blocks the answer.</div>';
+ return '<div class="decision"><strong>Gap priority</strong><br>'+escapeHtml(items[0])+'<br><small>Resolve the highest-impact gap first; reassess before collecting lower-value information.</small></div>';
+}
 function evidenceGapActions(text){
  const u=uncertaintyBudget(text),items=(u.items||[]).slice(0,3);
  if(!items.length)return '<div class="decision"><strong>Evidence status</strong><br>No outstanding evidence action is currently recorded.</div>';
@@ -505,7 +510,7 @@ function resolutionProgress(text){
 }
 function renderProgress(text){
  const p=resolutionProgress(text);
- return '<div class="decision"><strong>Resolution progress:</strong> '+p.stage+' · '+p.score+'/5<br>'+p.next+'</div>'+conclusionGate(text)+finalAssessment(text)+answerFrame(text)+supportCard(text)+ledgerCard(text)+priorityCard(text)+smallestStepCard(text)+smallestStepCard(text)+efficientAction(text)+chosenActionCard(text)+actionLoopCard(text)+actionResultCard(text)+reassessCard(text)+loopDecisionCard(text)+snapshotCard()+stateChangeCard()+checkpointCard()+explainDecision(text)+correctionCard(text)+goalCard(text)+goalStabilityCard(text)+goalLockCard(text)+readinessCard()+completionGate(text)+uncertaintyCard(text)+uncertaintyReductionCard(text)+resolutionCompleteCard(text)+finalResponseCard(text)+buildFinalResponse(text)+responseSectionsCard(text)+finalAnswerComposer(text)+answerQualityCard(text)+answerIntegrityCard(text)+finalAnswerActions(text)+answerCopyCard(text)+answerExportCard(text)+evidenceGapSummary(text)+evidenceGapActions(text);
+ return '<div class="decision"><strong>Resolution progress:</strong> '+p.stage+' · '+p.score+'/5<br>'+p.next+'</div>'+conclusionGate(text)+finalAssessment(text)+answerFrame(text)+supportCard(text)+ledgerCard(text)+priorityCard(text)+smallestStepCard(text)+smallestStepCard(text)+efficientAction(text)+chosenActionCard(text)+actionLoopCard(text)+actionResultCard(text)+reassessCard(text)+loopDecisionCard(text)+snapshotCard()+stateChangeCard()+checkpointCard()+explainDecision(text)+correctionCard(text)+goalCard(text)+goalStabilityCard(text)+goalLockCard(text)+readinessCard()+completionGate(text)+uncertaintyCard(text)+uncertaintyReductionCard(text)+resolutionCompleteCard(text)+finalResponseCard(text)+buildFinalResponse(text)+responseSectionsCard(text)+finalAnswerComposer(text)+answerQualityCard(text)+answerIntegrityCard(text)+finalAnswerActions(text)+answerCopyCard(text)+answerExportCard(text)+evidenceGapSummary(text)+evidenceGapActions(text)+evidenceGapPriority(text);
 }
 function nextStateFromAction(text){
  const r=routeReason(text);
