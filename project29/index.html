@@ -62,7 +62,18 @@ function analyze(t){
  else if(/calculate|cost|price|worth|percent|how much/.test(q)){gap='A calculation needs the actual inputs.';next='Provide the numbers or document containing the inputs.';status='NEED INPUTS';stage=3;evidence='Needed: the actual figures, assumptions or source document.'}
  return `<div class="state"><div class="state-title"><span>Decision state</span><span class="pill">${status}</span></div><div class="progress">${[1,2,3,4,5].map(n=>`<i class="${n<=stage?'active':''}"></i>`).join('')}</div><div class="state-meta"><span>Goal → gap → evidence → verify → answer</span><span>Step ${stage}/5</span></div><p>${gap}</p><div class="next"><strong>Next best action</strong><span>${next}</span></div><div class="evidence"><strong>Action route:</strong> ${routeAction(t)}</div><div class="evidence">${evidence}</div><div class="action-row"><button class="action primary" data-follow="${escapeHtml(next)}">Do this next</button><button class="action" data-follow="What information is missing before you can answer?">Show missing information</button></div></div>`;
 }
-function send(text){text=text.trim();if(!text)return;welcome.classList.add('hidden');const s=updateMemory(text);addUser(text);setTimeout(()=>{if(s.conflicts&&s.conflicts.length){addShileen('I noticed information that may conflict with something you said earlier. Before I answer, let’s resolve that point first.');}else addShileen(analyze(text));refreshMemory();},180)}
+function resolveConflict(choice){
+ const s=stateMemory();
+ if(!s.conflicts||!s.conflicts.length)return;
+ if(choice==='new' && s.lastFacts&&s.lastFacts.length) s.confirmedFact=s.lastFacts[s.lastFacts.length-1];
+ if(choice==='previous' && s.conflicts.length) s.confirmedFact=s.conflicts[s.conflicts.length-1];
+ s.conflicts=[]; s.resolved=true; saveState(s); refreshMemory();
+ addShileen('Conflict resolved. I’ll use the confirmed information as the current state and continue from there.');
+}
+function conflictActions(){
+ return '<div class="actions"><button onclick="resolveConflict(\'new\')">Use new information</button><button onclick="resolveConflict(\'previous\')">Keep previous information</button></div>';
+}
+function send(text){text=text.trim();if(!text)return;welcome.classList.add('hidden');const s=updateMemory(text);addUser(text);setTimeout(()=>{if(s.conflicts&&s.conflicts.length){addShileen('I noticed information that may conflict with something you said earlier. Before I answer, let’s resolve that point first.'); addShileen(conflictActions());}else addShileen(analyze(text));refreshMemory();},180)}
 function stateMemory(){
   try{return JSON.parse(sessionStorage.getItem('shileenState')||'{}')}catch(e){return {}}
 }
