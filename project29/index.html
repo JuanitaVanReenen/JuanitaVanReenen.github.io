@@ -80,6 +80,15 @@ function actionCost(text){
  if(/search|latest|current|today/.test(q))return {cost:3,label:'HIGH'};
  return {cost:1,label:'LOW'};
 }
+function answerExportCard(text){
+ return '<div class="decision"><strong>Assessment record</strong><br><button type="button" onclick="downloadShileenRecord()">Save assessment record</button><br><small>Exports the current Shileen reasoning state as a plain-text record.</small></div>';
+}
+function downloadShileenRecord(){
+ const body=(document.querySelector('.app')||document.body).innerText;
+ const blob=new Blob([body],{type:'text/plain;charset=utf-8'});
+ const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='shileen-assessment.txt';a.click();
+ setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
 function answerCopyCard(text){
  const mode=finalResponseMode(text);
  return '<div class="decision"><strong>Response delivery</strong><br><button type="button" onclick="copyShileenAnswer()">Copy current Shileen assessment</button><br><small>Copies the current decision-support result for reuse or review.</small></div>';
@@ -483,7 +492,7 @@ function resolutionProgress(text){
 }
 function renderProgress(text){
  const p=resolutionProgress(text);
- return '<div class="decision"><strong>Resolution progress:</strong> '+p.stage+' · '+p.score+'/5<br>'+p.next+'</div>'+conclusionGate(text)+finalAssessment(text)+answerFrame(text)+supportCard(text)+ledgerCard(text)+priorityCard(text)+smallestStepCard(text)+efficientAction(text)+chosenActionCard(text)+actionLoopCard(text)+actionResultCard(text)+reassessCard(text)+loopDecisionCard(text)+snapshotCard()+stateChangeCard()+checkpointCard()+explainDecision(text)+correctionCard(text)+goalCard(text)+goalStabilityCard(text)+goalLockCard(text)+readinessCard()+completionGate(text)+uncertaintyCard(text)+uncertaintyReductionCard(text)+resolutionCompleteCard(text)+finalResponseCard(text)+buildFinalResponse(text)+responseSectionsCard(text)+finalAnswerComposer(text)+answerQualityCard(text)+answerIntegrityCard(text)+finalAnswerActions(text)+answerCopyCard(text);
+ return '<div class="decision"><strong>Resolution progress:</strong> '+p.stage+' · '+p.score+'/5<br>'+p.next+'</div>'+conclusionGate(text)+finalAssessment(text)+answerFrame(text)+supportCard(text)+ledgerCard(text)+priorityCard(text)+smallestStepCard(text)+smallestStepCard(text)+efficientAction(text)+chosenActionCard(text)+actionLoopCard(text)+actionResultCard(text)+reassessCard(text)+loopDecisionCard(text)+snapshotCard()+stateChangeCard()+checkpointCard()+explainDecision(text)+correctionCard(text)+goalCard(text)+goalStabilityCard(text)+goalLockCard(text)+readinessCard()+completionGate(text)+uncertaintyCard(text)+uncertaintyReductionCard(text)+resolutionCompleteCard(text)+finalResponseCard(text)+buildFinalResponse(text)+responseSectionsCard(text)+finalAnswerComposer(text)+answerQualityCard(text)+answerIntegrityCard(text)+finalAnswerActions(text)+answerCopyCard(text)+answerExportCard(text);
 }
 function nextStateFromAction(text){
  const r=routeReason(text);
