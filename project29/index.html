@@ -80,6 +80,11 @@ function actionCost(text){
  if(/search|latest|current|today/.test(q))return {cost:3,label:'HIGH'};
  return {cost:1,label:'LOW'};
 }
+function finalAnswerActions(text){
+ const mode=finalResponseMode(text);
+ if(mode.mode==='DO NOT CONCLUDE')return '<div class="decision"><strong>Next action</strong><br>Provide the missing information identified by Shileen, then reassess.</div>';
+ return '<div class="decision"><strong>Answer controls</strong><br><button type="button" onclick="saveCurrentState()">Save reasoning state</button> <button type="button" onclick="resetSession()">Start a new question</button></div>';
+}
 function answerIntegrityCard(text){
  const mode=finalResponseMode(text),s=stateMemory();
  const checks=[
@@ -469,7 +474,7 @@ function resolutionProgress(text){
 }
 function renderProgress(text){
  const p=resolutionProgress(text);
- return '<div class="decision"><strong>Resolution progress:</strong> '+p.stage+' · '+p.score+'/5<br>'+p.next+'</div>'+conclusionGate(text)+finalAssessment(text)+answerFrame(text)+supportCard(text)+ledgerCard(text)+priorityCard(text)+smallestStepCard(text)+efficientAction(text)+chosenActionCard(text)+actionLoopCard(text)+actionResultCard(text)+reassessCard(text)+loopDecisionCard(text)+snapshotCard()+stateChangeCard()+checkpointCard()+explainDecision(text)+correctionCard(text)+goalCard(text)+goalStabilityCard(text)+goalLockCard(text)+readinessCard()+completionGate(text)+uncertaintyCard(text)+uncertaintyReductionCard(text)+resolutionCompleteCard(text)+finalResponseCard(text)+buildFinalResponse(text)+responseSectionsCard(text)+finalAnswerComposer(text)+answerQualityCard(text)+answerIntegrityCard(text);
+ return '<div class="decision"><strong>Resolution progress:</strong> '+p.stage+' · '+p.score+'/5<br>'+p.next+'</div>'+conclusionGate(text)+finalAssessment(text)+answerFrame(text)+supportCard(text)+ledgerCard(text)+priorityCard(text)+smallestStepCard(text)+efficientAction(text)+chosenActionCard(text)+actionLoopCard(text)+actionResultCard(text)+reassessCard(text)+loopDecisionCard(text)+snapshotCard()+stateChangeCard()+checkpointCard()+explainDecision(text)+correctionCard(text)+goalCard(text)+goalStabilityCard(text)+goalLockCard(text)+readinessCard()+completionGate(text)+uncertaintyCard(text)+uncertaintyReductionCard(text)+resolutionCompleteCard(text)+finalResponseCard(text)+buildFinalResponse(text)+responseSectionsCard(text)+finalAnswerComposer(text)+answerQualityCard(text)+answerIntegrityCard(text)+finalAnswerActions(text);
 }
 function nextStateFromAction(text){
  const r=routeReason(text);
