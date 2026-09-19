@@ -62,7 +62,7 @@ function analyze(t){
  else if(/calculate|cost|price|worth|percent|how much/.test(q)){gap='A calculation needs the actual inputs.';next='Provide the numbers or document containing the inputs.';status='NEED INPUTS';stage=3;evidence='Needed: the actual figures, assumptions or source document.'}
  return `<div class="state"><div class="state-title"><span>Decision state</span><span class="pill">${status}</span></div><div class="progress">${[1,2,3,4,5].map(n=>`<i class="${n<=stage?'active':''}"></i>`).join('')}</div><div class="state-meta"><span>Goal → gap → evidence → verify → answer</span><span>Step ${stage}/5</span></div><p>${gap}</p><div class="next"><strong>Next best action</strong><span>${next}</span></div><div class="evidence"><strong>Action route:</strong> ${routeAction(t)}</div><div class="evidence">${evidence}</div><div class="action-row"><button class="action primary" data-follow="${escapeHtml(next)}">Do this next</button><button class="action" data-follow="What information is missing before you can answer?">Show missing information</button></div></div>`;
 }
-function send(text){text=text.trim();if(!text)return;welcome.classList.add('hidden');updateMemory(text);addUser(text);setTimeout(()=>addShileen(analyze(text)),180)}
+function send(text){text=text.trim();if(!text)return;welcome.classList.add('hidden');const s=updateMemory(text);addUser(text);setTimeout(()=>{if(s.conflicts&&s.conflicts.length){addShileen('I noticed information that may conflict with something you said earlier. Before I answer, let’s resolve that point first.');}else addShileen(analyze(text));refreshMemory();},180)}
 function stateMemory(){
   try{return JSON.parse(sessionStorage.getItem('shileenState')||'{}')}catch(e){return {}}
 }
@@ -76,8 +76,28 @@ function classifyIntent(text){
   if(/document|file|contract|invoice|report|pdf/.test(q)) return 'DOCUMENT';
   return 'GENERAL';
 }
+function detectConflict(text){
+ const s=stateMemory(), prior=(s.lastFacts||[]);
+ const q=text.toLowerCase();
+ const conflicts=[];
+ for(const f of prior){
+  if((/yes|true|will|can|is/.test(f) && /no|false|won't|cannot|isn't/.test(q)) ||
+     (/no|false|won't|cannot|isn't/.test(f) && /yes|true|will|can|is/.test(q))) conflicts.push(f);
+ }
+ return conflicts;
+}
+function extractFact(text){
+ const t=text.trim(); if(!t)return null;
+ return t.length>180?t.slice(0,180)+'…':t;
+}
 function updateMemory(text){
-  const s=stateMemory(); s.goal=text; s.intent=classifyIntent(text); s.turns=(s.turns||0)+1; saveState(s); return s;
+  const s=stateMemory();
+  const conflicts=detectConflict(text);
+  s.goal=s.goal||text; s.intent=classifyIntent(text); s.turns=(s.turns||0)+1;
+  s.lastFacts=s.lastFacts||[];
+  const fact=extractFact(text); if(fact) s.lastFacts=[...s.lastFacts.slice(-4),fact];
+  s.conflicts=conflicts;
+  saveState(s); return s;
 }
 function routeAction(text){
  const q=text.toLowerCase();
