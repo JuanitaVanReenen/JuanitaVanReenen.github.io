@@ -95,7 +95,7 @@ function resolveConflict(choice){
 function conflictActions(){
  return '<div class="actions"><button onclick="resolveConflict(\'new\')">Use new information</button><button onclick="resolveConflict(\'previous\')">Keep previous information</button></div>';
 }
-function send(text){text=text.trim();if(!text)return;welcome.classList.add('hidden');const s=updateMemory(text);const confidence=assessConfidence(text);s.confidence=confidence;saveState(s);addUser(text);setTimeout(()=>{if(s.conflicts&&s.conflicts.length){addShileen('I noticed information that may conflict with something you said earlier. Before I answer, let’s resolve that point first.');addShileen(contradictionDetail(s));addShileen(conflictActions());}else {addShileen(analyze(text));const plan=evidencePlan(text);addShileen('<div class="decision"><strong>Evidence plan:</strong> '+plan.label+'<br>'+plan.detail+'</div>');if(confidence.level==='LOW')addShileen('<div class="decision"><strong>Confidence check:</strong> '+confidence.reason+' A specific source or fact would help before treating the answer as settled.</div>');}refreshMemory();},180)}
+function send(text){text=text.trim();if(!text)return;welcome.classList.add('hidden');const s=updateMemory(text);const confidence=assessConfidence(text);s.confidence=confidence;saveState(s);addUser(text);setTimeout(()=>{if(s.conflicts&&s.conflicts.length){addShileen('I noticed information that may conflict with something you said earlier. Before I answer, let’s resolve that point first.');addShileen(contradictionDetail(s));addShileen(conflictActions());}else {addShileen(analyze(text));const plan=evidencePlan(text),route=routeReason(text);addShileen('<div class="decision"><strong>Evidence plan:</strong> '+plan.label+'<br>'+plan.detail+'</div><div class="decision"><strong>Why this action:</strong> '+route.action+' — '+route.why+'</div>');if(confidence.level==='LOW')addShileen('<div class="decision"><strong>Confidence check:</strong> '+confidence.reason+' A specific source or fact would help before treating the answer as settled.</div>');}refreshMemory();},180)}
 function stateMemory(){
   try{return JSON.parse(sessionStorage.getItem('shileenState')||'{}')}catch(e){return {}}
 }
@@ -132,7 +132,19 @@ function updateMemory(text){
   s.conflicts=conflicts;
   saveState(s); return s;
 }
+function routeReason(text){
+ const q=text.toLowerCase();
+ if(/pdf|document|file|contract|invoice|report/.test(q)) return {action:'INSPECT DOCUMENT',why:'The answer may depend on content inside a specific document.'};
+ if(/compare|versus|vs|difference/.test(q)) return {action:'COMPARE INFORMATION',why:'The key gap is a difference between two or more sources or options.'};
+ if(/calculate|cost|price|worth|percent|how much/.test(q)) return {action:'CALCULATE',why:'The missing step is numerical rather than conversational.'};
+ if(/trust|true|accurate|real|claim|source|fact|evidence|prove/.test(q)) return {action:'VERIFY EVIDENCE',why:'The conclusion depends on whether supporting evidence can be checked.'};
+ if(/latest|current|today|news|recent|now/.test(q)) return {action:'SEARCH FOR EVIDENCE',why:'The requested information may have changed and needs current evidence.'};
+ if(/conflict|contradict|disagree|different/.test(q)) return {action:'CHECK CONTRADICTION',why:'The information may contain competing statements.'};
+ if(/should i|decide|choose|which|buy|purchase/.test(q)) return {action:'ASK FOR DECISION CRITERIA',why:'A decision cannot be supported until the important criteria are known.'};
+ return {action:'ASK ONE TARGETED QUESTION',why:'The smallest useful next step is to clarify the missing fact.'};
+}
 function routeAction(text){
+ const reason=routeReason(text); return reason.action;
  const q=text.toLowerCase();
  if(/document|file|contract|invoice|report|pdf/.test(q)) return 'INSPECT DOCUMENT';
  if(/compare|versus|vs|difference/.test(q)) return 'COMPARE INFORMATION';
