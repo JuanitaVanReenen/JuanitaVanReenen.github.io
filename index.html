@@ -164,6 +164,25 @@ h2{font-size:clamp(30px,4vw,42px);line-height:1.1;letter-spacing:-1px;margin:0 0
 .contact-main h2{max-width:600px}.contact-main p{color:var(--muted);max-width:650px}
 .contactbox h3{margin:0 0 3px}.role{color:var(--accent);font-size:13px;font-weight:750}.email{display:inline-block;margin-top:20px;color:#fff;font-weight:800;border-bottom:1px solid #527aa4;padding-bottom:3px}
 .availability{margin-top:20px;padding:12px 14px;border-radius:11px;background:rgba(168,229,192,.08);color:var(--good);font-size:12px}
+.offer-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:28px}
+.offer{padding:20px;border:1px solid var(--line);border-radius:16px;background:rgba(15,29,49,.68)}
+.offer .offer-icon{font-size:22px;color:var(--accent)}
+.offer h3{font-size:15px;margin:10px 0 5px}.offer p{font-size:12px;color:var(--muted);margin:0}
+.credibility{display:grid;grid-template-columns:1.1fr .9fr;gap:18px;margin-top:28px}
+.cred-box{padding:25px;border:1px solid var(--line);border-radius:18px;background:rgba(15,29,49,.68)}
+.cred-box h3{margin:0 0 8px}.cred-box p{margin:0;color:var(--muted);font-size:14px}
+.request-box{margin-top:28px;padding:25px;border:1px solid #36506f;border-radius:18px;background:linear-gradient(110deg,rgba(31,59,88,.46),rgba(13,27,46,.7));display:flex;align-items:center;justify-content:space-between;gap:22px}
+.request-box p{margin:5px 0 0;color:var(--muted);font-size:13px}
+.enquiry-form{margin-top:28px;padding:25px;border:1px solid var(--line);border-radius:20px;background:rgba(15,29,49,.68)}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.field{display:flex;flex-direction:column;gap:6px}.field.full{grid-column:1/-1}
+.field label{font-size:11px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);font-weight:800}
+.field input,.field select,.field textarea{width:100%;border:1px solid var(--line);border-radius:10px;background:#0b1728;color:var(--ink);padding:12px 13px;font:inherit;font-size:13px}
+.field textarea{min-height:120px;resize:vertical}
+.form-note{font-size:11px;color:#8293aa;margin-top:10px}
+@media(max-width:900px){.offer-grid{grid-template-columns:repeat(2,1fr)}.credibility{grid-template-columns:1fr}}
+@media(max-width:720px){.offer-grid{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.request-box{display:block}.request-box .btn{margin-top:15px}}
+
 
 footer{padding:36px 0;color:#8293aa;font-size:12px}
 .footer-line{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
@@ -190,7 +209,7 @@ footer{padding:36px 0;color:#8293aa;font-size:12px}
     <a class="brand" href="#">Juanita <span>Van Reenen</span></a>
     <div class="links">
       <a href="#technology">Technology</a>
-      <a href="#model">Acquisition</a>
+      <a href="#opportunities">Opportunities</a>
       <a href="#books">Books</a>
       <a href="#screen">TV / Screen</a>
       <a href="#about">About</a>
@@ -297,6 +316,26 @@ footer{padding:36px 0;color:#8293aa;font-size:12px}
       <article class="card"><h3>ChangeImpact — 4D Change-Propagation Visualizer</h3><p>A 4D change-propagation visualizer that shows how a change moves through connected dependencies across People, Process, Technology and Time.</p><svg class="project-cover" role="img" aria-label="ChangeImpact 4D visual cover"><use href="assets/project-covers.svg#changeimpact-4d"></use></svg><span class="tag">4D VISUALIZER</span><a class="card-link" href="project23/">View product →</a></article>
     </div>
   </div>
+
+</section>
+
+<section id="opportunities">
+  <div class="wrap">
+    <div class="section-label">What is available</div>
+    <h2>Technology opportunities for strategic buyers</h2>
+    <p class="lead">Selected assets can be discussed for outright acquisition, licensing, further development or strategic integration, depending on the technology and the organisation's requirements.</p>
+    <div class="offer-grid">
+      <div class="offer"><div class="offer-icon">◈</div><h3>Technology / IP Acquisition</h3><p>Review a defined technology asset for potential outright acquisition.</p></div>
+      <div class="offer"><div class="offer-icon">⌁</div><h3>Software Acquisition</h3><p>Evaluate a standalone product, prototype or digital application.</p></div>
+      <div class="offer"><div class="offer-icon">↗</div><h3>Licensing</h3><p>Discuss licensing or other structured commercial arrangements where appropriate.</p></div>
+      <div class="offer"><div class="offer-icon">+</div><h3>Strategic Development</h3><p>Explore further development or integration by an interested organisation.</p></div>
+      <div class="offer"><div class="offer-icon">▶</div><h3>Demonstrations</h3><p>Request a relevant product demonstration or buyer information.</p></div>
+    </div>
+    <div class="request-box">
+      <div><strong>Want to review a specific asset?</strong><p>Request the relevant product snapshot, demonstration or buyer materials directly.</p></div>
+      <a class="btn primary" href="mailto:vanreenen.juanita@yahoo.com?subject=Request%20for%20Technology%20Buyer%20Information">Request Buyer Information →</a>
+    </div>
+  </div>
 </section>
 
 <section id="model">
@@ -367,6 +406,16 @@ footer{padding:36px 0;color:#8293aa;font-size:12px}
         <div class="bullet"><b>04</b><span>Acquisition, licensing and development discussions</span></div>
       </div>
     </div>
+    <div class="credibility">
+      <div class="cred-box">
+        <h3>Independent Development Portfolio</h3>
+        <p>A portfolio of focused technology assets spanning enterprise operations, financial intelligence, AI and decision support, maintenance, technical evidence and practical digital products.</p>
+      </div>
+      <div class="cred-box">
+        <h3>Direct Strategic Enquiries</h3>
+        <p>Companies can enquire about an individual asset without needing to engage with the wider portfolio. Relevant documentation and demonstrations can be shared directly.</p>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -385,6 +434,36 @@ footer{padding:36px 0;color:#8293aa;font-size:12px}
       <a class="email" href="mailto:vanreenen.juanita@yahoo.com">vanreenen.juanita@yahoo.com</a>
       <div class="availability">Technology acquisition • Licensing • Strategic development • Publishing • TV / Screen rights</div>
     </div>
+    <div class="enquiry-form">
+      <div class="section-label">Quick enquiry</div>
+      <h3 style="margin:7px 0 5px">Tell me what you would like to review</h3>
+      <p class="lead" style="font-size:13px">Complete the fields below and your email application will open with the enquiry prepared for sending.</p>
+      <form id="enquiryForm">
+        <div class="form-grid">
+          <div class="field"><label for="name">Name</label><input id="name" required></div>
+          <div class="field"><label for="company">Company</label><input id="company"></div>
+          <div class="field"><label for="email">Corporate email</label><input id="email" type="email" required></div>
+          <div class="field"><label for="interest">Technology of interest</label>
+            <select id="interest">
+              <option>General technology portfolio</option>
+              <option>LeakProof</option>
+              <option>WorkReady</option>
+              <option>Enterprise Decision Conflict Resolver</option>
+              <option>FieldFlow Audit</option>
+              <option>Capital Decision Analyzer</option>
+              <option>Adaptive Maintenance Capture & Positioning Fixture</option>
+              <option>ChangeImpact — 4D Change-Propagation Visualizer</option>
+              <option>Other / not sure</option>
+            </select>
+          </div>
+          <div class="field full"><label for="message">Message</label><textarea id="message" placeholder="Tell me what you would like to review or discuss."></textarea></div>
+        </div>
+        <div class="actions" style="margin-top:18px">
+          <button class="btn primary" type="submit">Prepare Enquiry →</button>
+        </div>
+        <div class="form-note">Your message is sent through your own email application after you submit the form. No third-party form service is used.</div>
+      </form>
+    </div>
   </div>
 </section>
 
@@ -394,5 +473,24 @@ footer{padding:36px 0;color:#8293aa;font-size:12px}
     <span>Technology • Software • IP • Books • Screen</span>
   </div>
 </footer>
+<script>
+document.getElementById('enquiryForm')?.addEventListener('submit',function(e){
+  e.preventDefault();
+  const name=document.getElementById('name').value.trim();
+  const company=document.getElementById('company').value.trim();
+  const email=document.getElementById('email').value.trim();
+  const interest=document.getElementById('interest').value;
+  const message=document.getElementById('message').value.trim();
+  const subject=encodeURIComponent('Technology Acquisition Enquiry — '+interest);
+  const body=encodeURIComponent(
+    'Name: '+name+'\n'+
+    'Company: '+company+'\n'+
+    'Corporate email: '+email+'\n'+
+    'Technology of interest: '+interest+'\n\n'+
+    'Message:\n'+message
+  );
+  window.location.href='mailto:vanreenen.juanita@yahoo.com?subject='+subject+'&body='+body;
+});
+</script>
 </body>
 </html>
