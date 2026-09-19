@@ -32,3 +32,14 @@ The current prototype uses a local rule-based reasoning layer. A production vers
 ## Acquisition direction
 
 The intended commercial model is a standalone software asset that can be acquired, further developed or integrated by a strategic technology company. It is not being designed as a SaaS business.
+
+
+## Final MVP integration
+
+The current prototype now includes the complete local reasoning loop:
+
+**GOAL → GAP → PRIORITY → NEXT ACTION → ACTION RESULT → REASSESS → SUFFICIENCY → RESPONSE MODE → FINAL ANSWER**
+
+Additional integrated controls include evidence-gap prioritisation, smallest-useful-step selection, stale-answer protection, reasoning history, conclusion-basis display, answer-version tracking, response limitations, user controls, assessment export, and a core build-status check.
+
+The MVP remains intentionally local and rule-based. The production integration boundary is the connection to an AI model and permitted evidence/action tools; this is not represented as already implemented.
