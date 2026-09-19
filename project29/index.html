@@ -80,6 +80,19 @@ function actionCost(text){
  if(/search|latest|current|today/.test(q))return {cost:3,label:'HIGH'};
  return {cost:1,label:'LOW'};
 }
+function actionResult(text){
+ const q=text.toLowerCase(),s=stateMemory();
+ let result='RESULT UNCLEAR',reason='The action has not yet produced enough information to update the state.';
+ if(/confirmed|verified|proof|evidence|source|document/.test(q)){result='EVIDENCE ADDED';reason='New supporting information can be incorporated into the decision state.'}
+ else if(/no|wrong|incorrect|cannot|failed|not found/.test(q)){result='ACTION FAILED';reason='The attempted step did not establish the required fact.'}
+ else if(/yes|correct|works|done|completed/.test(q)){result='STEP COMPLETED';reason='The latest message indicates that the selected step was completed.'}
+ s.lastActionResult={result,reason};s.loopStage='RESULT_CAPTURED';saveState(s);
+ return s.lastActionResult;
+}
+function actionResultCard(text){
+ const r=actionResult(text);
+ return '<div class="decision"><strong>Action result:</strong> '+r.result+'<br>'+r.reason+'</div>';
+}
 function actionLoop(text){
  const a=chooseNextAction(text),s=stateMemory();
  s.selectedAction=a.name;s.actionCost=a.cost;s.actionPriority=a.priority;s.loopStage='ACTION_SELECTED';saveState(s);
@@ -215,7 +228,7 @@ function resolutionProgress(text){
 }
 function renderProgress(text){
  const p=resolutionProgress(text);
- return '<div class="decision"><strong>Resolution progress:</strong> '+p.stage+' · '+p.score+'/5<br>'+p.next+'</div>'+conclusionGate(text)+finalDecisionCard(text)+answerFrame(text)+supportCard(text)+ledgerCard(text)+priorityCard(text)+smallestStepCard(text)+efficientAction(text)+chosenActionCard(text)+actionLoopCard(text);
+ return '<div class="decision"><strong>Resolution progress:</strong> '+p.stage+' · '+p.score+'/5<br>'+p.next+'</div>'+conclusionGate(text)+finalDecisionCard(text)+answerFrame(text)+supportCard(text)+ledgerCard(text)+priorityCard(text)+smallestStepCard(text)+efficientAction(text)+chosenActionCard(text)+actionLoopCard(text)+actionResultCard(text);
 }
 function nextStateFromAction(text){
  const r=routeReason(text);
