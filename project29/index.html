@@ -73,6 +73,17 @@ function evidencePlan(t){
  const m=missingEvidence(t);
  return m.length?{label:'GET '+m[0].toUpperCase(),detail:'Provide or inspect the '+m[0]+' before treating the conclusion as settled.'}:{label:'DEFINE THE MISSING FACT',detail:'State the specific fact that would change the answer.'};
 }
+function resolutionProgress(text){
+ const q=text.toLowerCase();
+ if(/source|document|evidence|proof/.test(q)) return {stage:'EVIDENCE',score:3,next:'Verify the supplied evidence against the claim.'};
+ if(/yes|confirmed|correct|agree/.test(q)) return {stage:'VERIFY',score:4,next:'Reassess the decision using the confirmed information.'};
+ if(/no|not|wrong|incorrect/.test(q)) return {stage:'CLARIFY',score:2,next:'Replace the incorrect assumption with the correct fact.'};
+ return {stage:'GAP',score:1,next:'Collect the smallest missing fact before proceeding.'};
+}
+function renderProgress(text){
+ const p=resolutionProgress(text);
+ return '<div class="decision"><strong>Resolution progress:</strong> '+p.stage+' · '+p.score+'/5<br>'+p.next+'</div>';
+}
 function nextStateFromAction(text){
  const r=routeReason(text);
  const map={
@@ -110,7 +121,7 @@ function resolveConflict(choice){
 function conflictActions(){
  return '<div class="actions"><button onclick="resolveConflict(\'new\')">Use new information</button><button onclick="resolveConflict(\'previous\')">Keep previous information</button></div>';
 }
-function send(text){text=text.trim();if(!text)return;welcome.classList.add('hidden');const s=updateMemory(text);const confidence=assessConfidence(text);s.confidence=confidence;saveState(s);addUser(text);setTimeout(()=>{if(s.conflicts&&s.conflicts.length){addShileen('I noticed information that may conflict with something you said earlier. Before I answer, let’s resolve that point first.');addShileen(contradictionDetail(s));addShileen(conflictActions());}else {addShileen(analyze(text));const plan=evidencePlan(text),route=routeReason(text),nextState=nextStateFromAction(text);addShileen('<div class="decision"><strong>Evidence plan:</strong> '+plan.label+'<br>'+plan.detail+'</div><div class="decision"><strong>Why this action:</strong> '+route.action+' — '+route.why+'</div><div class="decision"><strong>Next state:</strong> '+nextState.stage+'<br>'+nextState.instruction+'</div>');if(confidence.level==='LOW')addShileen('<div class="decision"><strong>Confidence check:</strong> '+confidence.reason+' A specific source or fact would help before treating the answer as settled.</div>');}refreshMemory();},180)}
+function send(text){text=text.trim();if(!text)return;welcome.classList.add('hidden');const s=updateMemory(text);const confidence=assessConfidence(text);s.confidence=confidence;saveState(s);addUser(text);setTimeout(()=>{if(s.conflicts&&s.conflicts.length){addShileen('I noticed information that may conflict with something you said earlier. Before I answer, let’s resolve that point first.');addShileen(contradictionDetail(s));addShileen(conflictActions());}else {addShileen(analyze(text));const plan=evidencePlan(text),route=routeReason(text),nextState=nextStateFromAction(text);addShileen('<div class="decision"><strong>Evidence plan:</strong> '+plan.label+'<br>'+plan.detail+'</div><div class="decision"><strong>Why this action:</strong> '+route.action+' — '+route.why+'</div><div class="decision"><strong>Next state:</strong> '+nextState.stage+'<br>'+nextState.instruction+'</div>'+renderProgress(text));if(confidence.level==='LOW')addShileen('<div class="decision"><strong>Confidence check:</strong> '+confidence.reason+' A specific source or fact would help before treating the answer as settled.</div>');}refreshMemory();},180)}
 function stateMemory(){
   try{return JSON.parse(sessionStorage.getItem('shileenState')||'{}')}catch(e){return {}}
 }
