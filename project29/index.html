@@ -80,6 +80,14 @@ function actionCost(text){
  if(/search|latest|current|today/.test(q))return {cost:3,label:'HIGH'};
  return {cost:1,label:'LOW'};
 }
+function buildFinalResponse(text){
+ const mode=finalResponseMode(text),s=stateMemory(),u=uncertaintyBudget(text);
+ if(mode.mode==='DO NOT CONCLUDE')return '<div class="decision"><strong>Shileen response:</strong><br>I need one more useful piece of information before I can responsibly conclude. '+(u.items.length?'Current blocker: '+escapeHtml(u.items[0])+'.':'The evidence state is not yet sufficient.')+'</div>';
+ const basis=[];
+ if(s.goal)basis.push('Goal: '+s.goal);
+ if(s.lastActionResult)basis.push('Latest result: '+s.lastActionResult.result);
+ return '<div class="decision"><strong>Shileen response framework</strong><br><strong>'+mode.mode+'</strong><br>'+mode.reason+'<br><br>'+basis.map(escapeHtml).join('<br>')+'<br><br>Final conclusion should distinguish established facts from remaining uncertainty.</div>';
+}
 function finalResponseMode(text){
  const s=stateMemory(),u=uncertaintyBudget(text),done=resolutionComplete(text);
  if(!done.complete)return {mode:'DO NOT CONCLUDE',reason:'Keep gathering or resolving information.'};
@@ -424,7 +432,7 @@ function resolutionProgress(text){
 }
 function renderProgress(text){
  const p=resolutionProgress(text);
- return '<div class="decision"><strong>Resolution progress:</strong> '+p.stage+' · '+p.score+'/5<br>'+p.next+'</div>'+conclusionGate(text)+finalAssessment(text)+answerFrame(text)+supportCard(text)+ledgerCard(text)+priorityCard(text)+smallestStepCard(text)+efficientAction(text)+chosenActionCard(text)+actionLoopCard(text)+actionResultCard(text)+reassessCard(text)+loopDecisionCard(text)+snapshotCard()+stateChangeCard()+checkpointCard()+explainDecision(text)+correctionCard(text)+goalCard(text)+goalStabilityCard(text)+goalLockCard(text)+readinessCard()+completionGate(text)+uncertaintyCard(text)+uncertaintyReductionCard(text)+resolutionCompleteCard(text)+finalResponseCard(text);
+ return '<div class="decision"><strong>Resolution progress:</strong> '+p.stage+' · '+p.score+'/5<br>'+p.next+'</div>'+conclusionGate(text)+finalAssessment(text)+answerFrame(text)+supportCard(text)+ledgerCard(text)+priorityCard(text)+smallestStepCard(text)+efficientAction(text)+chosenActionCard(text)+actionLoopCard(text)+actionResultCard(text)+reassessCard(text)+loopDecisionCard(text)+snapshotCard()+stateChangeCard()+checkpointCard()+explainDecision(text)+correctionCard(text)+goalCard(text)+goalStabilityCard(text)+goalLockCard(text)+readinessCard()+completionGate(text)+uncertaintyCard(text)+uncertaintyReductionCard(text)+resolutionCompleteCard(text)+finalResponseCard(text)+buildFinalResponse(text);
 }
 function nextStateFromAction(text){
  const r=routeReason(text);
