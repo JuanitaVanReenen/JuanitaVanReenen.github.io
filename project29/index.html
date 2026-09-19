@@ -80,6 +80,18 @@ function actionCost(text){
  if(/search|latest|current|today/.test(q))return {cost:3,label:'HIGH'};
  return {cost:1,label:'LOW'};
 }
+function stopOrContinue(text){
+ const s=stateMemory(),r=s.lastActionResult||{},conf=canConclude(text);
+ if(s.conflicts&&s.conflicts.length)return {mode:'STOP',reason:'An unresolved conflict remains.'};
+ if(r.result==='ACTION FAILED')return {mode:'CONTINUE',reason:'The selected action failed, so an alternative route is needed.'};
+ if(r.result==='RESULT UNCLEAR')return {mode:'CLARIFY',reason:'The result needs clarification before another action is selected.'};
+ if(conf.ready)return {mode:'REASSESS',reason:'The latest state may now support a fresh conclusion check.'};
+ return {mode:'CONTINUE',reason:'More information is still required.'};
+}
+function loopDecisionCard(text){
+ const d=stopOrContinue(text);
+ return '<div class="decision"><strong>Loop decision:</strong> '+d.mode+'<br>'+d.reason+'</div>';
+}
 function reassessAfterAction(text){
  const s=stateMemory(),r=s.lastActionResult||{};
  let next='CONTINUE';
@@ -242,7 +254,7 @@ function resolutionProgress(text){
 }
 function renderProgress(text){
  const p=resolutionProgress(text);
- return '<div class="decision"><strong>Resolution progress:</strong> '+p.stage+' · '+p.score+'/5<br>'+p.next+'</div>'+conclusionGate(text)+finalDecisionCard(text)+answerFrame(text)+supportCard(text)+ledgerCard(text)+priorityCard(text)+smallestStepCard(text)+efficientAction(text)+chosenActionCard(text)+actionLoopCard(text)+actionResultCard(text)+reassessCard(text);
+ return '<div class="decision"><strong>Resolution progress:</strong> '+p.stage+' · '+p.score+'/5<br>'+p.next+'</div>'+conclusionGate(text)+finalDecisionCard(text)+answerFrame(text)+supportCard(text)+ledgerCard(text)+priorityCard(text)+smallestStepCard(text)+efficientAction(text)+chosenActionCard(text)+actionLoopCard(text)+actionResultCard(text)+reassessCard(text)+loopDecisionCard(text);
 }
 function nextStateFromAction(text){
  const r=routeReason(text);
