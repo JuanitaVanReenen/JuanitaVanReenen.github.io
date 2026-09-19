@@ -73,6 +73,18 @@ function evidencePlan(t){
  const m=missingEvidence(t);
  return m.length?{label:'GET '+m[0].toUpperCase(),detail:'Provide or inspect the '+m[0]+' before treating the conclusion as settled.'}:{label:'DEFINE THE MISSING FACT',detail:'State the specific fact that would change the answer.'};
 }
+function answerMode(text){
+ const q=text.toLowerCase();
+ if(/should i|decide|choose|which|buy|purchase/.test(q))return {mode:'DECISION SUPPORT',label:'Compare the confirmed criteria, constraints and evidence before choosing.'};
+ if(/trust|true|accurate|real|claim|fact/.test(q))return {mode:'EVIDENCE ASSESSMENT',label:'Separate what is supported, uncertain and still unverified.'};
+ if(/compare|versus|vs|difference/.test(q))return {mode:'COMPARISON',label:'Compare the relevant evidence on the same criteria.'};
+ if(/calculate|cost|price|worth|percent|how much/.test(q))return {mode:'CALCULATION',label:'Use verified inputs and state the assumptions.'};
+ return {mode:'SUPPORTED RESPONSE',label:'Answer only from the information that has been established.'};
+}
+function answerFrame(text){
+ const m=answerMode(text);
+ return '<div class="decision"><strong>Answer mode:</strong> '+m.mode+'<br>'+m.label+'</div>';
+}
 function finalReassessment(text){
  const s=stateMemory(), q=text.toLowerCase();
  const conflict=!!(s.conflicts&&s.conflicts.length);
@@ -109,7 +121,7 @@ function resolutionProgress(text){
 }
 function renderProgress(text){
  const p=resolutionProgress(text);
- return '<div class="decision"><strong>Resolution progress:</strong> '+p.stage+' · '+p.score+'/5<br>'+p.next+'</div>'+conclusionGate(text)+finalDecisionCard(text);
+ return '<div class="decision"><strong>Resolution progress:</strong> '+p.stage+' · '+p.score+'/5<br>'+p.next+'</div>'+conclusionGate(text)+finalDecisionCard(text)+answerFrame(text);
 }
 function nextStateFromAction(text){
  const r=routeReason(text);
