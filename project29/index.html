@@ -80,6 +80,14 @@ function actionCost(text){
  if(/search|latest|current|today/.test(q))return {cost:3,label:'HIGH'};
  return {cost:1,label:'LOW'};
 }
+function stateSnapshot(){
+ const s=stateMemory();
+ return {goal:s.goal||'',intent:s.intent||'GENERAL',turns:s.turns||0,conflict:!!(s.conflicts&&s.conflicts.length),action:s.selectedAction||'NONE',result:s.lastActionResult?s.lastActionResult.result:'NONE',loop:s.loopStage||'READY'};
+}
+function snapshotCard(){
+ const s=stateSnapshot();
+ return '<div class="decision"><strong>Current reasoning state</strong><br>Goal: '+escapeHtml(s.goal||'Not yet defined')+'<br>Intent: '+s.intent+' · Action: '+s.action+'<br>Last result: '+s.result+' · Loop: '+s.loop+'</div>';
+}
 function stopOrContinue(text){
  const s=stateMemory(),r=s.lastActionResult||{},conf=canConclude(text);
  if(s.conflicts&&s.conflicts.length)return {mode:'STOP',reason:'An unresolved conflict remains.'};
@@ -254,7 +262,7 @@ function resolutionProgress(text){
 }
 function renderProgress(text){
  const p=resolutionProgress(text);
- return '<div class="decision"><strong>Resolution progress:</strong> '+p.stage+' · '+p.score+'/5<br>'+p.next+'</div>'+conclusionGate(text)+finalDecisionCard(text)+answerFrame(text)+supportCard(text)+ledgerCard(text)+priorityCard(text)+smallestStepCard(text)+efficientAction(text)+chosenActionCard(text)+actionLoopCard(text)+actionResultCard(text)+reassessCard(text)+loopDecisionCard(text);
+ return '<div class="decision"><strong>Resolution progress:</strong> '+p.stage+' · '+p.score+'/5<br>'+p.next+'</div>'+conclusionGate(text)+finalDecisionCard(text)+answerFrame(text)+supportCard(text)+ledgerCard(text)+priorityCard(text)+smallestStepCard(text)+efficientAction(text)+chosenActionCard(text)+actionLoopCard(text)+actionResultCard(text)+reassessCard(text)+loopDecisionCard(text)+snapshotCard();
 }
 function nextStateFromAction(text){
  const r=routeReason(text);
