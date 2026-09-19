@@ -123,6 +123,11 @@ h2{font-size:clamp(30px,4vw,42px);line-height:1.1;letter-spacing:-1px;margin:0 0
 .card h3{margin:0 0 9px;font-size:20px;line-height:1.25}.card p{margin:0;color:var(--muted);font-size:14px}
 .tag{display:inline-flex;margin-top:17px;padding:5px 9px;border-radius:999px;background:#1b2d48;color:var(--accent2);font-size:9px;font-weight:900;letter-spacing:1px}
 .card-link{display:inline-block;margin-top:16px;color:var(--accent);font-size:13px;font-weight:800}
+.project-cover{width:100%;aspect-ratio:5/3;display:block;margin:20px 0 0;border:1px solid rgba(142,197,255,.18);border-radius:15px;background:#0b1728;overflow:hidden}
+.project-cover svg{width:100%;height:100%;display:block}
+.featured .project-cover{margin-top:20px}
+.portfolio-grid .project-cover{margin-top:17px}
+
 
 .portfolio-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
 .portfolio-grid .card{padding:20px;border-radius:17px}.portfolio-grid .card h3{font-size:17px}.portfolio-grid .card p{font-size:13px}
@@ -227,33 +232,33 @@ footer{padding:36px 0;color:#8293aa;font-size:12px}
     <div class="featured">
       <article class="card">
         <h3>LeakProof</h3>
-        <p>Financial Leakage Forensics Engine for identifying and investigating potential financial leakage across enterprise environments.</p>
+        <p>Financial Leakage Forensics Engine for identifying and investigating potential financial leakage across enterprise environments.</p><svg class="project-cover" role="img" aria-label="LeakProof visual cover"><use href="assets/project-covers.svg#leakproof"></use></svg>
         <span class="tag">IP</span>
       </article>
       <article class="card">
         <h3>WorkReady</h3>
-        <p>Enterprise work preparation intelligence focused on service and maintenance readiness before work is performed.</p>
+        <p>Enterprise work preparation intelligence focused on service and maintenance readiness before work is performed.</p><svg class="project-cover" role="img" aria-label="WorkReady visual cover"><use href="assets/project-covers.svg#workready"></use></svg>
         <span class="tag">IP</span>
       </article>
       <article class="card">
         <h3>Enterprise Decision Conflict Resolver</h3>
-        <p>Augmentation layer for detecting competing recommendations and constraints across enterprise systems and AI agents, then structuring coordinated resolution.</p>
+        <p>Augmentation layer for detecting competing recommendations and constraints across enterprise systems and AI agents, then structuring coordinated resolution.</p><svg class="project-cover" role="img" aria-label="Enterprise Decision Conflict Resolver visual cover"><use href="assets/project-covers.svg#conflict"></use></svg>
         <span class="tag">IP</span>
       </article>
       <article class="card">
         <h3>FieldFlow Audit</h3>
-        <p>MVP for reviewing field-service job and exported data to surface inconsistencies and audit gaps.</p>
+        <p>MVP for reviewing field-service job and exported data to surface inconsistencies and audit gaps.</p><svg class="project-cover" role="img" aria-label="FieldFlow Audit visual cover"><use href="assets/project-covers.svg#fieldflow"></use></svg>
         <span class="tag">MVP</span>
       </article>
       <article class="card">
         <h3>Capital Decision Analyzer</h3>
-        <p>Investment decision calculator covering NPV, IRR, ROI, payback, scenarios, sensitivity and break-even analysis.</p>
+        <p>Investment decision calculator covering NPV, IRR, ROI, payback, scenarios, sensitivity and break-even analysis.</p><svg class="project-cover" role="img" aria-label="Capital Decision Analyzer visual cover"><use href="assets/project-covers.svg#capital"></use></svg>
         <span class="tag">DIGITAL PRODUCT</span>
         <a class="card-link" href="project24/">View product →</a>
       </article>
       <article class="card">
         <h3>Physical AI Deployment Underwriting Engine</h3>
-        <p>HTML concept for evaluating deployment considerations and underwriting risk around physical AI systems.</p>
+        <p>HTML concept for evaluating deployment considerations and underwriting risk around physical AI systems.</p><svg class="project-cover" role="img" aria-label="Physical AI Deployment Underwriting Engine visual cover"><use href="assets/project-covers.svg#physical-ai"></use></svg>
         <span class="tag">HTML</span>
       </article>
     </div>
@@ -270,20 +275,20 @@ footer{padding:36px 0;color:#8293aa;font-size:12px}
     </div>
 
     <div class="portfolio-grid" style="margin-top:26px">
-      <article class="card"><h3>Build Check</h3><p>MVP for identifying discrepancies across building records and related business information.</p><span class="tag">MVP</span></article>
-      <article class="card"><h3>AI ActionProof</h3><p>AI decision/action evidence concept for structuring and reviewing the evidence supporting AI-assisted actions.</p><span class="tag">MVP</span></article>
-      <article class="card"><h3>Acquisition Revenue Protection</h3><p>Financial intelligence product focused on detecting revenue leakage around healthcare acquisitions.</p><span class="tag">MVP</span></article>
-      <article class="card"><h3>MoneyQuest Kids</h3><p>Children’s real-life decision and financial learning platform for banking and education contexts.</p><span class="tag">MVP</span></article>
-      <article class="card"><h3>Enterprise Exitability Intelligence</h3><p>Technology for structuring enterprise readiness and risk information relevant to strategic exit or acquisition.</p><span class="tag">IP</span></article>
-      <article class="card"><h3>Workflow Gap Capture Engine</h3><p>Standalone technology for capturing workflow gaps and required handoffs between enterprise systems.</p><span class="tag">IP</span></article>
-      <article class="card"><h3>HVAC Technical Building Services Acquisition Intelligence</h3><p>HTML concept for acquisition intelligence across HVAC and technical building-services businesses.</p><span class="tag">HTML</span></article>
-      <article class="card"><h3>Technical Evidence Sufficiency Engine</h3><p>HTML concept for evaluating the sufficiency and structure of technical evidence.</p><span class="tag">HTML</span></article>
-      <article class="card"><h3>AI Reliance Calibration Engine</h3><p>Measures how people rely on AI by comparing independent human judgment with judgment after AI advice.</p><span class="tag">IP + HTML MVP</span><a class="card-link" href="ai-reliance-calibration-engine/">View product →</a></article>
-      <article class="card"><h3>Intelligent Charging Environment Safety System</h3><p>Technology concept and MVP for assessing charging-environment and charging-behavior conditions.</p><span class="tag">IP + MVP</span></article>
-      <article class="card"><h3>Hydraulic Connection Management System</h3><p>Technology concept and MVP for controlled handling, protected parking, retrieval and guided reconnection of individual hydraulic lines.</p><span class="tag">IP + MVP</span></article>
-      <article class="card"><h3>Next Action</h3><p>Household execution interface that turns real-world goals into one clear next action.</p><span class="tag">MVP</span><a class="card-link" href="next-action/">View live MVP →</a></article>
-      <article class="card"><h3>Configurable Maintenance Extraction Simulator</h3><p>Physical maintenance-planning instrument for configuring extraction routes, checking clearances and recording a workable sequence.</p><span class="tag">PHYSICAL PRODUCT</span><a class="card-link" href="project22/">View details →</a></article>
-      <article class="card"><h3>ChangeImpact</h3><p>4D change-propagation visualizer showing how a change moves through connected dependencies across time.</p><span class="tag">SOFTWARE</span><a class="card-link" href="project23/">View product →</a></article>
+      <article class="card"><h3>Build Check</h3><p>MVP for identifying discrepancies across building records and related business information.</p><svg class="project-cover" role="img" aria-label="Build Check visual cover"><use href="assets/project-covers.svg#build-check"></use></svg><span class="tag">MVP</span></article>
+      <article class="card"><h3>AI ActionProof</h3><p>AI decision/action evidence concept for structuring and reviewing the evidence supporting AI-assisted actions.</p><svg class="project-cover" role="img" aria-label="AI ActionProof visual cover"><use href="assets/project-covers.svg#actionproof"></use></svg><span class="tag">MVP</span></article>
+      <article class="card"><h3>Acquisition Revenue Protection</h3><p>Financial intelligence product focused on detecting revenue leakage around healthcare acquisitions.</p><svg class="project-cover" role="img" aria-label="Acquisition Revenue Protection visual cover"><use href="assets/project-covers.svg#revenue"></use></svg><span class="tag">MVP</span></article>
+      <article class="card"><h3>MoneyQuest Kids</h3><p>Children’s real-life decision and financial learning platform for banking and education contexts.</p><svg class="project-cover" role="img" aria-label="MoneyQuest Kids visual cover"><use href="assets/project-covers.svg#moneyquest"></use></svg><span class="tag">MVP</span></article>
+      <article class="card"><h3>Enterprise Exitability Intelligence</h3><p>Technology for structuring enterprise readiness and risk information relevant to strategic exit or acquisition.</p><svg class="project-cover" role="img" aria-label="Enterprise Exitability Intelligence visual cover"><use href="assets/project-covers.svg#exitability"></use></svg><span class="tag">IP</span></article>
+      <article class="card"><h3>Workflow Gap Capture Engine</h3><p>Standalone technology for capturing workflow gaps and required handoffs between enterprise systems.</p><svg class="project-cover" role="img" aria-label="Workflow Gap Capture Engine visual cover"><use href="assets/project-covers.svg#workflow"></use></svg><span class="tag">IP</span></article>
+      <article class="card"><h3>HVAC Technical Building Services Acquisition Intelligence</h3><p>HTML concept for acquisition intelligence across HVAC and technical building-services businesses.</p><svg class="project-cover" role="img" aria-label="HVAC Technical Building Services Acquisition Intelligence visual cover"><use href="assets/project-covers.svg#hvac"></use></svg><span class="tag">HTML</span></article>
+      <article class="card"><h3>Technical Evidence Sufficiency Engine</h3><p>HTML concept for evaluating the sufficiency and structure of technical evidence.</p><svg class="project-cover" role="img" aria-label="Technical Evidence Sufficiency Engine visual cover"><use href="assets/project-covers.svg#evidence"></use></svg><span class="tag">HTML</span></article>
+      <article class="card"><h3>AI Reliance Calibration Engine</h3><p>Measures how people rely on AI by comparing independent human judgment with judgment after AI advice.</p><svg class="project-cover" role="img" aria-label="AI Reliance Calibration Engine visual cover"><use href="assets/project-covers.svg#aireliance"></use></svg><span class="tag">IP + HTML MVP</span><a class="card-link" href="ai-reliance-calibration-engine/">View product →</a></article>
+      <article class="card"><h3>Intelligent Charging Environment Safety System</h3><p>Technology concept and MVP for assessing charging-environment and charging-behavior conditions.</p><svg class="project-cover" role="img" aria-label="Intelligent Charging Environment Safety System visual cover"><use href="assets/project-covers.svg#charging"></use></svg><span class="tag">IP + MVP</span></article>
+      <article class="card"><h3>Hydraulic Connection Management System</h3><p>Technology concept and MVP for controlled handling, protected parking, retrieval and guided reconnection of individual hydraulic lines.</p><svg class="project-cover" role="img" aria-label="Hydraulic Connection Management System visual cover"><use href="assets/project-covers.svg#hydraulic"></use></svg><span class="tag">IP + MVP</span></article>
+      <article class="card"><h3>Next Action</h3><p>Household execution interface that turns real-world goals into one clear next action.</p><svg class="project-cover" role="img" aria-label="Next Action visual cover"><use href="assets/project-covers.svg#next-action"></use></svg><span class="tag">MVP</span><a class="card-link" href="next-action/">View live MVP →</a></article>
+      <article class="card"><h3>Configurable Maintenance Extraction Simulator</h3><p>Physical maintenance-planning instrument for configuring extraction routes, checking clearances and recording a workable sequence.</p><svg class="project-cover" role="img" aria-label="Configurable Maintenance Extraction Simulator visual cover"><use href="assets/project-covers.svg#maintenance"></use></svg><span class="tag">PHYSICAL PRODUCT</span><a class="card-link" href="project22/">View details →</a></article>
+      <article class="card"><h3>ChangeImpact</h3><p>4D change-propagation visualizer showing how a change moves through connected dependencies across time.</p><svg class="project-cover" role="img" aria-label="ChangeImpact visual cover"><use href="assets/project-covers.svg#changeimpact"></use></svg><span class="tag">SOFTWARE</span><a class="card-link" href="project23/">View product →</a></article>
     </div>
   </div>
 </section>
