@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Robot Job Fit</title>
+<style>
+:root{--bg:#f4f6f8;--card:#fff;--ink:#17202a;--muted:#65717d;--line:#dfe4e8;--accent:#2457d6;--pass:#16845b;--fail:#c63d3d;--warn:#a86b00}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,Arial,sans-serif}
+header{background:#111827;color:white;padding:26px 6%;display:flex;justify-content:space-between;align-items:center;gap:20px}
+.brand{font-size:22px;font-weight:800}.tag{font-size:13px;color:#cbd5e1}
+main{max-width:1180px;margin:28px auto;padding:0 18px}.hero{margin-bottom:24px}.hero h1{font-size:38px;margin:0 0 8px}.hero p{color:var(--muted);max-width:760px;line-height:1.55}
+.progress{display:flex;gap:8px;margin:20px 0}.step{height:7px;flex:1;background:#d9dee5;border-radius:8px}.step.active{background:var(--accent)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px;margin-bottom:18px;box-shadow:0 4px 18px rgba(20,30,40,.04)}
+h2{margin:0 0 18px;font-size:22px}h3{font-size:16px;margin:22px 0 10px}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+label{display:block;font-size:13px;font-weight:700;margin-bottom:7px}input,select,textarea{width:100%;padding:12px;border:1px solid #cfd6dd;border-radius:9px;font:inherit;background:white}textarea{min-height:92px;resize:vertical}
+button{border:0;border-radius:9px;padding:12px 18px;font-weight:800;cursor:pointer}.primary{background:var(--accent);color:white}.secondary{background:#e9edf2;color:#26313d}.actions{display:flex;justify-content:space-between;gap:10px;margin-top:20px}
+.hidden{display:none}.pill{display:inline-block;padding:6px 10px;border-radius:20px;background:#eef2ff;color:#2948a5;font-size:12px;font-weight:800}
+.requirement{border:1px solid var(--line);padding:14px;border-radius:10px;margin:10px 0}.reqtop{display:flex;justify-content:space-between;gap:10px}.status{font-weight:800}.pass{color:var(--pass)}.fail{color:var(--fail)}.unknown{color:var(--warn)}
+.metric{border:1px solid var(--line);border-radius:12px;padding:16px}.metric b{font-size:25px;display:block;margin-top:5px}
+.notice{padding:14px;border-radius:10px;background:#f7f8fa;border-left:4px solid var(--accent);line-height:1.5}
+.result{border-radius:14px;padding:20px;margin-bottom:18px}.result.fail{background:#fff0f0}.result.pass{background:#effaf5}.result.warn{background:#fff8e8}
+.small{font-size:12px;color:var(--muted)}table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:11px;border-bottom:1px solid var(--line);font-size:13px}
+footer{color:var(--muted);font-size:12px;text-align:center;padding:30px}
+@media(max-width:700px){.grid,.grid3{grid-template-columns:1fr}.hero h1{font-size:30px}header{padding:20px}.card{padding:18px}}
+</style>
+</head>
+<body>
+<header><div><div class="brand">ROBOT JOB FIT</div><div class="tag">Job-specific robotics suitability assessment</div></div><span class="pill">PROJECT 28</span></header>
+
+<main>
+<section class="hero">
+<h1>Can this robot actually do this job?</h1>
+<p>Define the work, translate it into requirements, compare the robot's documented capabilities, identify hard failures and unknowns, and produce a deployment-readiness record.</p>
+<div class="progress"><div class="step active"></div><div class="step"></div><div class="step"></div><div class="step"></div></div>
+</section>
+
+<section id="screen1" class="card">
+<h2>1. Define the job</h2>
+<div class="grid">
+<div><label>Job name</label><input id="job" placeholder="e.g. Move components between workcells"></div>
+<div><label>Industry</label><select id="industry"><option>Manufacturing</option><option>Warehouse / Logistics</option><option>Construction</option><option>Inspection</option><option>Healthcare</option><option>Agriculture</option><option>Facilities</option><option>Other</option></select></div>
+<div><label>Primary task</label><select id="task"><option>Transport</option><option>Pick and place</option><option>Machine tending</option><option>Inspection</option><option>Assembly</option><option>Cleaning</option><option>Manipulation</option><option>Other</option></select></div>
+<div><label>Object / material</label><input id="object" placeholder="e.g. metal component"></div>
+<div><label>Payload required (kg)</label><input id="payload" type="number" min="0" placeholder="20"></div>
+<div><label>Required reach (m)</label><input id="reach" type="number" min="0" step=".1" placeholder="1.5"></div>
+<div><label>Required cycle time (seconds)</label><input id="cycle" type="number" min="0" placeholder="30"></div>
+<div><label>Operating hours per day</label><input id="hours" type="number" min="0" max="24" placeholder="16"></div>
+</div>
+<h3>Environment</h3>
+<div class="grid">
+<div><label>Environment</label><select id="env"><option>Indoor controlled</option><option>Indoor variable</option><option>Outdoor paved</option><option>Outdoor rough terrain</option><option>Hazardous / restricted</option><option>Mixed</option></select></div>
+<div><label>Human proximity</label><select id="human"><option>Low</option><option>Occasional</option><option>Frequent</option><option>Continuous collaboration</option></select></div>
+<div><label>Floor / terrain</label><select id="terrain"><option>Flat</option><option>Uneven</option><option>Sloped</option><option>Rough terrain</option></select></div>
+<div><label>Special conditions</label><input id="conditions" placeholder="Temperature, dust, lighting, access, etc."></div>
+</div>
+<div class="actions"><span></span><button class="primary" onclick="next(2)">Continue</button></div>
+</section>
+
+<section id="screen2" class="card hidden">
+<h2>2. Build the robot candidate set</h2>
+<p class="small">Add up to four candidate robots. Each candidate is assessed against the same job requirements.</p>
+<div id="robotCards"></div>
+<div class="actions"><button class="secondary" onclick="next(1)">Back</button><button class="secondary" onclick="addRobot()">+ Add robot</button><button class="primary" onclick="next(3)">Compare candidates</button></div>
+</section>
+
+<section id="screen3" class="hidden">
+<div class="card">
+<h2>3. Robot Job-Fit Comparison</h2>
+<div id="summary"></div>
+<div id="comparison"></div>
+</div>
+<div class="card"><h2>Requirement gates</h2><div id="requirements"></div></div>
+<div class="card"><h2>Evidence & uncertainty</h2><div id="evidence"></div></div>
+<div class="card"><h2>Deployment readiness checklist</h2><div id="checklist"></div></div>
+<div class="card"><h2>Final buyer report</h2><div id="final"></div>
+<div class="actions"><button class="secondary" onclick="next(2)">Edit candidates</button><button class="secondary" onclick="exportCSV()">Export data</button><button class="primary" onclick="window.print()">Print / Save report</button></div>
+</div>
+</section>
+
+<section id="screen4" class="hidden">
+<div class="card"><h2>Assessment complete</h2><p>Your job-fit record is ready.</p></div>
+</section>
+</main>
+
+<footer>Robot Job Fit · Project 28 · Buyer-ready prototype · Decision support, not a certification or safety approval.</footer>
+
+<script>
+let robots=[
+{name:"Candidate Robot A",type:"Industrial arm",payload:25,reach:2,cycle:25,hours:12,env:"Indoor controlled",human:"Demonstrated",demo:"Yes — similar task",transfer:"Limited"},
+{name:"Candidate Robot B",type:"Cobot",payload:20,reach:1.8,cycle:35,hours:16,env:"Indoor controlled",human:"Manufacturer stated",demo:"Controlled demonstration",transfer:"Unknown"}
+];
+
+function val(id){return document.getElementById(id)?.value||""}
+function num(id){let x=parseFloat(val(id));return isNaN(x)?null:x}
+function next(n){
+  ['screen1','screen2','screen3','screen4'].forEach((x,i)=>document.getElementById(x).classList.toggle('hidden',i!==n-1));
+  if(n===2) renderRobots();
+  if(n===3) assess();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function addRobot(){
+ if(robots.length>=4){alert("Maximum of four candidates.");return}
+ robots.push({name:"Candidate Robot "+String.fromCharCode(65+robots.length),type:"Industrial arm",payload:null,reach:null,cycle:null,hours:null,env:"Unknown",human:"Unknown",demo:"Unknown",transfer:"Unknown"});
+ renderRobots();
+}
+function removeRobot(i){if(robots.length>1){robots.splice(i,1);renderRobots()}}
+function renderRobots(){
+ const box=document.getElementById('robotCards');
+ box.innerHTML=robots.map((r,i)=>`
+ <div class="card" style="margin-top:12px;background:#fbfcfd">
+ <div style="display:flex;justify-content:space-between;gap:10px"><h3>Candidate ${i+1}</h3>${robots.length>1?`<button class="secondary" onclick="removeRobot(${i})">Remove</button>`:""}</div>
+ <div class="grid">
+ <div><label>Robot name</label><input data-i="${i}" data-k="name" value="${esc(r.name)}"></div>
+ <div><label>Robot type</label><select data-i="${i}" data-k="type">${["Industrial arm","Cobot","AMR","Humanoid","Quadruped","Drone","Specialized robot"].map(x=>`<option ${x===r.type?"selected":""}>${x}</option>`).join("")}</select></div>
+ <div><label>Documented payload (kg)</label><input type="number" data-i="${i}" data-k="payload" value="${blank(r.payload)}"></div>
+ <div><label>Documented reach (m)</label><input type="number" step=".1" data-i="${i}" data-k="reach" value="${blank(r.reach)}"></div>
+ <div><label>Documented cycle time (seconds)</label><input type="number" data-i="${i}" data-k="cycle" value="${blank(r.cycle)}"></div>
+ <div><label>Documented endurance (hours)</label><input type="number" data-i="${i}" data-k="hours" value="${blank(r.hours)}"></div>
+ <div><label>Environment capability</label><select data-i="${i}" data-k="env">${["Indoor controlled","Indoor variable","Outdoor paved","Outdoor rough terrain","Hazardous / restricted","Unknown"].map(x=>`<option ${x===r.env?"selected":""}>${x}</option>`).join("")}</select></div>
+ <div><label>Human collaboration evidence</label><select data-i="${i}" data-k="human">${["Demonstrated","Manufacturer stated","Limited evidence","Unknown"].map(x=>`<option ${x===r.human?"selected":""}>${x}</option>`).join("")}</select></div>
+ <div><label>Task demonstrated?</label><select data-i="${i}" data-k="demo">${["Yes — same task","Yes — similar task","Controlled demonstration","No","Unknown"].map(x=>`<option ${x===r.demo?"selected":""}>${x}</option>`).join("")}</select></div>
+ <div><label>Site transfer evidence</label><select data-i="${i}" data-k="transfer">${["Demonstrated across sites","Limited","None known","Unknown"].map(x=>`<option ${x===r.transfer?"selected":""}>${x}</option>`).join("")}</select></div>
+ </div></div>`).join("");
+ box.querySelectorAll("[data-i]").forEach(el=>el.addEventListener("input",()=>syncRobots()));
+}
+function syncRobots(){
+ document.querySelectorAll("#robotCards [data-i]").forEach(el=>{
+  const i=+el.dataset.i,k=el.dataset.k;
+  robots[i][k]=["payload","reach","cycle","hours"].includes(k)?(el.value===""?null:+el.value):el.value;
+ });
+}
+function blank(x){return x==null?"":x}
+function esc(x){return String(x??"").replaceAll("&","&amp;").replaceAll('"',"&quot;").replaceAll("<","&lt;").replaceAll(">","&gt;")}
+function gate(label,required,actual,unit,type){
+ let s="UNKNOWN",cls="unknown",note="Information not provided.";
+ if(actual!=null && required!=null){
+  s=type==="min"?(actual>=required?"PASS":"FAIL"):(actual<=required?"PASS":"FAIL");
+  note=s==="PASS"?"Meets the stated requirement.":"Does not meet the stated requirement.";
+ }
+ if(s==="PASS")cls="pass"; if(s==="FAIL")cls="fail";
+ return `<div class="requirement"><div class="reqtop"><strong>${label}</strong><span class="status ${cls}">${s}</span></div><div class="small">Required: ${required??"Unknown"}${unit} · Robot: ${actual==null?"Unknown":actual+unit}</div><div class="small">${note}</div></div>`;
+}
+function evaluate(r){
+ const reqs=[
+  ["Payload",num("payload"),r.payload," kg","min"],
+  ["Reach",num("reach"),r.reach," m","min"],
+  ["Cycle time",num("cycle"),r.cycle," s","max"],
+  ["Daily endurance",num("hours"),r.hours," h","min"]
+ ];
+ let fails=0,unknown=0;
+ reqs.forEach(x=>{if(x[1]==null||x[2]==null)unknown++;else{const ok=x[4]==="min"?x[2]>=x[1]:x[2]<=x[1];if(!ok)fails++}});
+ const env=val("env");
+ if(r.env==="Unknown"||r.env!==env)unknown++;
+ return {fails,unknown,reqs,env};
+}
+function assess(){
+ syncRobots();
+ const job=val("job")||"Unnamed job";
+ const ev=robots.map(r=>({r,...evaluate(r)}));
+ document.getElementById("summary").innerHTML=`<div class="notice"><strong>${esc(job)}</strong> — ${esc(val("industry"))} / ${esc(val("task"))}. The comparison is job-specific and does not create a universal robot rating.</div>`;
+ let rows=ev.map((x,i)=>{
+  let state=x.fails?"FAIL":x.unknown?"CONDITIONAL":"PROVISIONAL FIT";
+  let cls=x.fails?"fail":x.unknown?"unknown":"pass";
+  return `<tr><td><strong>${esc(x.r.name)}</strong><br><span class="small">${esc(x.r.type)}</span></td><td>${x.fails}</td><td>${x.unknown}</td><td class="${cls}"><strong>${state}</strong></td><td>${x.r.demo}</td></tr>`;
+ }).join("");
+ document.getElementById("comparison").innerHTML=`<table><tr><th>Robot</th><th>Failures</th><th>Unknowns</th><th>Job-fit status</th><th>Task evidence</th></tr>${rows}</table>`;
+
+ const first=ev[0];
+ document.getElementById("requirements").innerHTML=`<h3>Job requirements</h3>`+first.reqs.map(x=>gate(x[0],x[1],x[2],x[3],x[4])).join("")+
+ `<div class="requirement"><div class="reqtop"><strong>Environment</strong><span class="status unknown">${first.r.env===first.env?"PASS":"UNKNOWN"}</span></div><div class="small">Required: ${esc(first.env)} · Robot evidence: ${esc(first.r.env)}</div></div>`;
+
+ document.getElementById("evidence").innerHTML=`<table><tr><th>Robot</th><th>Human collaboration</th><th>Task demonstration</th><th>Site transfer</th><th>Environment</th></tr>`+
+ ev.map(x=>`<tr><td>${esc(x.r.name)}</td><td>${esc(x.r.human)}</td><td>${esc(x.r.demo)}</td><td>${esc(x.r.transfer)}</td><td>${esc(x.r.env)}</td></tr>`).join("")+`</table>`;
+
+ let checks=["Confirm manufacturer specification documents","Conduct a job-specific task demonstration","Verify actual site/environment conditions","Verify human-robot operating conditions","Confirm integration/network requirements","Complete safety and regulatory review","Run a controlled pilot before production use"];
+ document.getElementById("checklist").innerHTML=checks.map((x,i)=>`<div class="requirement"><label><input type="checkbox" style="width:auto;margin-right:8px"> ${x}</label></div>`).join("");
+
+ document.getElementById("final").innerHTML=ev.map(x=>{
+  const cls=x.fails?"fail":x.unknown?"warn":"pass";
+  const title=x.fails?"NOT FIT — CRITICAL GAP":x.unknown?"CONDITIONAL FIT — VERIFICATION REQUIRED":"PROVISIONAL FIT — REQUIREMENTS MET";
+  let gaps=[];
+  if(x.fails)gaps.push("Resolve failed hard requirements.");
+  if(x.unknown)gaps.push("Verify unknown requirements with evidence or testing.");
+  if(["No","Unknown"].includes(x.r.demo))gaps.push("Complete task-specific demonstration.");
+  if(["None known","Unknown"].includes(x.r.transfer))gaps.push("Validate performance at the actual site.");
+  return `<div class="result ${cls}"><h3>${esc(x.r.name)} — ${title}</h3><p>Hard failures: <strong>${x.fails}</strong> · Unknowns: <strong>${x.unknown}</strong></p><p>${gaps.length?gaps.join(" "):"The entered requirements have no identified quantitative gap."}</p></div>`;
+ }).join("")+`<div class="notice"><strong>Decision rule:</strong> a failed critical requirement is not offset by strengths elsewhere. Unknown information remains unknown until verified. This tool is decision support and does not certify safety, regulatory compliance or deployment suitability.</div>`;
+}
+function exportCSV(){
+ syncRobots();
+ const headers=["Robot","Type","Payload kg","Reach m","Cycle s","Endurance h","Environment","Human evidence","Task evidence","Site transfer"];
+ const lines=[headers,...robots.map(r=>[r.name,r.type,r.payload,r.reach,r.cycle,r.hours,r.env,r.human,r.demo,r.transfer])].map(a=>a.map(v=>`"${String(v??"").replaceAll('"','""')}"`).join(",")).join("\\n");
+ const blob=new Blob([lines],{type:"text/csv"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="robot_job_fit_candidates.csv";a.click();URL.revokeObjectURL(a.href);
+}
+renderRobots();
+</script>
+</body>
+</html>
