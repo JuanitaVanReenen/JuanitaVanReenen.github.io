@@ -80,6 +80,15 @@ function actionCost(text){
  if(/search|latest|current|today/.test(q))return {cost:3,label:'HIGH'};
  return {cost:1,label:'LOW'};
 }
+function actionLoop(text){
+ const a=chooseNextAction(text),s=stateMemory();
+ s.selectedAction=a.name;s.actionCost=a.cost;s.actionPriority=a.priority;s.loopStage='ACTION_SELECTED';saveState(s);
+ return {action:a.name,next:'Execute '+a.name.toLowerCase()+' and reassess the state using the result.'};
+}
+function actionLoopCard(text){
+ const a=actionLoop(text);
+ return '<div class="decision"><strong>Action loop:</strong> '+a.action+'<br>'+a.next+'</div>';
+}
 function chooseNextAction(text){
  const p=priorityGap(text),c=actionCost(text);
  const options=[
@@ -206,7 +215,7 @@ function resolutionProgress(text){
 }
 function renderProgress(text){
  const p=resolutionProgress(text);
- return '<div class="decision"><strong>Resolution progress:</strong> '+p.stage+' · '+p.score+'/5<br>'+p.next+'</div>'+conclusionGate(text)+finalDecisionCard(text)+answerFrame(text)+supportCard(text)+ledgerCard(text)+priorityCard(text)+smallestStepCard(text)+efficientAction(text)+chosenActionCard(text);
+ return '<div class="decision"><strong>Resolution progress:</strong> '+p.stage+' · '+p.score+'/5<br>'+p.next+'</div>'+conclusionGate(text)+finalDecisionCard(text)+answerFrame(text)+supportCard(text)+ledgerCard(text)+priorityCard(text)+smallestStepCard(text)+efficientAction(text)+chosenActionCard(text)+actionLoopCard(text);
 }
 function nextStateFromAction(text){
  const r=routeReason(text);
