@@ -80,6 +80,15 @@ function actionCost(text){
  if(/search|latest|current|today/.test(q))return {cost:3,label:'HIGH'};
  return {cost:1,label:'LOW'};
 }
+function explainDecision(text){
+ const p=priorityGap(text),a=chooseNextAction(text),s=stateMemory();
+ const reasons=[];
+ reasons.push('Highest-value gap: '+p.gap);
+ reasons.push('Selected action: '+a.name);
+ reasons.push('Current loop: '+(s.loopStage||'READY'));
+ if(s.conflicts&&s.conflicts.length) reasons.push('An unresolved conflict is blocking progression.');
+ return '<div class="decision"><strong>Decision trace</strong><br>'+reasons.map(escapeHtml).join('<br>')+'</div>';
+}
 function checkpointState(){
  const s=stateMemory();
  const ready=canConclude(s.goal||'');
@@ -294,7 +303,7 @@ function resolutionProgress(text){
 }
 function renderProgress(text){
  const p=resolutionProgress(text);
- return '<div class="decision"><strong>Resolution progress:</strong> '+p.stage+' · '+p.score+'/5<br>'+p.next+'</div>'+conclusionGate(text)+finalDecisionCard(text)+answerFrame(text)+supportCard(text)+ledgerCard(text)+priorityCard(text)+smallestStepCard(text)+efficientAction(text)+chosenActionCard(text)+actionLoopCard(text)+actionResultCard(text)+reassessCard(text)+loopDecisionCard(text)+snapshotCard()+stateChangeCard()+checkpointCard();
+ return '<div class="decision"><strong>Resolution progress:</strong> '+p.stage+' · '+p.score+'/5<br>'+p.next+'</div>'+conclusionGate(text)+finalDecisionCard(text)+answerFrame(text)+supportCard(text)+ledgerCard(text)+priorityCard(text)+smallestStepCard(text)+efficientAction(text)+chosenActionCard(text)+actionLoopCard(text)+actionResultCard(text)+reassessCard(text)+loopDecisionCard(text)+snapshotCard()+stateChangeCard()+checkpointCard()+explainDecision(text);
 }
 function nextStateFromAction(text){
  const r=routeReason(text);
