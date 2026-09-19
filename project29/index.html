@@ -80,6 +80,18 @@ function actionCost(text){
  if(/search|latest|current|today/.test(q))return {cost:3,label:'HIGH'};
  return {cost:1,label:'LOW'};
 }
+function uncertaintyReduction(text){
+ const u=uncertaintyBudget(text),s=stateMemory();
+ if(u.level==='LOW')return {action:'PROCEED TO ASSESS',why:'No major uncertainty flags are currently recorded.'};
+ if(u.items.includes('unresolved conflict'))return {action:'RESOLVE CONFLICT',why:'A conflict has the highest blocking value.'};
+ if(u.items.includes('unclear action result'))return {action:'CLARIFY RESULT',why:'The previous action did not establish a clear outcome.'};
+ if(u.items.includes('goal not locked'))return {action:'LOCK GOAL',why:'The reasoning target must be stable before deeper assessment.'};
+ return {action:'STRENGTHEN EVIDENCE',why:'Reducing uncertainty requires a stronger supporting basis.'};
+}
+function uncertaintyReductionCard(text){
+ const r=uncertaintyReduction(text);
+ return '<div class="decision"><strong>Best uncertainty-reduction step:</strong> '+r.action+'<br>'+r.why+'</div>';
+}
 function uncertaintyBudget(text){
  const s=stateMemory(),items=[];
  if(s.conflicts&&s.conflicts.length)items.push('unresolved conflict');
@@ -391,7 +403,7 @@ function resolutionProgress(text){
 }
 function renderProgress(text){
  const p=resolutionProgress(text);
- return '<div class="decision"><strong>Resolution progress:</strong> '+p.stage+' · '+p.score+'/5<br>'+p.next+'</div>'+conclusionGate(text)+finalDecisionCard(text)+answerFrame(text)+supportCard(text)+ledgerCard(text)+priorityCard(text)+smallestStepCard(text)+efficientAction(text)+chosenActionCard(text)+actionLoopCard(text)+actionResultCard(text)+reassessCard(text)+loopDecisionCard(text)+snapshotCard()+stateChangeCard()+checkpointCard()+explainDecision(text)+correctionCard(text)+goalCard(text)+goalStabilityCard(text)+goalLockCard(text)+readinessCard()+completionGate(text)+finalAssessment(text)+uncertaintyCard(text);
+ return '<div class="decision"><strong>Resolution progress:</strong> '+p.stage+' · '+p.score+'/5<br>'+p.next+'</div>'+conclusionGate(text)+finalAssessment(text)+answerFrame(text)+supportCard(text)+ledgerCard(text)+priorityCard(text)+smallestStepCard(text)+efficientAction(text)+chosenActionCard(text)+actionLoopCard(text)+actionResultCard(text)+reassessCard(text)+loopDecisionCard(text)+snapshotCard()+stateChangeCard()+checkpointCard()+explainDecision(text)+correctionCard(text)+goalCard(text)+goalStabilityCard(text)+goalLockCard(text)+readinessCard()+completionGate(text)+uncertaintyCard(text)+uncertaintyReductionCard(text);
 }
 function nextStateFromAction(text){
  const r=routeReason(text);
