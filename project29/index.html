@@ -85,6 +85,12 @@ function minimalEvidencePlan(text){
  if(!items.length)return '<div class="decision"><strong>Minimal evidence plan</strong><br>The current state does not identify an additional evidence requirement.</div>';
  return '<div class="decision"><strong>Minimal evidence plan</strong><br>1. Resolve the highest-priority gap.<br>2. Reassess the decision state.<br>3. Stop gathering evidence once the answer becomes supportable.</div>';
 }
+function reassessmentTriggerCard(text){
+ const mode=finalResponseMode(text);
+ const s=stateMemory();
+ const changed=(s.stateChangeHistory||s.history||[]).length>0;
+ return '<div class="decision"><strong>Reassessment trigger</strong><br>'+(changed?'State changes detected — Shileen should reassess before treating the current answer as final.':'No new state change detected in this session.')+'</div>';
+}
 function evidenceChangeCard(text){
  const s=stateMemory(),history=s.stateChangeHistory||s.history||[];
  return '<div class="decision"><strong>Evidence change tracking</strong><br>'+ (history.length?history.length+' reasoning-state change(s) recorded during this session.':'No prior state changes recorded yet.')+'<br><small>New evidence should trigger reassessment rather than silently replacing the previous conclusion.</small></div>';
@@ -528,7 +534,7 @@ function resolutionProgress(text){
 }
 function renderProgress(text){
  const p=resolutionProgress(text);
- return '<div class="decision"><strong>Resolution progress:</strong> '+p.stage+' · '+p.score+'/5<br>'+p.next+'</div>'+conclusionGate(text)+finalAssessment(text)+answerFrame(text)+supportCard(text)+ledgerCard(text)+priorityCard(text)+smallestStepCard(text)+smallestStepCard(text)+efficientAction(text)+chosenActionCard(text)+actionLoopCard(text)+actionResultCard(text)+reassessCard(text)+loopDecisionCard(text)+snapshotCard()+stateChangeCard()+checkpointCard()+explainDecision(text)+correctionCard(text)+goalCard(text)+goalStabilityCard(text)+goalLockCard(text)+readinessCard()+completionGate(text)+uncertaintyCard(text)+uncertaintyReductionCard(text)+resolutionCompleteCard(text)+finalResponseCard(text)+buildFinalResponse(text)+responseSectionsCard(text)+finalAnswerComposer(text)+answerQualityCard(text)+answerIntegrityCard(text)+finalAnswerActions(text)+answerCopyCard(text)+answerExportCard(text)+evidenceGapSummary(text)+evidenceGapActions(text)+evidenceGapPriority(text)+minimalEvidencePlan(text)+gapResolutionCost(text)+evidenceSufficiencyMeter(text)+evidenceChangeCard(text);
+ return '<div class="decision"><strong>Resolution progress:</strong> '+p.stage+' · '+p.score+'/5<br>'+p.next+'</div>'+conclusionGate(text)+finalAssessment(text)+answerFrame(text)+supportCard(text)+ledgerCard(text)+priorityCard(text)+smallestStepCard(text)+smallestStepCard(text)+efficientAction(text)+chosenActionCard(text)+actionLoopCard(text)+actionResultCard(text)+reassessCard(text)+loopDecisionCard(text)+snapshotCard()+stateChangeCard()+checkpointCard()+explainDecision(text)+correctionCard(text)+goalCard(text)+goalStabilityCard(text)+goalLockCard(text)+readinessCard()+completionGate(text)+uncertaintyCard(text)+uncertaintyReductionCard(text)+resolutionCompleteCard(text)+finalResponseCard(text)+buildFinalResponse(text)+responseSectionsCard(text)+finalAnswerComposer(text)+answerQualityCard(text)+answerIntegrityCard(text)+finalAnswerActions(text)+answerCopyCard(text)+answerExportCard(text)+evidenceGapSummary(text)+evidenceGapActions(text)+evidenceGapPriority(text)+minimalEvidencePlan(text)+gapResolutionCost(text)+evidenceSufficiencyMeter(text)+evidenceChangeCard(text)+reassessmentTriggerCard(text);
 }
 function nextStateFromAction(text){
  const r=routeReason(text);
