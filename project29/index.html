@@ -80,6 +80,20 @@ function actionCost(text){
  if(/search|latest|current|today/.test(q))return {cost:3,label:'HIGH'};
  return {cost:1,label:'LOW'};
 }
+function reassessAfterAction(text){
+ const s=stateMemory(),r=s.lastActionResult||{};
+ let next='CONTINUE';
+ if(r.result==='EVIDENCE ADDED') next='REASSESS';
+ if(r.result==='ACTION FAILED') next='TRY ALTERNATIVE';
+ if(r.result==='STEP COMPLETED') next='REASSESS';
+ if(r.result==='RESULT UNCLEAR') next='CLARIFY RESULT';
+ s.loopStage=next;saveState(s);
+ return {next,reason:next==='REASSESS'?'Update the evidence state and test whether the conclusion gate has changed.':next==='TRY ALTERNATIVE'?'Choose a different action that can resolve the same highest-value gap.':next==='CLARIFY RESULT'?'Ask what the action actually established before proceeding.':'Select the next action from the updated state.'};
+}
+function reassessCard(text){
+ const r=reassessAfterAction(text);
+ return '<div class="decision"><strong>After-action reassessment:</strong> '+r.next+'<br>'+r.reason+'</div>';
+}
 function actionResult(text){
  const q=text.toLowerCase(),s=stateMemory();
  let result='RESULT UNCLEAR',reason='The action has not yet produced enough information to update the state.';
@@ -228,7 +242,7 @@ function resolutionProgress(text){
 }
 function renderProgress(text){
  const p=resolutionProgress(text);
- return '<div class="decision"><strong>Resolution progress:</strong> '+p.stage+' · '+p.score+'/5<br>'+p.next+'</div>'+conclusionGate(text)+finalDecisionCard(text)+answerFrame(text)+supportCard(text)+ledgerCard(text)+priorityCard(text)+smallestStepCard(text)+efficientAction(text)+chosenActionCard(text)+actionLoopCard(text)+actionResultCard(text);
+ return '<div class="decision"><strong>Resolution progress:</strong> '+p.stage+' · '+p.score+'/5<br>'+p.next+'</div>'+conclusionGate(text)+finalDecisionCard(text)+answerFrame(text)+supportCard(text)+ledgerCard(text)+priorityCard(text)+smallestStepCard(text)+efficientAction(text)+chosenActionCard(text)+actionLoopCard(text)+actionResultCard(text)+reassessCard(text);
 }
 function nextStateFromAction(text){
  const r=routeReason(text);
