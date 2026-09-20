@@ -10,9 +10,9 @@ function render(){
 var f=document.getElementById("feed");
 f.innerHTML=posts.map(function(p,i){
 if(p.p){
-return '<article class="post pulse"><div class="pulseLabel">⚡ Pulza</div><div class="head"><div class="avatar">'+p.a+'</div><div><div class="who">'+esc(p.u)+'</div><div class="time">'+p.t+'</div></div></div><p>'+esc(p.x)+'</p><div class="choices">'+p.ch.map(function(c,j){return '<button class="choice" onclick="vote('+i+','+j+')"><span>'+esc(c[0])+'</span><b>'+c[1]+'</b></button>'}).join("")+'</div><button class="btn primary" onclick="alert(\\'You joined the Pulza ✨\\')">Join this Pulza</button><div class="time">❤️ '+p.l+' · 💬 '+p.c+' · '+p.ch.reduce(function(a,c){return a+c[1]},0)+' participating</div></article>';
+return '<article class="post pulse"><div class="pulseLabel">⚡ Pulza</div><div class="head"><div class="avatar">'+p.a+'</div><div><div class="who">'+esc(p.u)+'</div><div class="time">'+p.t+'</div></div></div><p>'+esc(p.x)+'</p><div class="choices">'+p.ch.map(function(c,j){return '<button class="choice" onclick="vote('+i+','+j+')"><span>'+esc(c[0])+'</span><b>'+c[1]+'</b></button>'}).join("")+'</div><button class="btn primary" onclick="joinPulza('+i+')">Join this Pulza</button><div class="time">❤️ '+p.l+' · 💬 '+p.c+' · '+p.ch.reduce(function(a,c){return a+c[1]},0)+' participating</div></article>';
 }
-return '<article class="post"><div class="head"><div class="avatar">'+p.a+'</div><div><div class="who">'+esc(p.u)+'</div><div class="time">'+p.t+'</div></div></div><p>'+esc(p.x)+'</p><div class="actions"><button class="react" onclick="react('+i+')">♡ '+p.l+'</button><button class="react" onclick="alert(\\'Comments opened\\')">💬 '+p.c+'</button><button class="react" onclick="alert(\\'Post shared\\')">↗ Share</button></div></article>';
+return '<article class="post"><div class="head"><div class="avatar">'+p.a+'</div><div><div class="who">'+esc(p.u)+'</div><div class="time">'+p.t+'</div></div></div><p>'+esc(p.x)+'</p><div class="actions"><button class="react" onclick="react('+i+')">♡ '+p.l+'</button><button class="react" onclick="commentPost('+i+')">💬 '+p.c+'</button><button class="react" onclick="sharePost('+i+')">↗ Share</button></div></article>';
 }).join("");
 }
 function show(id,b){document.querySelectorAll(".view").forEach(function(v){v.classList.remove("active")});document.getElementById(id).classList.add("active");document.querySelectorAll(".nav button").forEach(function(x){x.classList.remove("active")});b.classList.add("active");window.scrollTo(0,0)}
@@ -21,6 +21,9 @@ function showHome(m){mode=m;show("home",document.querySelector(".nav button"));d
 function addMedia(kind){var m=document.getElementById("composerMeta");m.textContent=(kind==="photo"?"📷 Photo attached (demo)":kind==="video"?"🎥 Video attached (demo)":"📍 Location added (demo)");}
 function publish(){var t=document.getElementById("text").value.trim();if(!t)return alert("Write something first");posts.unshift({u:"Juanita",a:"J",t:"just now",x:t,l:0,c:0,p:mode,ch:mode?[["I’m in",1],["Maybe",0],["Tell me more",0]]:undefined});document.getElementById("text").value="";document.getElementById("composerMeta").textContent="";render()}
 function react(i){posts[i].l++;render()}
-function vote(i,j){posts[i].ch[j][1]++;render()}
+function commentPost(i){posts[i].c++;render();alert("Comment added in this demo")}
+function sharePost(i){alert("Share options opened in this demo")}
+function joinPulza(i){if(!posts[i].joined){posts[i].joined=true;render();alert("You joined the Pulza ✨")}else{alert("You are already participating")}}
+function vote(i,j){posts[i].ch[j][1]++;posts[i].joined=true;render()}
 render();
 </script></body></html>
