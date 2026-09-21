@@ -45,15 +45,23 @@ The next buyer-facing demo is planned as a short, product-led walkthrough rather
 6. Briefly show Contacts, Notifications and Profile to establish that Sulia is a complete messaging experience, not a single-feature mockup.
 7. End on the Sulia value proposition: **Text when words are enough. Voice when you want to be heard. Face when you want to be there.**
 
-The existing real browser walkthrough remains the embedded demo until the fuller walkthrough is recorded. No generated footage is being represented as a recording of the actual Sulia interface.
+A fuller real browser walkthrough has now been recorded from the live Sulia public interface. It demonstrates the core buyer journey and is now the embedded demo. No generated footage is being represented as a recording of the actual Sulia interface.
 
 
 ## Deeper public-page verification — 21 September 2026
 
 The Sulia public page was structurally rechecked after the buyer-journey section was added. The journey section was corrected so it sits inside the document body rather than after the closing HTML tag. The public source was then checked for: valid document closure, script placement, text-send interaction, voice interaction, Face Message, Face Reply, Face Reaction, Face Introduction, embedded real walkthrough video, absence of internal project-number leakage, and absence of empty # placeholder links.
 
-The checks passed for the current source. This is a source/interaction-structure verification, not a claim of full device/browser QA. A complete live click-through recording remains the next demo-media step.
+The checks passed for the current source. This is a source/interaction-structure verification, not a claim of full device/browser QA. The live browser walkthrough is now complete for the current MVP scope; additional QA can still be performed later if needed.
 
 ## Buyer cover page
 
 A polished one-page Sulia Buyer Cover Page was generated and preserved in the Library as Sulia_Buyer_Cover_Page.png. It is intended to accompany buyer outreach alongside the email, public demo, and supporting product snapshot.
+
+
+## Full buyer walkthrough completed — 21 September 2026
+
+A real browser walkthrough was recorded from the live Sulia public interface. Duration is approximately 21.56 seconds. It demonstrates opening a chat, sending text, opening Face Message, using Face Reply, using Face Reaction, and briefly showing Contacts, Alerts, Profile and Face Introduction.
+
+Media ID: e5efbbbb-658b-44f9-be69-1e15bec52f39
+Media URL: https://d2ol7oe51mr4n9.cloudfront.net/user_3JccjS9oSIhOaOB5TNzJnFtsjeP/e5efbbbb-658b-44f9-be69-1e15bec52f39.mp4
