@@ -31,18 +31,34 @@
               <div class="chat" onclick="openChat('Family')"><div class="avatar">F</div><div><b>Family</b><small>Face reaction · 14m</small></div></div>
             </div>
           </div>
+          <div id="contacts" class="screen"><h3>Contacts</h3><div class="chat-list">
+            <div class="chat" onclick="openChat('Mia')"><div class="avatar">M</div><div><b>Mia</b><small>Available</small></div></div>
+            <div class="chat" onclick="openChat('Daniel')"><div class="avatar">D</div><div><b>Daniel</b><small>Available</small></div></div>
+            <div class="chat" onclick="openChat('Family')"><div class="avatar">F</div><div><b>Family</b><small>Group · 6 people</small></div></div>
+          </div></div>
+          <div id="notifications" class="screen"><h3>Notifications</h3><div class="chat-list">
+            <div class="chat"><div class="avatar">M</div><div><b>Mia sent a Face Message</b><small>2 minutes ago</small></div></div>
+            <div class="chat"><div class="avatar">F</div><div><b>Family received your Face Reaction</b><small>14 minutes ago</small></div></div>
+          </div></div>
+          <div id="profile" class="screen"><div style="text-align:center;padding:20px 0"><div class="avatar" style="width:72px;height:72px;margin:auto;font-size:26px">J</div><h3>My Sulia Profile</h3><p style="color:var(--muted)">Show people more of you.</p><button onclick="faceIntro()" style="border:0;border-radius:18px;padding:11px 16px;background:linear-gradient(135deg,#d8b4fe,#8ee7d0);font-weight:800">Create Face Introduction</button></div></div>
           <div id="chat" class="screen">
             <div class="chat-head"><button class="back" onclick="show('home')">‹</button><div class="avatar" style="width:38px;height:38px">M</div><div><b id="chatName">Mia</b><small> available</small></div></div>
-            <div class="messages">
+            <div class="messages" id="messages">
               <div class="msg">Are you still coming tonight?</div>
               <div class="msg me">I'm on my way.</div>
-              <div class="msg face"><div class="face-art"></div><p><b>Face Message</b><br>I'm running a little late — see you soon.</p></div>
+              <div class="msg face" onclick="openFace()"><div class="face-art"></div><p><b>Face Message</b><br>I'm running a little late — see you soon.</p></div>
               <div class="msg me">😂 Okay, hurry!</div>
             </div>
           </div>
         </div>
-        <div class="composer"><input placeholder="Write a message…" id="input"><button title="Voice">🎙</button><button class="face-btn" title="Face Message" onclick="sendFace()">●</button></div>
-        <div class="nav"><button class="active" onclick="show('home')">Chats</button><button>Contacts</button><button>Notifications</button><button>Profile</button></div>
+        <div class="composer"><input placeholder="Write a message…" id="input" onkeydown="if(event.key==='Enter')sendText()"><button title="Voice" onclick="sendVoice()">🎙</button><button class="face-btn" title="Face Message" onclick="sendFace()">●</button></div>
+        <div class="nav"><button class="active" onclick="show('home')">Chats</button><button onclick="show('contacts')">Contacts</button><button onclick="show('notifications')">Alerts</button><button onclick="show('profile')">Profile</button></div>
+        <div id="faceModal" style="display:none;position:absolute;inset:0;background:#080a10ee;z-index:5;padding:24px">
+          <div style="display:flex;justify-content:space-between;align-items:center"><b id="modalTitle">Face Message</b><button onclick="closeFace()" style="background:none;border:0;color:#fff;font-size:24px">×</button></div>
+          <div class="face-art" style="height:330px;border-radius:25px;margin-top:30px"></div>
+          <p style="color:var(--muted)">Your face is the message. Record a short personal response.</p>
+          <div style="display:flex;gap:10px"><button onclick="faceReply()" style="flex:1;padding:13px;border:0;border-radius:18px;background:linear-gradient(135deg,#d8b4fe,#8ee7d0);font-weight:800">Face Reply</button><button onclick="faceReaction()" style="flex:1;padding:13px;border:1px solid #394257;border-radius:18px;background:#171c29;color:#fff">Face Reaction</button></div>
+        </div>
       </div>
     </div>
   </section>
@@ -65,7 +81,14 @@
 <script>
 function show(id){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active')}
 function openChat(name){document.getElementById('chatName').textContent=name;show('chat')}
-function sendFace(){alert('Face Message composer — this demo opens the recording experience in the final MVP.')}
+function sendText(){const i=document.getElementById('input'),v=i.value.trim();if(!v)return;document.getElementById('messages').insertAdjacentHTML('beforeend','<div class="msg me">'+v.replace(/[<>&]/g,'')+'</div>');i.value=''}
+function sendVoice(){document.getElementById('messages').insertAdjacentHTML('beforeend','<div class="msg me">🎙 Voice message · 0:04</div>')}
+function sendFace(){document.getElementById('modalTitle').textContent='Record Face Message';document.getElementById('faceModal').style.display='block'}
+function openFace(){document.getElementById('modalTitle').textContent='Mia · Face Message';document.getElementById('faceModal').style.display='block'}
+function closeFace(){document.getElementById('faceModal').style.display='none'}
+function faceReply(){document.getElementById('faceModal').style.display='none';document.getElementById('messages').insertAdjacentHTML('beforeend','<div class="msg face"><div class="face-art"></div><p><b>Face Reply</b><br>Your personal video response</p></div>')}
+function faceReaction(){document.getElementById('faceModal').style.display='none';document.getElementById('messages').insertAdjacentHTML('beforeend','<div class="msg me">🎥 Face Reaction · ❤️</div>')}
+function faceIntro(){alert('Face Introduction: a short optional video that introduces you to new contacts.')}
 </script>
 </body>
 </html>
