@@ -1,0 +1,191 @@
+[
+  {
+    "slug": "leakproof",
+    "name": "LeakProof",
+    "subtitle": "Financial Leakage Forensics Engine",
+    "description": "Identify potential financial leakage, trace patterns and structure the evidence for investigation.",
+    "flow": "Financial data → leakage signals → investigation view → evidence pack"
+  },
+  {
+    "slug": "workready",
+    "name": "WorkReady",
+    "subtitle": "Enterprise Work Preparation Intelligence",
+    "description": "Prepare service and maintenance work by surfacing readiness gaps before work is performed.",
+    "flow": "Work request → readiness checks → missing information → work-ready view"
+  },
+  {
+    "slug": "enterprise-decision-conflict-resolver",
+    "name": "Enterprise Decision Conflict Resolver",
+    "subtitle": "Enterprise decision conflict resolution",
+    "description": "Detect competing recommendations and constraints across enterprise systems and AI agents, then structure a coordinated resolution.",
+    "flow": "Recommendations → conflicts → constraints → coordinated resolution"
+  },
+  {
+    "slug": "fieldflow-audit",
+    "name": "FieldFlow Audit",
+    "subtitle": "Field-service audit and exception review",
+    "description": "Review exported field-service job data to surface inconsistencies, audit gaps and important exceptions.",
+    "flow": "CSV export → map → validate → risk scoring → audit report"
+  },
+  {
+    "slug": "capital-decision-analyzer",
+    "name": "Capital Decision Analyzer",
+    "subtitle": "Investment decision analysis",
+    "description": "Compare capital decisions using NPV, IRR, ROI, payback, scenarios, sensitivity and break-even analysis.",
+    "flow": "Inputs → financial metrics → scenarios → sensitivity → decision view"
+  },
+  {
+    "slug": "physical-ai-deployment-underwriting-engine",
+    "name": "Physical AI Deployment Underwriting Engine",
+    "subtitle": "Physical AI deployment assessment",
+    "description": "Evaluate deployment considerations and underwriting risk around physical AI systems.",
+    "flow": "Deployment profile → risk factors → evidence → underwriting view"
+  },
+  {
+    "slug": "productfit",
+    "name": "ProductFit Studio",
+    "subtitle": "B2B product configuration",
+    "description": "Turn complex customer requirements into a clear specification, fit score and quote-ready commercial profile.",
+    "flow": "Requirements → configuration → fit score → specification → quote profile"
+  },
+  {
+    "slug": "kaylics",
+    "name": "Kaylics",
+    "subtitle": "Digital Home Intelligence",
+    "description": "Map connected-home systems, relationships and dependencies and explore “What Happens If?” scenarios across the home.",
+    "flow": "Home systems → relationships → dependency map → scenario → impact view"
+  },
+  {
+    "slug": "promisecheck",
+    "name": "PromiseCheck",
+    "subtitle": "Customer-promise support test",
+    "description": "Make the conditions behind a proposed customer promise visible and show when the promise becomes unsupported.",
+    "flow": "Promise → conditions → support check → gaps → supported/unsupported view"
+  },
+  {
+    "slug": "robot-job-fit",
+    "name": "Robot Job Fit",
+    "subtitle": "Robotics suitability assessment",
+    "description": "Compare a robot’s documented capabilities with the requirements, evidence and operating conditions of a real-world job.",
+    "flow": "Job requirements → robot evidence → capability match → gaps → fit assessment"
+  },
+  {
+    "slug": "shileen",
+    "name": "Shileen",
+    "subtitle": "AI decision companion",
+    "description": "Identify what is missing, choose the smallest useful next step, and move toward a supported answer.",
+    "flow": "Question → missing information → next step → evidence → supported answer"
+  },
+  {
+    "slug": "orveli",
+    "name": "Orveli",
+    "subtitle": "Interactive experience replay",
+    "description": "Replay a completed digital experience, take control and explore an alternative path.",
+    "flow": "Captured experience → replay → take control → alternative path → outcome"
+  },
+  {
+    "slug": "usperiment",
+    "name": "Usperiment",
+    "subtitle": "Relationship exploration MVP",
+    "description": "Explore how two people build a relationship through realistic scenarios, personal stances, comparison and meaningful conversations.",
+    "flow": "Scenario → individual stance → comparison → conversation → relationship insight"
+  },
+  {
+    "slug": "adaptive-maintenance-capture-positioning-fixture",
+    "name": "Adaptive Maintenance Capture & Positioning Fixture",
+    "subtitle": "Maintenance positioning system",
+    "description": "Capture, position and support maintenance work around equipment with safer access, repeatable positioning and efficient workflows.",
+    "flow": "Equipment → position → capture/support → maintenance task → repeatable setup"
+  },
+  {
+    "slug": "ai-actionproof",
+    "name": "AI ActionProof",
+    "subtitle": "AI action evidence",
+    "description": "Structure and review the evidence supporting AI-assisted actions, including authorization and execution evidence.",
+    "flow": "AI action → authorization evidence → execution evidence → review → evidence record"
+  },
+  {
+    "slug": "acquisition-revenue-protection",
+    "name": "Acquisition Revenue Protection",
+    "subtitle": "Acquisition revenue leakage intelligence",
+    "description": "Detect potential revenue leakage around healthcare acquisitions and structure the economics for review.",
+    "flow": "Acquisition event → revenue signals → leakage analysis → evidence → review"
+  },
+  {
+    "slug": "moneyquest-kids",
+    "name": "MoneyQuest Kids",
+    "subtitle": "Real-life financial learning",
+    "description": "Give children realistic money and decision scenarios through an interactive learning experience for banking and education contexts.",
+    "flow": "Scenario → choice → consequence → learning → next decision"
+  },
+  {
+    "slug": "enterprise-exitability-intelligence",
+    "name": "Enterprise Exitability Intelligence",
+    "subtitle": "Enterprise exit-readiness intelligence",
+    "description": "Structure enterprise readiness and risk information relevant to strategic exit or acquisition.",
+    "flow": "Enterprise profile → readiness factors → risk evidence → gap view → exitability profile"
+  },
+  {
+    "slug": "workflow-gap-capture-engine",
+    "name": "Workflow Gap Capture Engine",
+    "subtitle": "Workflow gap capture",
+    "description": "Capture workflow gaps and required handoffs between enterprise systems so missing steps and ownership become visible.",
+    "flow": "Workflow → handoffs → gaps → ownership → improvement map"
+  },
+  {
+    "slug": "hvac-technical-building-services-acquisition-intelligence",
+    "name": "HVAC Technical Building Services Acquisition Intelligence",
+    "subtitle": "HVAC acquisition intelligence",
+    "description": "Structure acquisition intelligence across HVAC and technical building-services businesses.",
+    "flow": "Target profile → technical factors → evidence → risk/gap view → acquisition picture"
+  },
+  {
+    "slug": "technical-evidence-sufficiency-engine",
+    "name": "Technical Evidence Sufficiency Engine",
+    "subtitle": "Technical evidence sufficiency",
+    "description": "Evaluate whether technical evidence is sufficiently complete, structured and usable for a defined decision.",
+    "flow": "Evidence set → criteria → sufficiency checks → gaps → evidence view"
+  },
+  {
+    "slug": "ai-reliance-calibration-engine",
+    "name": "AI Reliance Calibration Engine",
+    "subtitle": "AI reliance measurement",
+    "description": "Compare independent human judgment with judgment after AI advice to measure how reliance changes.",
+    "flow": "Independent judgment → AI advice → second judgment → comparison → calibration view"
+  },
+  {
+    "slug": "intelligent-charging-environment-safety-system",
+    "name": "Intelligent Charging Environment Safety System",
+    "subtitle": "Charging-environment safety assessment",
+    "description": "Assess charging-environment and charging-behavior conditions relevant to safer charging decisions.",
+    "flow": "Environment → charging conditions → behavior factors → risk signals → safety view"
+  },
+  {
+    "slug": "hydraulic-connection-management-system",
+    "name": "Hydraulic Connection Management System",
+    "subtitle": "Hydraulic line connection management",
+    "description": "Control the handling, protected parking, retrieval and guided reconnection of individual hydraulic lines.",
+    "flow": "Disconnect → identify → protect/park → retrieve → guided reconnection"
+  },
+  {
+    "slug": "next-action",
+    "name": "Next Action",
+    "subtitle": "Household execution interface",
+    "description": "Turn a real-world goal into one clear next action that can be executed.",
+    "flow": "Goal → clarify → choose next action → execute → complete"
+  },
+  {
+    "slug": "maintenance-extraction",
+    "name": "Configurable Maintenance Extraction Simulator",
+    "subtitle": "Maintenance extraction planning",
+    "description": "Configure extraction routes, check clearances and record a workable maintenance sequence.",
+    "flow": "Equipment → route → clearance checks → sequence → workable extraction plan"
+  },
+  {
+    "slug": "changeimpact",
+    "name": "ChangeImpact — 4D Change-Propagation Visualizer",
+    "subtitle": "4D change propagation",
+    "description": "Show how a change moves through connected dependencies across People, Process, Technology and Time.",
+    "flow": "Change → dependencies → 4D propagation → affected areas → impact view"
+  }
+]
