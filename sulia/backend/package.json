@@ -1,0 +1,8 @@
+{
+  "name": "sulia-communication-core",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Transferable reference backend for Sulia messaging concepts.",
+  "scripts": {"start":"node src/server.js","test":"node --test"},
+  "engines": {"node": ">=20"}
+}
