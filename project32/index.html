@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#10131f">
+<title>Sulia — More than a message</title>
+<style>
+:root{--bg:#0b0d14;--panel:#131722;--panel2:#191e2c;--line:#2b3346;--text:#f6f7fb;--muted:#a8b0c2;--accent:#d8b4fe;--accent2:#8ee7d0;--bubble:#252b3b}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(145deg,#090b11,#111522 55%,#0b0d14);color:var(--text);font-family:Inter,system-ui,sans-serif;min-height:100vh}.shell{max-width:1180px;margin:auto;padding:24px}.brand{font-size:25px;font-weight:900;letter-spacing:-1px}.brand span{color:var(--accent)}.hero{padding:35px 0 25px;display:grid;grid-template-columns:1fr 1fr;gap:35px;align-items:center}.eyebrow{color:var(--accent2);font-size:12px;font-weight:800;letter-spacing:2px;text-transform:uppercase}.hero h1{font-size:clamp(42px,6vw,76px);line-height:.98;letter-spacing:-3px;margin:12px 0}.hero p{color:var(--muted);font-size:18px;max-width:600px}.hero .tagline{color:#fff;font-weight:800}.phone-wrap{display:flex;justify-content:center}.phone{width:min(360px,100%);height:690px;background:#080a10;border:8px solid #242938;border-radius:42px;box-shadow:0 30px 90px #0009;overflow:hidden;position:relative}.top{height:64px;padding:18px 18px 10px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #202638}.top strong{font-size:18px}.top small{color:var(--muted)}.view{height:calc(100% - 124px);overflow:auto;padding:18px}.chat-list{display:grid;gap:10px}.chat{padding:14px;border:1px solid #242a3a;background:var(--panel);border-radius:18px;display:flex;gap:12px;align-items:center;cursor:pointer}.avatar{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#d8b4fe,#8ee7d0);color:#10131f;font-weight:900}.chat b{display:block}.chat small{color:var(--muted)}.nav{height:60px;border-top:1px solid #202638;display:grid;grid-template-columns:repeat(4,1fr);padding:5px}.nav button{border:0;background:none;color:#7f899d;font-size:11px}.nav button.active{color:var(--accent)}.screen{display:none}.screen.active{display:block}.chat-head{display:flex;align-items:center;gap:10px;margin-bottom:18px}.back{background:none;border:0;color:#fff;font-size:20px}.messages{display:grid;gap:12px}.msg{max-width:82%;padding:12px 14px;border-radius:18px;background:var(--bubble);font-size:14px}.msg.me{justify-self:end;background:linear-gradient(135deg,#704c99,#375f60)}.face{padding:0;overflow:hidden;border:1px solid #46506a;background:#111724}.face .face-art{height:160px;background:radial-gradient(circle at 50% 35%,#f0c9a8 0 25%,transparent 26%),linear-gradient(145deg,#5a3c78,#1e4650);position:relative}.face .face-art:after{content:'▶';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:#ffffffdd;color:#151824}.face p{padding:10px 12px;margin:0}.composer{position:absolute;bottom:60px;left:0;right:0;padding:10px;background:#0b0e15;border-top:1px solid #202638;display:flex;gap:7px}.composer input{flex:1;background:#171c29;border:1px solid #2a3245;color:#fff;border-radius:20px;padding:10px 13px}.composer button{width:42px;height:42px;border-radius:50%;border:0;background:#252c3e;color:#fff}.composer .face-btn{background:linear-gradient(135deg,#d8b4fe,#8ee7d0);color:#111}.feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:35px 0}.feature{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:22px}.feature h3{margin:0 0 7px}.feature p{margin:0;color:var(--muted);font-size:14px}.demo{margin:45px 0;padding:25px;border:1px solid var(--line);border-radius:24px;background:var(--panel)}.demo h2{margin:0 0 7px}.demo p{color:var(--muted)}.video-box{aspect-ratio:16/9;border-radius:18px;background:linear-gradient(135deg,#181c2a,#0d1018);display:grid;place-items:center;border:1px solid #30384c}.play{width:74px;height:74px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:#111;font-size:27px;cursor:pointer}.demo-note{font-size:12px;color:#7f899d;margin-top:10px}@media(max-width:800px){.hero{grid-template-columns:1fr}.feature-grid{grid-template-columns:1fr}.phone{height:650px}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="brand">Su<span>lia</span></div>
+  <section class="hero">
+    <div>
+      <div class="eyebrow">A different kind of messenger</div>
+      <h1>More than a message.</h1>
+      <p class="tagline">Text when words are enough. Voice when you want to be heard. Face when you want to be there.</p>
+      <p>Sulia is a standalone messaging experience built around one simple idea: communication should let more of the person come through.</p>
+    </div>
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="top"><div><strong>Sulia</strong><br><small>Chats</small></div><span>⌕</span></div>
+        <div class="view">
+          <div id="home" class="screen active">
+            <div class="chat-list">
+              <div class="chat" onclick="openChat('Mia')"><div class="avatar">M</div><div><b>Mia</b><small>Face message · 2m</small></div></div>
+              <div class="chat" onclick="openChat('Daniel')"><div class="avatar">D</div><div><b>Daniel</b><small>Voice message · 8m</small></div></div>
+              <div class="chat" onclick="openChat('Family')"><div class="avatar">F</div><div><b>Family</b><small>Face reaction · 14m</small></div></div>
+            </div>
+          </div>
+          <div id="chat" class="screen">
+            <div class="chat-head"><button class="back" onclick="show('home')">‹</button><div class="avatar" style="width:38px;height:38px">M</div><div><b id="chatName">Mia</b><small> available</small></div></div>
+            <div class="messages">
+              <div class="msg">Are you still coming tonight?</div>
+              <div class="msg me">I'm on my way.</div>
+              <div class="msg face"><div class="face-art"></div><p><b>Face Message</b><br>I'm running a little late — see you soon.</p></div>
+              <div class="msg me">😂 Okay, hurry!</div>
+            </div>
+          </div>
+        </div>
+        <div class="composer"><input placeholder="Write a message…" id="input"><button title="Voice">🎙</button><button class="face-btn" title="Face Message" onclick="sendFace()">●</button></div>
+        <div class="nav"><button class="active" onclick="show('home')">Chats</button><button>Contacts</button><button>Notifications</button><button>Profile</button></div>
+      </div>
+    </div>
+  </section>
+  <div class="feature-grid">
+    <div class="feature"><h3>Face Message</h3><p>A first-class message type designed to let the sender speak directly to the recipient.</p></div>
+    <div class="feature"><h3>Face Reply</h3><p>Answer a Face Message with your own short personal video instead of typing.</p></div>
+    <div class="feature"><h3>Face Reaction</h3><p>Send a tiny personal reaction so the other person can see your response, not just an emoji.</p></div>
+  </div>
+  <section class="demo">
+    <h2>See Sulia in action</h2>
+    <p>The finished website will place the real Sulia walkthrough video here, before the buyer needs to ask for a demonstration.</p>
+    <div class="video-box"><div class="play" onclick="alert('The interactive Sulia demo is already available above. The recorded walkthrough will be placed here when the final MVP recording is produced.')">▶</div></div>
+    <div class="demo-note">Demo video: planned as a real walkthrough of the working MVP, not a marketing animation.</div>
+  </section>
+</div>
+<script>
+function show(id){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active')}
+function openChat(name){document.getElementById('chatName').textContent=name;show('chat')}
+function sendFace(){alert('Face Message composer — this demo opens the recording experience in the final MVP.')}
+</script>
+</body>
+</html>
