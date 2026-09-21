@@ -46,3 +46,14 @@ The next buyer-facing demo is planned as a short, product-led walkthrough rather
 7. End on the Sulia value proposition: **Text when words are enough. Voice when you want to be heard. Face when you want to be there.**
 
 The existing real browser walkthrough remains the embedded demo until the fuller walkthrough is recorded. No generated footage is being represented as a recording of the actual Sulia interface.
+
+
+## Deeper public-page verification — 21 September 2026
+
+The Sulia public page was structurally rechecked after the buyer-journey section was added. The journey section was corrected so it sits inside the document body rather than after the closing HTML tag. The public source was then checked for: valid document closure, script placement, text-send interaction, voice interaction, Face Message, Face Reply, Face Reaction, Face Introduction, embedded real walkthrough video, absence of internal project-number leakage, and absence of empty # placeholder links.
+
+The checks passed for the current source. This is a source/interaction-structure verification, not a claim of full device/browser QA. A complete live click-through recording remains the next demo-media step.
+
+## Buyer cover page
+
+A polished one-page Sulia Buyer Cover Page was generated and preserved in the Library as Sulia_Buyer_Cover_Page.png. It is intended to accompany buyer outreach alongside the email, public demo, and supporting product snapshot.
