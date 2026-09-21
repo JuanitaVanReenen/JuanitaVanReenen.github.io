@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta meta name="description" content="Sulia is a messaging experience built around text, voice and more personal Face Messages, Face Replies and Face Reactions.">
 <meta name="theme-color" content="#10131f">
 <title>Sulia — More than a message</title>
 <style>
@@ -11,7 +12,7 @@
 </style>
 </head>
 <body>
-<div class="shell">
+<main class="shell">
   <div class="brand">Su<span>lia</span></div>
   <section class="hero">
     <div>
@@ -85,7 +86,7 @@
     </div>
     <div class="demo-note">Real buyer walkthrough: text → Face Message → Face Reply → Face Reaction → Contacts → Alerts → Profile.</div>
   </section>
-</div>
+</main>
 <script>
 function show(id){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active')}
 function openChat(name){document.getElementById('chatName').textContent=name;show('chat')}
