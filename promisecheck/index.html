@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#07111f">
+<title>PromiseCheck | Customer Promise Support Test</title>
+<meta name="description" content="PromiseCheck is a standalone software MVP for testing whether a proposed customer promise is supported by its underlying operating conditions.">
+<style>
+:root{--bg:#07111f;--bg2:#0b1728;--surface:#0f1d31;--surface2:#13243c;--ink:#f7f9fc;--muted:#aebbd0;--line:#263b59;--accent:#8ec5ff;--good:#8fe0b3;--warn:#ffd27d;--bad:#ff9d9d;--max:1240px;--r:20px}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:var(--ink);background:radial-gradient(circle at 80% 0%,rgba(89,151,220,.16),transparent 34rem),linear-gradient(180deg,var(--bg),var(--bg2) 55%,var(--bg));font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.5}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.14;background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:56px 56px}
+.wrap{width:min(var(--max),92%);margin:auto}nav{position:sticky;top:0;z-index:20;background:rgba(7,17,31,.84);backdrop-filter:blur(18px);border-bottom:1px solid rgba(142,197,255,.12)}.nav{min-height:68px;display:flex;align-items:center;justify-content:space-between}.brand{font-weight:900;letter-spacing:.2px}.brand span{color:var(--accent)}.back{color:var(--muted);font-size:13px}
+.hero{padding:70px 0 38px}.eyebrow{display:inline-flex;gap:9px;align-items:center;text-transform:uppercase;letter-spacing:2.2px;font-size:11px;font-weight:900;color:var(--accent)}.eyebrow:before{content:"";width:26px;height:1px;background:var(--accent)}h1{font-size:clamp(42px,7vw,76px);line-height:.98;letter-spacing:-2.8px;margin:17px 0 18px;max-width:900px}.hero h1 em{font-style:normal;color:var(--accent)}.hero p{font-size:19px;color:var(--muted);max-width:830px;margin:0}.pills{display:flex;gap:9px;flex-wrap:wrap;margin-top:22px}.pill{padding:7px 10px;border:1px solid var(--line);border-radius:999px;color:#cfe0f4;font-size:10px;font-weight:850;letter-spacing:1px;background:rgba(15,29,49,.7)}
+.layout{display:grid;grid-template-columns:1.1fr .9fr;gap:18px;margin:26px 0 80px}.panel{background:linear-gradient(145deg,rgba(15,29,49,.96),rgba(19,36,60,.76));border:1px solid var(--line);border-radius:var(--r);padding:25px}.panel h2{font-size:19px;margin:0 0 5px}.sub{font-size:12px;color:var(--muted);margin:0 0 20px}.field{margin-top:16px}.field label{display:block;color:#9eb1c9;text-transform:uppercase;letter-spacing:1.2px;font-size:10px;font-weight:850;margin-bottom:7px}.field input,.field select{width:100%;padding:12px 13px;border:1px solid var(--line);border-radius:11px;background:#0a1627;color:var(--ink);font:inherit;font-size:14px;outline:none}.field input:focus,.field select:focus{border-color:#557da7}.checks{display:grid;gap:9px;margin-top:18px}.check{display:flex;align-items:center;gap:10px;padding:11px 12px;border:1px solid rgba(142,197,255,.12);border-radius:11px;background:rgba(7,17,31,.35);font-size:13px}.check input{accent-color:#8ec5ff}.check span{color:#dce7f4}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}.btn{border:1px solid var(--line);border-radius:11px;padding:12px 15px;background:#10213a;color:var(--ink);font-weight:850;font-size:13px;cursor:pointer}.btn.primary{background:var(--accent);color:#07111f;border-color:var(--accent)}.btn:hover{filter:brightness(1.07)}
+.status{border:1px solid var(--line);border-radius:17px;padding:19px;background:rgba(7,17,31,.45)}.status.good{border-color:rgba(143,224,179,.4);background:rgba(36,91,65,.18)}.status.warn{border-color:rgba(255,210,125,.4);background:rgba(105,78,29,.16)}.status.bad{border-color:rgba(255,157,157,.4);background:rgba(105,35,35,.15)}.status-label{text-transform:uppercase;letter-spacing:1.5px;font-size:10px;font-weight:900;color:var(--muted)}.status-title{font-size:27px;font-weight:900;margin:5px 0}.status.good .status-title{color:var(--good)}.status.warn .status-title{color:var(--warn)}.status.bad .status-title{color:var(--bad)}.status-copy{font-size:13px;color:var(--muted);margin:0}.bar{height:9px;background:#07111f;border-radius:99px;overflow:hidden;margin:18px 0 8px;border:1px solid rgba(142,197,255,.12)}.bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .3s ease}.score-row{display:flex;justify-content:space-between;color:#cbd9ea;font-size:12px}.conditions{margin-top:18px;display:grid;gap:8px}.condition{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 11px;border-radius:10px;background:#0a1627;border:1px solid rgba(142,197,255,.1);font-size:12px}.dot{width:9px;height:9px;border-radius:50%;background:#6f8199;display:inline-block;margin-right:7px}.ok .dot{background:var(--good)}.fail .dot{background:var(--bad)}.warnc .dot{background:var(--warn)}.condition small{color:var(--muted)}.insight{margin-top:18px;padding:14px;border-left:2px solid var(--accent);background:rgba(142,197,255,.06);color:#cbd9ea;font-size:13px}.promise-card{margin-top:18px;border:1px solid #36506f;border-radius:17px;padding:17px;background:linear-gradient(110deg,rgba(31,59,88,.36),rgba(13,27,46,.65))}.promise-card strong{display:block;font-size:12px;color:var(--accent);letter-spacing:1.2px;text-transform:uppercase}.promise-card b{display:block;font-size:20px;margin-top:5px}.footer-note{color:#8193aa;font-size:11px;margin-top:15px}.mobile{display:none}
+@media(max-width:860px){.layout{grid-template-columns:1fr}.mobile{display:block}.desktop{display:none}}@media(max-width:560px){.hero{padding-top:50px}h1{letter-spacing:-1.8px}.panel{padding:19px}}
+</style>
+</head>
+<body>
+<nav><div class="wrap nav"><div class="brand">Promise<span>Check</span></div><a class="back" href="../">← Portfolio</a></div></nav>
+<header class="hero"><div class="wrap">
+<div class="eyebrow">Standalone Software MVP</div>
+<h1>Test the promise <em>before you make it.</em></h1>
+<p>PromiseCheck is an interactive support test for proposed customer promises. It makes the conditions behind a promise visible, lets a user deliberately change them, and shows when the promise becomes unsupported.</p>
+<div class="pills"><span class="pill">CREATE</span><span class="pill">TEST</span><span class="pill">BREAK</span><span class="pill">EXPLAIN</span><span class="pill">REPAIR</span></div>
+</div></header>
+
+<main class="wrap layout">
+<section class="panel">
+<h2>1. Build the proposed promise</h2><p class="sub">Use the controls to model a simple customer commitment.</p>
+<div class="field"><label for="promise">Customer promise</label><input id="promise" value="Installation completed within 5 business days"></div>
+<div class="field"><label for="window">Promised window</label><select id="window"><option value="5">5 business days</option><option value="3">3 business days</option><option value="7">7 business days</option><option value="10">10 business days</option></select></div>
+<div class="field"><label>Supporting conditions</label>
+<div class="checks">
+<label class="check"><input class="conditionInput" data-name="Equipment available" type="checkbox" checked><span>Equipment available</span></label>
+<label class="check"><input class="conditionInput" data-name="Technician available" type="checkbox" checked><span>Technician available</span></label>
+<label class="check"><input class="conditionInput" data-name="Installation slot available" type="checkbox" checked><span>Installation slot available</span></label>
+<label class="check"><input class="conditionInput" data-name="Customer site ready" type="checkbox" checked><span>Customer site ready</span></label>
+<label class="check"><input class="conditionInput" data-name="Required information received" type="checkbox" checked><span>Required information received</span></label>
+</div></div>
+<div class="actions"><button class="btn primary" id="test">Test promise</button><button class="btn" id="break">Break one condition</button><button class="btn" id="reset">Reset</button></div>
+<p class="footer-note">Demonstration logic only. In a buyer deployment, the conditions, rules, branding and integrations can be replaced with the organisation's own operating logic.</p>
+</section>
+
+<section class="panel">
+<h2>2. Promise support test</h2><p class="sub">The app shows whether the current conditions support the proposed promise.</p>
+<div id="status" class="status good"><div class="status-label">Current state</div><div id="statusTitle" class="status-title">PROMISE SUPPORTED</div><p id="statusCopy" class="status-copy">All required demonstration conditions are currently satisfied.</p><div class="bar"><i id="bar"></i></div><div class="score-row"><span>Support coverage</span><strong id="score">100%</strong></div></div>
+<div class="conditions" id="conditionList"></div>
+<div class="insight" id="insight">The proposed promise has a visible support path. Test a condition to see how the promise changes.</div>
+<div class="promise-card"><strong>Promise under test</strong><b id="promisePreview">Installation completed within 5 business days</b></div>
+<div class="actions"><button class="btn primary" id="copy">Copy promise summary</button></div>
+</section>
+</main>
+
+<script>
+const inputs=[...document.querySelectorAll('.conditionInput')];
+const status=document.getElementById('status'), title=document.getElementById('statusTitle'), copy=document.getElementById('statusCopy'), bar=document.getElementById('bar'), score=document.getElementById('score'), list=document.getElementById('conditionList'), insight=document.getElementById('insight'), preview=document.getElementById('promisePreview'), promise=document.getElementById('promise'), windowSel=document.getElementById('window');
+function render(message){
+ const total=inputs.length, good=inputs.filter(x=>x.checked).length, coverage=Math.round(good/total*100);
+ preview.textContent=promise.value || 'Customer promise';
+ score.textContent=coverage+'%'; bar.style.width=coverage+'%';
+ list.innerHTML=inputs.map(x=>'<div class="condition '+(x.checked?'ok':'fail')+'"><span><i class="dot"></i>'+x.dataset.name+'</span><small>'+(x.checked?'Supported':'Missing')+'</small></div>').join('');
+ status.className='status '+(coverage===100?'good':coverage>=60?'warn':'bad');
+ if(coverage===100){title.textContent='PROMISE SUPPORTED';copy.textContent='All required demonstration conditions are currently satisfied.';insight.textContent=message||'The proposed promise has a visible support path. Test a condition to see how the promise changes.'}
+ else if(coverage>=60){title.textContent='PROMISE AT RISK';const missing=inputs.filter(x=>!x.checked).map(x=>x.dataset.name).join(', ');copy.textContent='The promise has one or more unsupported conditions.';insight.textContent=(message?message+' ':'')+'Current gap: '+missing+'. The promise should be repaired or the operating condition restored before it is treated as supported.'}
+ else{title.textContent='PROMISE UNSUPPORTED';const missing=inputs.filter(x=>!x.checked).map(x=>x.dataset.name).join(', ');copy.textContent='Too many required conditions are currently unsupported.';insight.textContent=(message?message+' ':'')+'Unsupported conditions: '+missing+'. The proposed promise should not be treated as operationally supported in this demonstration state.'}
+}
+document.getElementById('test').onclick=()=>render('Test complete. The support result is based on the conditions currently selected.');
+document.getElementById('break').onclick=()=>{const active=inputs.find(x=>x.checked);if(active){active.checked=false;render('Condition deliberately broken. PromiseCheck shows the resulting support gap.')}};
+document.getElementById('reset').onclick=()=>{inputs.forEach(x=>x.checked=true);promise.value='Installation completed within '+windowSel.value+' business days';render('Promise reset. All demonstration conditions are restored.')};
+windowSel.onchange=()=>{promise.value='Installation completed within '+windowSel.value+' business days';render('The promised window changed. Review whether the supporting conditions still justify it.')};
+promise.oninput=()=>render('Promise wording updated. The support test remains based on the selected demonstration conditions.');
+document.getElementById('copy').onclick=async()=>{const missing=inputs.filter(x=>!x.checked).map(x=>x.dataset.name);const text='PromiseCheck Summary\nPromise: '+promise.value+'\nSupport coverage: '+score.textContent+'\nState: '+title.textContent+'\nMissing conditions: '+(missing.length?missing.join(', '):'None');try{await navigator.clipboard.writeText(text);document.getElementById('copy').textContent='Copied ✓';setTimeout(()=>document.getElementById('copy').textContent='Copy promise summary',1500)}catch(e){alert(text)}};
+render();
+</script>
+</body>
+</html>
