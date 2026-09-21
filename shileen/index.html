@@ -2,12 +2,727 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="refresh" content="0; url=/project29/">
-<link rel="canonical" href="https://juanitavanreenen.github.io/project29/">
-<title>Shileen</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#10131a">
+<meta name="description" content="Shileen is an AI decision companion prototype that identifies what is missing, chooses the next useful step, and then helps move toward a supported answer.">
+<link rel="manifest" href="manifest.webmanifest">
+<title>Shileen — Ask Shileen</title>
+<style>
+:root{--bg:#0b0d12;--panel:#141821;--panel2:#1a1f2a;--line:#2a3140;--text:#f5f7fb;--muted:#9da7b8;--accent:#b8a7ff;--accent2:#d9d1ff;--ok:#9fe0bb;--warn:#f2cf8a;--danger:#ef9c9c}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% -10%,#272238 0,#0b0d12 42%);color:var(--text);font:15px/1.5 Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100vh}
+.app{width:min(100%,520px);min-height:100vh;margin:auto;display:flex;flex-direction:column;background:rgba(11,13,18,.92)}
+header{padding:18px 18px 14px;border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(11,13,18,.9);backdrop-filter:blur(16px);z-index:2}
+.brand{font-size:22px;font-weight:850;letter-spacing:-.5px}.brand small{font-size:11px;color:var(--muted);font-weight:600;margin-left:7px}
+.sub{color:var(--muted);font-size:12px;margin-top:2px}
+main{flex:1;padding:20px 16px 150px}.welcome{text-align:center;padding:35px 8px 24px}.orb{width:72px;height:72px;border-radius:24px;margin:0 auto 18px;background:linear-gradient(145deg,#b8a7ff,#6f63b9);box-shadow:0 16px 50px rgba(142,120,255,.25);display:grid;place-items:center;font-size:29px;font-weight:900;color:#10131a}.welcome h1{font-size:29px;line-height:1.08;margin:0 0 10px}.welcome p{color:var(--muted);margin:0 auto;max-width:390px}
+.examples{display:grid;gap:9px;margin:22px 0}.example{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:13px;text-align:left;color:#dfe4ee;cursor:pointer}.example:hover{border-color:#615a83}
+.message{display:flex;margin:14px 0}.message.user{justify-content:flex-end}.bubble{max-width:88%;padding:13px 15px;border-radius:17px;background:var(--panel);border:1px solid var(--line)}.user .bubble{background:#28243a;border-color:#4c456d}.label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;font-weight:800}
+.state{border:1px solid var(--line);background:linear-gradient(145deg,#151923,#10131a);border-radius:18px;padding:16px;margin:16px 0}.state-title{display:flex;justify-content:space-between;gap:10px;align-items:center;font-weight:800}.pill{font-size:10px;padding:5px 8px;border-radius:999px;background:#242938;color:var(--accent2)}.state p{color:var(--muted);font-size:13px;margin:8px 0 0}
+.next{margin-top:12px;padding:13px;border-radius:13px;background:rgba(184,167,255,.08);border:1px solid rgba(184,167,255,.25)}.next strong{display:block;color:var(--accent2);font-size:12px;text-transform:uppercase;letter-spacing:.7px}.next span{display:block;margin-top:4px}
+.action-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}.action{border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:11px;padding:9px 11px;font-weight:750;font-size:12px;cursor:pointer}.action.primary{background:var(--accent);color:#11121a;border-color:var(--accent)}
+.composer{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(100%,520px);padding:12px 14px calc(12px + env(safe-area-inset-bottom));background:rgba(11,13,18,.94);backdrop-filter:blur(18px);border-top:1px solid var(--line)}form{display:flex;gap:8px}textarea{flex:1;resize:none;min-height:46px;max-height:130px;border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:15px;padding:12px 13px;font:inherit;outline:none}textarea:focus{border-color:#635b85}button.send{width:48px;border:0;border-radius:15px;background:var(--accent);color:#11121a;font-weight:900;cursor:pointer}
+.hidden{display:none}.progress{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin:12px 0 4px}.progress i{height:4px;border-radius:99px;background:#2b3140}.progress i.active{background:var(--accent)}.state-meta{display:flex;justify-content:space-between;color:#687285;font-size:10px;margin-top:10px}.evidence{margin-top:10px;padding:11px 12px;border:1px dashed #3a4252;border-radius:11px;color:#b9c2d0;font-size:12px}.decision{margin-top:12px;padding:12px;border-radius:12px;background:rgba(159,224,187,.07);border:1px solid rgba(159,224,187,.2);color:#ccebd9;font-size:12px}.footnote{text-align:center;color:#687285;font-size:10px;margin-top:28px}
+@media(min-width:521px){body{padding:18px}.app{border:1px solid var(--line);border-radius:28px;overflow:hidden;min-height:calc(100vh - 36px);box-shadow:0 25px 80px rgba(0,0,0,.35)}.composer{position:sticky;bottom:0}}
+</style>
 </head>
 <body>
-<p>Shileen</p>
-<p><a href="/project29/">Open Shileen</a></p>
+<div class="app">
+<header><div class="brand">Shileen <small>AI decision companion</small></div><div class="sub">Don't just get an answer. Get to the answer.</div><div class="state-meta" id="memoryLine" style="margin-top:8px"><span>Session state: ready</span><span>0 turns</span></div></header>
+<main id="chat">
+<section class="welcome" id="welcome">
+<div class="orb">S</div>
+<h1>What are you trying to figure out?</h1>
+<p>Shileen first looks for what is missing, then chooses the smallest useful next step before giving you an answer.</p>
+<div class="examples">
+<button class="example">Should I buy this car?</button>
+<button class="example">Can I trust this information?</button>
+<button class="example">Help me decide what to do next.</button>
+</div>
+</section>
+<div id="conversation"></div>
+<div class="footnote">Prototype decision support. Shileen does not replace professional, legal, medical or financial advice.</div>
+</main>
+<div class="composer">
+<form id="form"><textarea id="input" rows="1" placeholder="Ask Shileen anything…"></textarea><button class="send" aria-label="Send">↑</button></form>
+</div>
+</div>
+<script>
+const conversation=document.getElementById('conversation'), welcome=document.getElementById('welcome'), input=document.getElementById('input');
+function addUser(t){conversation.insertAdjacentHTML('beforeend',`<div class="message user"><div class="bubble"><div class="label">You</div>${escapeHtml(t)}</div></div>`)}
+function addShileen(t){conversation.insertAdjacentHTML('beforeend',`<div class="message"><div class="bubble"><div class="label">Shileen</div>${t}</div></div>`)}
+function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function assessConfidence(t){
+ const q=t.toLowerCase();
+ if(/not sure|maybe|probably|i think|unsure|guess/.test(q)) return {level:'LOW',reason:'The wording signals uncertainty.'};
+ if(/source|document|evidence|data|proof/.test(q)) return {level:'MEDIUM',reason:'Supporting material is referenced, but it has not yet been checked.'};
+ return {level:'UNASSESSED',reason:'Evidence strength has not yet been established.'};
+}
+function contradictionDetail(s){
+ if(!s.conflicts||!s.conflicts.length)return '';
+ return '<div class="decision"><strong>Conflict to resolve</strong><br>Earlier: '+escapeHtml(s.conflicts[s.conflicts.length-1])+'<br><br>Latest: '+escapeHtml(s.lastFacts&&s.lastFacts.length?s.lastFacts[s.lastFacts.length-1]:'new information')+'</div>';
+}
+function missingEvidence(t){
+ const q=t.toLowerCase(),items=[];
+ if(/trust|true|accurate|real|claim|source|fact/.test(q))items.push('original source or document');
+ if(/buy|purchase|car|house|choose|which|should i/.test(q))items.push('decision criteria and constraints');
+ if(/calculate|cost|price|worth|percent|how much/.test(q))items.push('actual figures and assumptions');
+ if(/compare|versus|vs|difference/.test(q))items.push('the two items or sources being compared');
+ return items;
+}
+function evidencePlan(t){
+ const m=missingEvidence(t);
+ return m.length?{label:'GET '+m[0].toUpperCase(),detail:'Provide or inspect the '+m[0]+' before treating the conclusion as settled.'}:{label:'DEFINE THE MISSING FACT',detail:'State the specific fact that would change the answer.'};
+}
+function actionCost(text){
+ const q=text.toLowerCase();
+ if(/source|evidence|proof/.test(q))return {cost:1,label:'LOW'};
+ if(/document|pdf|file|contract/.test(q))return {cost:2,label:'MEDIUM'};
+ if(/search|latest|current|today/.test(q))return {cost:3,label:'HIGH'};
+ return {cost:1,label:'LOW'};
+}
+function minimalEvidencePlan(text){
+ const u=uncertaintyBudget(text),items=(u.items||[]).slice(0,3);
+ if(!items.length)return '<div class="decision"><strong>Minimal evidence plan</strong><br>The current state does not identify an additional evidence requirement.</div>';
+ return '<div class="decision"><strong>Minimal evidence plan</strong><br>1. Resolve the highest-priority gap.<br>2. Reassess the decision state.<br>3. Stop gathering evidence once the answer becomes supportable.</div>';
+}
+function actionCommitmentCard(text){
+ const r=routeReason(text),s=stateMemory();
+ return '<div class="decision"><strong>Current action commitment</strong><br>'+escapeHtml(r.action||'ASK ONE TARGETED QUESTION')+'<br><small>Shileen keeps one primary route active at a time, then captures the result and reassesses.</small></div>';
+}
+function actionReconsiderationCard(text){
+ const s=stateMemory(),changed=(s.stateChangeHistory||s.history||[]).length>0;
+ return '<div class="decision"><strong>Action reconsideration</strong><br>'+(changed?'New reasoning history exists, so Shileen can reconsider the selected route before continuing.':'The selected route remains stable because no new reasoning-state change is recorded.')+'</div>';
+}
+function actionSelectionCard(text){
+ const r=routeReason(text);
+ return '<div class="decision"><strong>Action selection</strong><br>Primary route: '+escapeHtml(r.action||'ASK ONE TARGETED QUESTION')+'<br><small>The primary route is retained unless new evidence or user input changes the reasoning state.</small></div>';
+}
+function alternativeActionCard(text){
+ const r=routeReason(text),alts=['ASK ONE TARGETED QUESTION','VERIFY EVIDENCE','INSPECT DOCUMENT','COMPARE INFORMATION','CHECK CONTRADICTION','CALCULATE'];
+ const options=alts.filter(x=>x!==r.action).slice(0,3);
+ return '<div class="decision"><strong>Alternative routes</strong><br>'+options.map(x=>escapeHtml(x)).join(' · ')+'<br><small>These are available alternatives; Shileen keeps the selected next move primary.</small></div>';
+}
+function actionReasonCard(text){
+ const r=routeReason(text);
+ const reasons={
+  'INSPECT DOCUMENT':'A document can resolve the missing evidence directly.',
+  'COMPARE INFORMATION':'Comparison can expose the material difference blocking the decision.',
+  'CALCULATE':'A calculation can resolve the uncertainty from the available numerical inputs.',
+  'VERIFY EVIDENCE':'Verification is needed before relying on the claim.',
+  'SEARCH FOR EVIDENCE':'Additional evidence is required before concluding.',
+  'CHECK CONTRADICTION':'Conflicting information must be reconciled first.',
+  'ASK FOR DECISION CRITERIA':'The decision cannot be evaluated without knowing what matters to the user.',
+  'ASK ONE TARGETED QUESTION':'One focused question can remove the largest current gap.'
+ };
+ return '<div class="decision"><strong>Why this next move?</strong><br>'+escapeHtml(reasons[r.action]||'This is the smallest useful action identified from the current state.')+'</div>';
+}
+function nextBestMoveCard(text){
+ const r=routeReason(text);
+ const action=r&&r.action?r.action:'ASK ONE TARGETED QUESTION';
+ return '<div class="decision"><strong>Next best move</strong><br>'+escapeHtml(action)+'<br><small>Shileen selects the next action from the current goal, gaps, evidence and uncertainty state.</small></div>';
+}
+function sessionSummaryCard(text){
+ const s=stateMemory();
+ return '<div class="decision"><strong>Session summary</strong><br>Goal: '+escapeHtml(s.goal||'Not yet established')+'<br>Turns: '+escapeHtml(String(s.turnCount||0))+'<br>Current stage: '+escapeHtml(s.loopStage||s.stage||'Not yet established')+'</div>';
+}
+function shileenFinalCheck(){
+ const required=['stateMemory','routeReason','finalResponseMode','uncertaintyBudget','finalAnswerComposer','responseSections','evidenceSufficiencyMeter','resetSession','saveCurrentState'];
+ const missing=required.filter(n=>typeof window[n]!=='function'&&typeof eval('typeof '+n)==='undefined');
+ return {ready:missing.length===0,missing};
+}
+function finalBuildStatusCard(){
+ const t=shileenFinalCheck();
+ return '<div class="decision"><strong>Shileen build status</strong><br>'+(t.ready?'CORE MVP CHECK: READY':'CORE MVP CHECK: REVIEW REQUIRED')+(t.missing.length?'<br>Missing: '+escapeHtml(t.missing.join(', ')):'')+'<br><small>Local reasoning prototype; production integrations remain an implementation boundary.</small></div>';
+}
+function userControlCard(text){
+ return '<div class="decision"><strong>User control</strong><br>Shileen presents its reasoning state and lets the user decide whether to provide more information, save the assessment, or start a new question.<br><small>It supports the decision; it does not make the decision for the user.</small></div>';
+}
+function limitationCard(text){
+ const mode=finalResponseMode(text);
+ return '<div class="decision"><strong>Limitations</strong><br>Shileen does not treat an unresolved gap, unverified source, or missing input as established fact.<br><small>Current response mode: '+escapeHtml(mode.mode)+'.</small></div>';
+}
+function conclusionBasisCard(text){
+ const mode=finalResponseMode(text),s=stateMemory();
+ const facts=(s.lastFacts||[]).slice(0,4);
+ return '<div class="decision"><strong>Conclusion basis</strong><br><strong>Mode:</strong> '+escapeHtml(mode.mode)+'<br>'+(facts.length?'<strong>Recorded facts:</strong><br>'+facts.map(escapeHtml).join('<br>'):'<strong>Recorded facts:</strong> none')+'<br><small>The conclusion is bounded by this recorded state.</small></div>';
+}
+function conclusionChangeReason(text){
+ const s=stateMemory(),history=s.stateChangeHistory||s.history||[];
+ const changed=history.length>1;
+ return '<div class="decision"><strong>Why the conclusion changed</strong><br>'+(changed?'A later reasoning state superseded an earlier state. Shileen keeps the transition visible so the user can inspect the basis for the change.':'No conclusion change has been recorded yet.')+'</div>';
+}
+function answerCompareCard(text){
+ const s=stateMemory(),history=s.stateChangeHistory||s.history||[];
+ return '<div class="decision"><strong>Before / current reasoning</strong><br>'+(history.length>1?'Shileen can distinguish the latest reasoning state from earlier session states.':'A comparison becomes available after the reasoning state changes.')+'<br><small>This helps reveal what changed before a conclusion changed.</small></div>';
+}
+function answerHistoryCard(text){
+ const s=stateMemory(),history=s.stateChangeHistory||s.history||[];
+ return '<div class="decision"><strong>Reasoning history</strong><br>'+(history.length?history.slice(-4).map((h,i)=>'Step '+(i+1)+': '+escapeHtml(typeof h==='string'?h:(h.stage||h.state||'State change'))).join('<br>'):'No prior reasoning transitions recorded.')+'</div>';
+}
+function answerVersionCard(text){
+ const s=stateMemory(),checkpoint=s.checkpoint||s.decisionCheckpoint||null;
+ return '<div class="decision"><strong>Answer version</strong><br>'+(checkpoint?'Current answer is tied to the latest decision checkpoint.':'No formal checkpoint has been established yet.')+'<br><small>New evidence should create a new reasoning state rather than overwrite the prior one.</small></div>';
+}
+function staleAnswerGuard(text){
+ const s=stateMemory(),history=s.stateChangeHistory||s.history||[];
+ const mode=finalResponseMode(text);
+ return '<div class="decision"><strong>Stale-answer guard</strong><br>'+(history.length>0&&mode.mode!=='DO NOT CONCLUDE'?'Previous reasoning changes are present. Shileen requires the current state to be reviewed before reusing an earlier conclusion.':'No stale conclusion detected from the current session state.')+'</div>';
+}
+function reassessmentTriggerCard(text){
+ const mode=finalResponseMode(text);
+ const s=stateMemory();
+ const changed=(s.stateChangeHistory||s.history||[]).length>0;
+ return '<div class="decision"><strong>Reassessment trigger</strong><br>'+(changed?'State changes detected — Shileen should reassess before treating the current answer as final.':'No new state change detected in this session.')+'</div>';
+}
+function evidenceChangeCard(text){
+ const s=stateMemory(),history=s.stateChangeHistory||s.history||[];
+ return '<div class="decision"><strong>Evidence change tracking</strong><br>'+ (history.length?history.length+' reasoning-state change(s) recorded during this session.':'No prior state changes recorded yet.')+'<br><small>New evidence should trigger reassessment rather than silently replacing the previous conclusion.</small></div>';
+}
+function evidenceSufficiencyMeter(text){
+ const mode=finalResponseMode(text),s=stateMemory();
+ let level=mode.mode==='DO NOT CONCLUDE'?'INSUFFICIENT':mode.mode==='CONDITIONAL DECISION'?'CONDITIONAL':'SUFFICIENT FOR CURRENT SCOPE';
+ return '<div class="decision"><strong>Evidence sufficiency</strong><br>'+level+'<br><small>Scope is limited to the information currently available to Shileen.</small></div>';
+}
+function gapResolutionCost(text){
+ const u=uncertaintyBudget(text),items=(u.items||[]).slice(0,3);
+ return '<div class="decision"><strong>Smallest-gap principle</strong><br>'+(items.length?'Shileen will prefer the least burdensome action that can resolve the highest-impact gap.':'No gap currently requires an additional action.')+'</div>';
+}
+function evidenceGapPriority(text){
+ const u=uncertaintyBudget(text),items=(u.items||[]).slice(0,3);
+ if(!items.length)return '<div class="decision"><strong>Gap priority</strong><br>Nothing currently blocks the answer.</div>';
+ return '<div class="decision"><strong>Gap priority</strong><br>'+escapeHtml(items[0])+'<br><small>Resolve the highest-impact gap first; reassess before collecting lower-value information.</small></div>';
+}
+function evidenceGapActions(text){
+ const u=uncertaintyBudget(text),items=(u.items||[]).slice(0,3);
+ if(!items.length)return '<div class="decision"><strong>Evidence status</strong><br>No outstanding evidence action is currently recorded.</div>';
+ return '<div class="decision"><strong>Resolve the gap</strong><br>'+items.map((x,i)=>'<button type="button" onclick="focusGap('+i+')">Work on gap '+(i+1)+'</button> '+escapeHtml(x)).join('<br>')+'</div>';
+}
+function focusGap(i){
+ const el=document.querySelector('.composer textarea,input');
+ if(el){el.focus();el.value='Resolve evidence gap '+(i+1)+': ';el.dispatchEvent(new Event('input',{bubbles:true}));}
+}
+function evidenceGapSummary(text){
+ const u=uncertaintyBudget(text),items=(u.items||[]).slice(0,3);
+ return '<div class="decision"><strong>Evidence gap summary</strong><br>'+(items.length?items.map((x,i)=>(i+1)+'. '+escapeHtml(x)).join('<br>'):'No unresolved evidence gaps currently recorded.')+'</div>';
+}
+function answerExportCard(text){
+ return '<div class="decision"><strong>Assessment record</strong><br><button type="button" onclick="downloadShileenRecord()">Save assessment record</button><br><small>Exports the current Shileen reasoning state as a plain-text record.</small></div>';
+}
+function downloadShileenRecord(){
+ const body=(document.querySelector('.app')||document.body).innerText;
+ const blob=new Blob([body],{type:'text/plain;charset=utf-8'});
+ const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='shileen-assessment.txt';a.click();
+ setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+function answerCopyCard(text){
+ const mode=finalResponseMode(text);
+ return '<div class="decision"><strong>Response delivery</strong><br><button type="button" onclick="copyShileenAnswer()">Copy current Shileen assessment</button><br><small>Copies the current decision-support result for reuse or review.</small></div>';
+}
+function copyShileenAnswer(){
+ const el=document.querySelector('.decision');
+ if(!el)return;
+ navigator.clipboard&&navigator.clipboard.writeText(el.innerText).then(()=>alert('Shileen assessment copied.'));
+}
+function finalAnswerActions(text){
+ const mode=finalResponseMode(text);
+ if(mode.mode==='DO NOT CONCLUDE')return '<div class="decision"><strong>Next action</strong><br>Provide the missing information identified by Shileen, then reassess.</div>';
+ return '<div class="decision"><strong>Answer controls</strong><br><button type="button" onclick="saveCurrentState()">Save reasoning state</button> <button type="button" onclick="resetSession()">Start a new question</button></div>';
+}
+function answerIntegrityCard(text){
+ const mode=finalResponseMode(text),s=stateMemory();
+ const checks=[
+  ['Goal locked',!!s.goalLocked],
+  ['Evidence state reviewed',!!s.lastActionResult||!!s.lastFacts],
+  ['Uncertainty considered',!!s.uncertaintyBudget||mode.mode==='DO NOT CONCLUDE'],
+  ['Response mode selected',!!mode.mode]
+ ];
+ return '<div class="decision"><strong>Answer integrity</strong><br>'+checks.map(x=>(x[1]?'✓ ':'○ ')+escapeHtml(x[0])).join('<br>')+'</div>';
+}
+function answerQualityCard(text){
+ const mode=finalResponseMode(text),s=stateMemory();
+ const evidence=(s.lastActionResult&&s.lastActionResult.result)?'Latest captured result is available.':'No action result has been captured yet.';
+ const uncertainty=mode.mode==='DO NOT CONCLUDE'?'High — conclusion blocked.':(mode.mode==='CONDITIONAL DECISION'?'Bounded — decision depends on stated conditions.':'Controlled — answer is limited to the current evidence state.');
+ return '<div class="decision"><strong>Answer quality check</strong><br>Evidence: '+escapeHtml(evidence)+'<br>Uncertainty: '+escapeHtml(uncertainty)+'<br>Mode: '+escapeHtml(mode.mode)+'</div>';
+}
+function finalAnswerComposer(text){
+ const mode=finalResponseMode(text),s=stateMemory();
+ if(mode.mode==='DO NOT CONCLUDE')return '<div class="decision"><strong>Final answer:</strong><br>Not enough information to conclude safely yet.<br><small>Shileen will not fill the gap with a guess. The next useful step is shown above.</small></div>';
+ let title='Supported answer';
+ if(mode.mode==='CONDITIONAL DECISION')title='Conditional decision';
+ if(mode.mode==='CALCULATED ANSWER')title='Calculated answer';
+ if(mode.mode==='EVIDENCE-BOUNDED ANSWER')title='Evidence-bounded answer';
+ const known=s.lastActionResult&&s.lastActionResult.result?s.lastActionResult.result:'The current reasoning state is the basis for this response.';
+ return '<div class="decision"><strong>'+title+'</strong><br>'+escapeHtml(known)+'<br><small>Basis: '+escapeHtml(mode.reason||'Current verified reasoning state.')+'</small></div>';
+}
+function responseSections(text){
+ const mode=finalResponseMode(text);
+ if(mode.mode==='DO NOT CONCLUDE')return ['What is missing','Why it matters','Next smallest step'];
+ if(mode.mode==='CONDITIONAL DECISION')return ['Decision','Criteria used','Evidence supporting it','Remaining uncertainty'];
+ if(mode.mode==='EVIDENCE-BOUNDED ANSWER')return ['What is supported','What is not yet verified','What would verify it'];
+ if(mode.mode==='CALCULATED ANSWER')return ['Inputs','Assumptions','Calculation','Result'];
+ return ['Answer','Supporting basis','Limitations'];
+}
+function responseSectionsCard(text){
+ return '<div class="decision"><strong>Response structure</strong><br>'+responseSections(text).map(escapeHtml).join(' → ')+'</div>';
+}
+function buildFinalResponse(text){
+ const mode=finalResponseMode(text),s=stateMemory(),u=uncertaintyBudget(text);
+ if(mode.mode==='DO NOT CONCLUDE')return '<div class="decision"><strong>Shileen response:</strong><br>I need one more useful piece of information before I can responsibly conclude. '+(u.items.length?'Current blocker: '+escapeHtml(u.items[0])+'.':'The evidence state is not yet sufficient.')+'</div>';
+ const basis=[];
+ if(s.goal)basis.push('Goal: '+s.goal);
+ if(s.lastActionResult)basis.push('Latest result: '+s.lastActionResult.result);
+ return '<div class="decision"><strong>Shileen response framework</strong><br><strong>'+mode.mode+'</strong><br>'+mode.reason+'<br><br>'+basis.map(escapeHtml).join('<br>')+'<br><br>Final conclusion should distinguish established facts from remaining uncertainty.</div>';
+}
+function finalResponseMode(text){
+ const s=stateMemory(),u=uncertaintyBudget(text),done=resolutionComplete(text);
+ if(!done.complete)return {mode:'DO NOT CONCLUDE',reason:'Keep gathering or resolving information.'};
+ if(/should i|decide|choose|which|buy|purchase/.test(text.toLowerCase()))return {mode:'CONDITIONAL DECISION',reason:'Present the conclusion together with the criteria and evidence that support it.'};
+ if(/trust|true|accurate|real|claim|fact/.test(text.toLowerCase()))return {mode:'EVIDENCE-BOUNDED ANSWER',reason:'Separate verified information from anything that remains uncertain.'};
+ if(/calculate|cost|price|worth|percent|how much/.test(text.toLowerCase()))return {mode:'CALCULATED ANSWER',reason:'State the inputs and assumptions used.'};
+ return {mode:'SUPPORTED ANSWER',reason:'Answer from the established state and identify remaining limitations.'};
+}
+function finalResponseCard(text){
+ const r=finalResponseMode(text);
+ return '<div class="decision"><strong>Final response mode:</strong> '+r.mode+'<br>'+r.reason+'</div>';
+}
+function resolutionComplete(text){
+ const s=stateMemory(),u=uncertaintyBudget(text),r=s.lastActionResult;
+ const complete=u.level==='LOW' && !!s.goalLocked && !(s.conflicts&&s.conflicts.length) && r && r.result!=='ACTION FAILED' && r.result!=='RESULT UNCLEAR';
+ return {complete,reason:complete?'The current state is sufficiently resolved for final assessment.':'At least one important prerequisite remains unresolved.'};
+}
+function resolutionCompleteCard(text){
+ const r=resolutionComplete(text);
+ return '<div class="decision"><strong>Resolution status:</strong> '+(r.complete?'RESOLVED ENOUGH TO ASSESS':'NOT YET RESOLVED')+'<br>'+r.reason+'</div>';
+}
+function uncertaintyReduction(text){
+ const u=uncertaintyBudget(text),s=stateMemory();
+ if(u.level==='LOW')return {action:'PROCEED TO ASSESS',why:'No major uncertainty flags are currently recorded.'};
+ if(u.items.includes('unresolved conflict'))return {action:'RESOLVE CONFLICT',why:'A conflict has the highest blocking value.'};
+ if(u.items.includes('unclear action result'))return {action:'CLARIFY RESULT',why:'The previous action did not establish a clear outcome.'};
+ if(u.items.includes('goal not locked'))return {action:'LOCK GOAL',why:'The reasoning target must be stable before deeper assessment.'};
+ return {action:'STRENGTHEN EVIDENCE',why:'Reducing uncertainty requires a stronger supporting basis.'};
+}
+function uncertaintyReductionCard(text){
+ const r=uncertaintyReduction(text);
+ return '<div class="decision"><strong>Best uncertainty-reduction step:</strong> '+r.action+'<br>'+r.why+'</div>';
+}
+function uncertaintyBudget(text){
+ const s=stateMemory(),items=[];
+ if(s.conflicts&&s.conflicts.length)items.push('unresolved conflict');
+ if(s.confidence&&s.confidence.level==='LOW')items.push('low-confidence input');
+ if(!s.goalLocked)items.push('goal not locked');
+ if(s.lastActionResult&&s.lastActionResult.result==='RESULT UNCLEAR')items.push('unclear action result');
+ const level=items.length===0?'LOW':items.length===1?'MEDIUM':'HIGH';
+ s.uncertaintyBudget={level,items};saveState(s);
+ return {level,items};
+}
+function uncertaintyCard(text){
+ const u=uncertaintyBudget(text);
+ return '<div class="decision"><strong>Uncertainty budget:</strong> '+u.level+(u.items.length?'<br>'+u.items.map(escapeHtml).join(' · '):'<br>No major uncertainty flags detected.')+'</div>';
+}
+function finalAssessment(text){
+ const s=stateMemory(),r=answerReadiness(text);
+ if(r.readiness!=='READY TO ASSESS') return '<div class="decision"><strong>Final assessment:</strong> DEFERRED<br>Resolve the remaining blocker before concluding.</div>';
+ const basis=[];
+ if(s.goal)basis.push('goal established');
+ if(s.intent)basis.push('intent classified');
+ if(s.selectedAction)basis.push('action selected');
+ if(s.lastActionResult)basis.push('action result captured');
+ return '<div class="decision"><strong>Final assessment basis</strong><br>'+basis.map(escapeHtml).join(' · ')+'<br><br>Shileen can now reassess the current state without pretending that missing evidence is known.</div>';
+}
+function completionGate(text){
+ const s=stateMemory(),r=s.answerReadiness||answerReadiness(text);
+ const complete=r.readiness==='READY TO ASSESS' && s.loopStage!=='ACTION_SELECTED';
+ const status=complete?'READY FOR FINAL ASSESSMENT':'WORK IN PROGRESS';
+ const reason=complete?'The goal is stable and no current blocker prevents reassessment.':'The reasoning process still has an unresolved prerequisite.';
+ return '<div class="decision"><strong>Completion gate:</strong> '+status+'<br>'+reason+'</div>';
+}
+function answerReadiness(text){
+ const s=stateMemory();
+ const blockers=[];
+ if(!s.goalLocked)blockers.push('goal not locked');
+ if(s.conflicts&&s.conflicts.length)blockers.push('unresolved conflict');
+ if(s.lastActionResult&&s.lastActionResult.result==='ACTION FAILED')blockers.push('failed last action');
+ if(s.lastActionResult&&s.lastActionResult.result==='RESULT UNCLEAR')blockers.push('unclear last result');
+ const readiness=blockers.length?'NOT READY':'READY TO ASSESS';
+ s.answerReadiness={readiness,blockers};saveState(s);
+ return s.answerReadiness;
+}
+function readinessCard(){
+ const r=answerReadiness();
+ return '<div class="decision"><strong>Answer readiness:</strong> '+r.readiness+(r.blockers.length?'<br>Blockers: '+r.blockers.map(escapeHtml).join(' · '):'<br>No current reasoning blockers detected.')+'</div>';
+}
+function goalLock(text){
+ const s=stateMemory();
+ const stable=goalStability(text)==='STABLE';
+ s.goalLocked=stable;saveState(s);
+ return stable;
+}
+function goalLockCard(text){
+ return '<div class="decision"><strong>Goal lock:</strong> '+(goalLock(text)?'ACTIVE':'NOT LOCKED')+'<br>'+((stateMemory().goalLocked)?'The current goal is stable enough to guide the next action.':'The goal should be reassessed before locking the reasoning path.')+'</div>';
+}
+function goalStability(text){
+ const s=stateMemory(), changes=(s.stateChanges||[]).length;
+ const stable=changes<3 && !s.correction;
+ s.goalStability=stable?'STABLE':'CHANGING';saveState(s);
+ return stable?'STABLE':'CHANGING';
+}
+function goalStabilityCard(text){
+ return '<div class="decision"><strong>Goal stability:</strong> '+goalStability(text)+'<br>'+((stateMemory().goalStability==='STABLE')?'The current reasoning can proceed without redefining the goal.':'The goal has changed or been corrected; reassess before continuing.')+'</div>';
+}
+function goalReassessment(text){
+ const s=stateMemory(),q=text.toLowerCase();
+ let goal=s.goal||text;
+ if(/actually|instead|what i really want|my goal is/.test(q)) goal=text;
+ const intent=classifyIntent(text);
+ s.goal=goal;s.intent=intent;s.loopStage='GOAL_REASSESSED';saveState(s);
+ return {goal,intent};
+}
+function goalCard(text){
+ const g=goalReassessment(text);
+ return '<div class="decision"><strong>Goal reassessment</strong><br>Current goal: '+escapeHtml(g.goal)+'<br>Intent: '+g.intent+'</div>';
+}
+function userCorrection(text){
+ const q=text.toLowerCase();
+ if(/that's wrong|that is wrong|incorrect|not what i meant|you misunderstood|wrong assumption/.test(q)){
+  const s=stateMemory();s.loopStage='USER_CORRECTION';s.correction=text;s.confidence={level:'LOW',reason:'User corrected the current interpretation.'};saveState(s);
+  return {corrected:true,message:'I’ll treat that correction as a state change and reassess the goal before continuing.'};
+ }
+ return {corrected:false};
+}
+function correctionCard(text){
+ const r=userCorrection(text);
+ return r.corrected?'<div class="decision"><strong>User correction detected</strong><br>'+r.message+'</div>':'';
+}
+function explainDecision(text){
+ const p=priorityGap(text),a=chooseNextAction(text),s=stateMemory();
+ const reasons=[];
+ reasons.push('Highest-value gap: '+p.gap);
+ reasons.push('Selected action: '+a.name);
+ reasons.push('Current loop: '+(s.loopStage||'READY'));
+ if(s.conflicts&&s.conflicts.length) reasons.push('An unresolved conflict is blocking progression.');
+ return '<div class="decision"><strong>Decision trace</strong><br>'+reasons.map(escapeHtml).join('<br>')+'</div>';
+}
+function checkpointState(){
+ const s=stateMemory();
+ const ready=canConclude(s.goal||'');
+ const cp={
+  goal:s.goal||'',
+  intent:s.intent||'GENERAL',
+  action:s.selectedAction||'NONE',
+  result:s.lastActionResult?s.lastActionResult.result:'NONE',
+  loop:s.loopStage||'READY',
+  conclusion:ready.ready?'READY':'NOT READY',
+  timestamp:new Date().toISOString()
+ };
+ s.checkpoint=cp;saveState(s);return cp;
+}
+function checkpointCard(){
+ const c=checkpointState();
+ return '<div class="decision"><strong>Decision checkpoint</strong><br>Conclusion gate: '+c.conclusion+' · Loop: '+escapeHtml(c.loop)+'<br>Action: '+escapeHtml(c.action)+' · Result: '+escapeHtml(c.result)+'</div>';
+}
+function stateChangeLog(){
+ const s=stateMemory(),log=s.stateChanges||[];
+ return log.slice(-5);
+}
+function recordStateChange(reason){
+ const s=stateMemory(),prev=s.lastLoggedLoop||'READY',now=s.loopStage||'READY';
+ if(prev!==now){s.stateChanges=s.stateChanges||[];s.stateChanges.push({from:prev,to:now,reason:reason||'State updated'});s.lastLoggedLoop=now;saveState(s);}
+}
+function stateChangeCard(){
+ recordStateChange('Reasoning state changed after the latest interaction.');
+ const log=stateChangeLog();
+ const rows=log.length?log.map(x=>'<div>'+escapeHtml(x.from)+' → '+escapeHtml(x.to)+'</div>').join(''):'<div>No state transitions recorded yet.</div>';
+ return '<div class="decision"><strong>State changes</strong>'+rows+'</div>';
+}
+function stateSnapshot(){
+ const s=stateMemory();
+ return {goal:s.goal||'',intent:s.intent||'GENERAL',turns:s.turns||0,conflict:!!(s.conflicts&&s.conflicts.length),action:s.selectedAction||'NONE',result:s.lastActionResult?s.lastActionResult.result:'NONE',loop:s.loopStage||'READY'};
+}
+function snapshotCard(){
+ const s=stateSnapshot();
+ return '<div class="decision"><strong>Current reasoning state</strong><br>Goal: '+escapeHtml(s.goal||'Not yet defined')+'<br>Intent: '+s.intent+' · Action: '+s.action+'<br>Last result: '+s.result+' · Loop: '+s.loop+'</div>';
+}
+function stopOrContinue(text){
+ const s=stateMemory(),r=s.lastActionResult||{},conf=canConclude(text);
+ if(s.conflicts&&s.conflicts.length)return {mode:'STOP',reason:'An unresolved conflict remains.'};
+ if(r.result==='ACTION FAILED')return {mode:'CONTINUE',reason:'The selected action failed, so an alternative route is needed.'};
+ if(r.result==='RESULT UNCLEAR')return {mode:'CLARIFY',reason:'The result needs clarification before another action is selected.'};
+ if(conf.ready)return {mode:'REASSESS',reason:'The latest state may now support a fresh conclusion check.'};
+ return {mode:'CONTINUE',reason:'More information is still required.'};
+}
+function loopDecisionCard(text){
+ const d=stopOrContinue(text);
+ return '<div class="decision"><strong>Loop decision:</strong> '+d.mode+'<br>'+d.reason+'</div>';
+}
+function reassessAfterAction(text){
+ const s=stateMemory(),r=s.lastActionResult||{};
+ let next='CONTINUE';
+ if(r.result==='EVIDENCE ADDED') next='REASSESS';
+ if(r.result==='ACTION FAILED') next='TRY ALTERNATIVE';
+ if(r.result==='STEP COMPLETED') next='REASSESS';
+ if(r.result==='RESULT UNCLEAR') next='CLARIFY RESULT';
+ s.loopStage=next;saveState(s);
+ return {next,reason:next==='REASSESS'?'Update the evidence state and test whether the conclusion gate has changed.':next==='TRY ALTERNATIVE'?'Choose a different action that can resolve the same highest-value gap.':next==='CLARIFY RESULT'?'Ask what the action actually established before proceeding.':'Select the next action from the updated state.'};
+}
+function reassessCard(text){
+ const r=reassessAfterAction(text);
+ return '<div class="decision"><strong>After-action reassessment:</strong> '+r.next+'<br>'+r.reason+'</div>';
+}
+function actionResult(text){
+ const q=text.toLowerCase(),s=stateMemory();
+ let result='RESULT UNCLEAR',reason='The action has not yet produced enough information to update the state.';
+ if(/confirmed|verified|proof|evidence|source|document/.test(q)){result='EVIDENCE ADDED';reason='New supporting information can be incorporated into the decision state.'}
+ else if(/no|wrong|incorrect|cannot|failed|not found/.test(q)){result='ACTION FAILED';reason='The attempted step did not establish the required fact.'}
+ else if(/yes|correct|works|done|completed/.test(q)){result='STEP COMPLETED';reason='The latest message indicates that the selected step was completed.'}
+ s.lastActionResult={result,reason};s.loopStage='RESULT_CAPTURED';saveState(s);
+ return s.lastActionResult;
+}
+function actionResultCard(text){
+ const r=actionResult(text);
+ return '<div class="decision"><strong>Action result:</strong> '+r.result+'<br>'+r.reason+'</div>';
+}
+function actionLoop(text){
+ const a=chooseNextAction(text),s=stateMemory();
+ s.selectedAction=a.name;s.actionCost=a.cost;s.actionPriority=a.priority;s.loopStage='ACTION_SELECTED';saveState(s);
+ return {action:a.name,next:'Execute '+a.name.toLowerCase()+' and reassess the state using the result.'};
+}
+function actionLoopCard(text){
+ const a=actionLoop(text);
+ return '<div class="decision"><strong>Action loop:</strong> '+a.action+'<br>'+a.next+'</div>';
+}
+function chooseNextAction(text){
+ const p=priorityGap(text),c=actionCost(text);
+ const options=[
+  {name:'ASK',cost:1,fit:/should i|decide|choose|which/.test(text.toLowerCase())},
+  {name:'VERIFY',cost:1,fit:/trust|true|accurate|source|evidence|proof/.test(text.toLowerCase())},
+  {name:'INSPECT',cost:2,fit:/document|pdf|file|contract|invoice/.test(text.toLowerCase())},
+  {name:'CALCULATE',cost:1,fit:/calculate|cost|price|percent|how much/.test(text.toLowerCase())},
+  {name:'COMPARE',cost:1,fit:/compare|versus|vs|difference/.test(text.toLowerCase())},
+  {name:'SEARCH',cost:3,fit:/latest|current|today|recent|news/.test(text.toLowerCase())}
+ ];
+ const valid=options.filter(o=>o.fit).sort((a,b)=>a.cost-b.cost);
+ const pick=valid[0]||{name:'ASK',cost:1};
+ return {name:pick.name,cost:pick.cost,priority:p.priority};
+}
+function chosenActionCard(text){
+ const a=chooseNextAction(text);
+ return '<div class="decision"><strong>Selected next action:</strong> '+a.name+'<br>Priority '+a.priority+'/5 · Estimated effort '+a.cost+'/3</div>';
+}
+function efficientAction(text){
+ const p=priorityGap(text),c=actionCost(text);
+ return '<div class="decision"><strong>Resolution efficiency:</strong> '+c.label+' effort<br>Priority '+p.priority+'/5 → '+p.action+'</div>';
+}
+function smallestStep(text){
+ const p=priorityGap(text);
+ const steps={
+  'CONFLICT':'Ask which of the two conflicting facts is correct.',
+  'EVIDENCE':'Request the single strongest source supporting the claim.',
+  'DECISION CRITERIA':'Ask for the one criterion that matters most.',
+  'INPUTS':'Request only the missing number needed for the calculation.',
+  'COMPARISON BASIS':'Ask for the one common criterion to compare first.',
+  'CLARITY':'Ask one focused question about the desired outcome.'
+ };
+ return {gap:p.gap,step:steps[p.gap]||steps.CLARITY};
+}
+function smallestStepCard(text){
+ const s=smallestStep(text);
+ return '<div class="decision"><strong>Smallest useful step:</strong><br>'+s.step+'</div>';
+}
+function priorityGap(text){
+ const q=text.toLowerCase();
+ if(/conflict|contradict|disagree|different/.test(q)) return {gap:'CONFLICT',priority:5,action:'Resolve the conflicting statement before continuing.'};
+ if(/should i|decide|choose|which|buy|purchase/.test(q)&&!/source|evidence|proof/.test(q)) return {gap:'DECISION CRITERIA',priority:4,action:'Identify the criteria that will determine the decision.'};
+ if(/trust|true|accurate|real|claim|fact/.test(q)) return {gap:'EVIDENCE',priority:5,action:'Check the source or evidence supporting the claim.'};
+ if(/calculate|cost|price|worth|percent|how much/.test(q)) return {gap:'INPUTS',priority:4,action:'Collect the actual figures and assumptions.'};
+ if(/compare|versus|vs|difference/.test(q)) return {gap:'COMPARISON BASIS',priority:4,action:'Put the options on the same criteria.'};
+ return {gap:'CLARITY',priority:3,action:'Ask one focused question that reduces the largest uncertainty.'};
+}
+function priorityCard(text){
+ const p=priorityGap(text);
+ return '<div class="decision"><strong>Highest-value gap:</strong> '+p.gap+' · Priority '+p.priority+'/5<br>'+p.action+'</div>';
+}
+function evidenceLedger(text){
+ const q=text.toLowerCase();
+ const ledger=[];
+ if(/source|document|evidence|proof|data|confirmed|verified/.test(q)) ledger.push({type:'SUPPORT',item:'Evidence referenced by the user',state:'PRESENT'});
+ if(/maybe|probably|not sure|unsure|i think/.test(q)) ledger.push({type:'UNCERTAINTY',item:'User-stated uncertainty',state:'OPEN'});
+ if(/should i|decide|choose|which|buy|purchase/.test(q)) ledger.push({type:'CRITERION',item:'Decision criteria',state:'NEEDED'});
+ if(/compare|versus|vs|difference/.test(q)) ledger.push({type:'COMPARISON',item:'Comparable options or sources',state:'NEEDED'});
+ if(!ledger.length) ledger.push({type:'GAP',item:'Decision-relevant information',state:'OPEN'});
+ return ledger;
+}
+function ledgerCard(text){
+ const rows=evidenceLedger(text).map(x=>'<div><strong>'+x.type+'</strong> · '+x.state+' — '+x.item+'</div>').join('');
+ return '<div class="decision"><strong>Evidence ledger</strong>'+rows+'</div>';
+}
+function supportBreakdown(text){
+ const q=text.toLowerCase(), items=[];
+ if(/source|document|evidence|proof|data|confirmed|verified/.test(q))items.push(['SUPPORTED','Supporting material is present or referenced.']);
+ if(/maybe|probably|not sure|unsure|i think/.test(q))items.push(['UNCERTAIN','The wording indicates uncertainty.']);
+ if(/should i|decide|choose|which|buy|purchase/.test(q))items.push(['CRITERIA','The conclusion depends on explicit decision criteria.']);
+ if(/compare|versus|vs|difference/.test(q))items.push(['COMPARISON','The relevant options need to be assessed on the same basis.']);
+ if(!items.length)items.push(['UNESTABLISHED','The current information has not yet established a reliable basis.']);
+ return items;
+}
+function supportCard(text){
+ const rows=supportBreakdown(text).map(x=>'<div><strong>'+x[0]+'</strong> — '+x[1]+'</div>').join('');
+ return '<div class="decision"><strong>Support breakdown</strong>'+rows+'</div>';
+}
+function answerMode(text){
+ const q=text.toLowerCase();
+ if(/should i|decide|choose|which|buy|purchase/.test(q))return {mode:'DECISION SUPPORT',label:'Compare the confirmed criteria, constraints and evidence before choosing.'};
+ if(/trust|true|accurate|real|claim|fact/.test(q))return {mode:'EVIDENCE ASSESSMENT',label:'Separate what is supported, uncertain and still unverified.'};
+ if(/compare|versus|vs|difference/.test(q))return {mode:'COMPARISON',label:'Compare the relevant evidence on the same criteria.'};
+ if(/calculate|cost|price|worth|percent|how much/.test(q))return {mode:'CALCULATION',label:'Use verified inputs and state the assumptions.'};
+ return {mode:'SUPPORTED RESPONSE',label:'Answer only from the information that has been established.'};
+}
+function answerFrame(text){
+ const m=answerMode(text);
+ return '<div class="decision"><strong>Answer mode:</strong> '+m.mode+'<br>'+m.label+'</div>';
+}
+function finalReassessment(text){
+ const s=stateMemory(), q=text.toLowerCase();
+ const conflict=!!(s.conflicts&&s.conflicts.length);
+ const uncertain=/maybe|probably|not sure|unsure|i think/.test(q);
+ const evidence=/source|document|evidence|proof|data|confirmed|verified/.test(q);
+ if(conflict)return {status:'BLOCKED',reason:'A conflict is still unresolved.'};
+ if(uncertain)return {status:'BLOCKED',reason:'The latest information is still uncertain.'};
+ if(!evidence)return {status:'PENDING',reason:'A supporting basis has not been established.'};
+ return {status:'REASSESS',reason:'The current state has enough basis for a fresh assessment.'};
+}
+function finalDecisionCard(text){
+ const r=finalReassessment(text);
+ return '<div class="decision"><strong>Final reassessment:</strong> '+r.status+'<br>'+r.reason+'</div>';
+}
+function canConclude(text){
+ const q=text.toLowerCase();
+ const hasEvidence=/source|document|evidence|proof|data|confirmed|verified/.test(q);
+ const hasDecision=/should i|decide|choose|which|buy|purchase/.test(q);
+ const uncertain=/maybe|probably|not sure|unsure|i think/.test(q);
+ if(uncertain)return {ready:false,reason:'The information is still expressed with uncertainty.'};
+ if(hasDecision&&!hasEvidence)return {ready:false,reason:'The decision still lacks supporting evidence.'};
+ return {ready:hasEvidence,reason:hasEvidence?'A supporting basis is present; reassess before concluding.':'There is not yet enough evidence to conclude.'};
+}
+function conclusionGate(text){
+ const c=canConclude(text);
+ return '<div class="decision"><strong>Conclusion gate:</strong> '+(c.ready?'READY TO REASSESS':'NOT READY')+'<br>'+c.reason+'</div>';
+}
+function resolutionProgress(text){
+ const q=text.toLowerCase();
+ if(/source|document|evidence|proof/.test(q)) return {stage:'EVIDENCE',score:3,next:'Verify the supplied evidence against the claim.'};
+ if(/yes|confirmed|correct|agree/.test(q)) return {stage:'VERIFY',score:4,next:'Reassess the decision using the confirmed information.'};
+ if(/no|not|wrong|incorrect/.test(q)) return {stage:'CLARIFY',score:2,next:'Replace the incorrect assumption with the correct fact.'};
+ return {stage:'GAP',score:1,next:'Collect the smallest missing fact before proceeding.'};
+}
+function renderProgress(text){
+ const p=resolutionProgress(text);
+ return '<div class="decision"><strong>Resolution progress:</strong> '+p.stage+' · '+p.score+'/5<br>'+p.next+'</div>'+conclusionGate(text)+finalAssessment(text)+answerFrame(text)+supportCard(text)+ledgerCard(text)+priorityCard(text)+smallestStepCard(text)+smallestStepCard(text)+efficientAction(text)+chosenActionCard(text)+actionLoopCard(text)+actionResultCard(text)+reassessCard(text)+loopDecisionCard(text)+snapshotCard()+stateChangeCard()+checkpointCard()+explainDecision(text)+correctionCard(text)+goalCard(text)+goalStabilityCard(text)+goalLockCard(text)+readinessCard()+completionGate(text)+uncertaintyCard(text)+uncertaintyReductionCard(text)+resolutionCompleteCard(text)+finalResponseCard(text)+buildFinalResponse(text)+responseSectionsCard(text)+finalAnswerComposer(text)+answerQualityCard(text)+answerIntegrityCard(text)+finalAnswerActions(text)+answerCopyCard(text)+answerExportCard(text)+evidenceGapSummary(text)+evidenceGapActions(text)+evidenceGapPriority(text)+minimalEvidencePlan(text)+gapResolutionCost(text)+evidenceSufficiencyMeter(text)+evidenceChangeCard(text)+reassessmentTriggerCard(text)+staleAnswerGuard(text)+answerVersionCard(text)+answerHistoryCard(text)+answerCompareCard(text)+conclusionChangeReason(text)+conclusionBasisCard(text)+limitationCard(text)+userControlCard(text)+sessionSummaryCard(text)+nextBestMoveCard(text)+actionReasonCard(text)+alternativeActionCard(text)+actionSelectionCard(text)+actionReconsiderationCard(text)+actionCommitmentCard(text)+finalBuildStatusCard();
+}
+function nextStateFromAction(text){
+ const r=routeReason(text);
+ const map={
+  'INSPECT DOCUMENT':['EVIDENCE','Provide the document so its relevant claims can be inspected.'],
+  'COMPARE INFORMATION':['EVIDENCE','Provide both options or sources so the differences can be tested.'],
+  'CALCULATE':['VERIFY','Provide the numerical inputs and assumptions.'],
+  'VERIFY EVIDENCE':['VERIFY','Provide the source or evidence to check.'],
+  'SEARCH FOR EVIDENCE':['EVIDENCE','Gather current supporting information before concluding.'],
+  'CHECK CONTRADICTION':['RESOLVE','Identify which conflicting statement is correct.'],
+  'ASK FOR DECISION CRITERIA':['CRITERIA','State the factors that matter most to the decision.'],
+  'ASK ONE TARGETED QUESTION':['CLARIFY','Answer one focused question that removes the largest gap.']
+ };
+ const m=map[r.action]||map['ASK ONE TARGETED QUESTION'];
+ return {stage:m[0],instruction:m[1]};
+}
+function analyze(t){
+ const q=t.toLowerCase();
+ let gap='The goal is not yet specific enough to determine the right next step.';
+ let next='Clarify the outcome you actually want.';
+ let status='CLARIFY',stage=1,evidence='No supporting evidence has been supplied yet.';
+ if(/buy|purchase|car|house|choose|decision|should i|which/.test(q)){gap='The decision criteria and constraints are missing.';next='Define the two or three factors that matter most to you.';status='MISSING CRITERIA';stage=2}
+ else if(/trust|true|accurate|real|claim|information|source|fact/.test(q)){gap='The claim is not supported by evidence in the question.';next='Identify the exact claim and provide the source or evidence you want checked.';status='VERIFY';stage=3;evidence='Needed: the original source, document, data or other evidence behind the claim.'}
+ else if(/next|do|plan|start|problem|stuck/.test(q)){gap='The desired outcome is present, but the current state is unclear.';next='State where you are now and what a successful outcome would look like.';status='NEXT ACTION';stage=2}
+ else if(/calculate|cost|price|worth|percent|how much/.test(q)){gap='A calculation needs the actual inputs.';next='Provide the numbers or document containing the inputs.';status='NEED INPUTS';stage=3;evidence='Needed: the actual figures, assumptions or source document.'}
+ return `<div class="state"><div class="state-title"><span>Decision state</span><span class="pill">${status}</span></div><div class="progress">${[1,2,3,4,5].map(n=>`<i class="${n<=stage?'active':''}"></i>`).join('')}</div><div class="state-meta"><span>Goal → gap → evidence → verify → answer</span><span>Step ${stage}/5</span></div><p>${gap}</p><div class="next"><strong>Next best action</strong><span>${next}</span></div><div class="evidence"><strong>Action route:</strong> ${routeAction(t)}</div><div class="evidence">${evidence}</div><div class="action-row"><button class="action primary" data-follow="${escapeHtml(next)}">Do this next</button><button class="action" data-follow="What information is missing before you can answer?">Show missing information</button></div></div>`;
+}
+function resolveConflict(choice){
+ const s=stateMemory();
+ if(!s.conflicts||!s.conflicts.length)return;
+ if(choice==='new' && s.lastFacts&&s.lastFacts.length) s.confirmedFact=s.lastFacts[s.lastFacts.length-1];
+ if(choice==='previous' && s.conflicts.length) s.confirmedFact=s.conflicts[s.conflicts.length-1];
+ s.conflicts=[]; s.resolved=true; saveState(s); refreshMemory();
+ addShileen('Conflict resolved. I’ll use the confirmed information as the current state and continue from there.');
+}
+function conflictActions(){
+ return '<div class="actions"><button onclick="resolveConflict(\'new\')">Use new information</button><button onclick="resolveConflict(\'previous\')">Keep previous information</button></div>';
+}
+function send(text){text=text.trim();if(!text)return;welcome.classList.add('hidden');const correction=userCorrection(text);const g=goalReassessment(text);const s=updateMemory(text);const confidence=assessConfidence(text);s.confidence=confidence;saveState(s);addUser(text);setTimeout(()=>{if(s.conflicts&&s.conflicts.length){addShileen('I noticed information that may conflict with something you said earlier. Before I answer, let’s resolve that point first.');addShileen(contradictionDetail(s));addShileen(conflictActions());}else {addShileen(analyze(text));const plan=evidencePlan(text),route=routeReason(text),nextState=nextStateFromAction(text);addShileen('<div class="decision"><strong>Evidence plan:</strong> '+plan.label+'<br>'+plan.detail+'</div><div class="decision"><strong>Why this action:</strong> '+route.action+' — '+route.why+'</div><div class="decision"><strong>Next state:</strong> '+nextState.stage+'<br>'+nextState.instruction+'</div>'+renderProgress(text));if(confidence.level==='LOW')addShileen('<div class="decision"><strong>Confidence check:</strong> '+confidence.reason+' A specific source or fact would help before treating the answer as settled.</div>');}refreshMemory();},180)}
+function stateMemory(){
+  try{return JSON.parse(sessionStorage.getItem('shileenState')||'{}')}catch(e){return {}}
+}
+function saveState(data){sessionStorage.setItem('shileenState',JSON.stringify(data))}
+function classifyIntent(text){
+  const q=text.toLowerCase();
+  if(/should i|decide|choose|which|buy|purchase/.test(q)) return 'DECISION';
+  if(/trust|true|accurate|prove|evidence|source|claim/.test(q)) return 'EVIDENCE';
+  if(/compare|versus|vs|difference/.test(q)) return 'COMPARISON';
+  if(/calculate|cost|price|worth|percent|how much/.test(q)) return 'CALCULATION';
+  if(/document|file|contract|invoice|report|pdf/.test(q)) return 'DOCUMENT';
+  return 'GENERAL';
+}
+function detectConflict(text){
+ const s=stateMemory(), prior=(s.lastFacts||[]);
+ const q=text.toLowerCase();
+ const conflicts=[];
+ for(const f of prior){
+  if((/yes|true|will|can|is/.test(f) && /no|false|won't|cannot|isn't/.test(q)) ||
+     (/no|false|won't|cannot|isn't/.test(f) && /yes|true|will|can|is/.test(q))) conflicts.push(f);
+ }
+ return conflicts;
+}
+function extractFact(text){
+ const t=text.trim(); if(!t)return null;
+ return t.length>180?t.slice(0,180)+'…':t;
+}
+function updateMemory(text){
+  const s=stateMemory();
+  const conflicts=detectConflict(text);
+  s.goal=s.goal||text; s.intent=classifyIntent(text); s.turns=(s.turns||0)+1;
+  s.lastFacts=s.lastFacts||[];
+  const fact=extractFact(text); if(fact) s.lastFacts=[...s.lastFacts.slice(-4),fact];
+  s.conflicts=conflicts;
+  saveState(s); return s;
+}
+function routeReason(text){
+ const q=text.toLowerCase();
+ if(/pdf|document|file|contract|invoice|report/.test(q)) return {action:'INSPECT DOCUMENT',why:'The answer may depend on content inside a specific document.'};
+ if(/compare|versus|vs|difference/.test(q)) return {action:'COMPARE INFORMATION',why:'The key gap is a difference between two or more sources or options.'};
+ if(/calculate|cost|price|worth|percent|how much/.test(q)) return {action:'CALCULATE',why:'The missing step is numerical rather than conversational.'};
+ if(/trust|true|accurate|real|claim|source|fact|evidence|prove/.test(q)) return {action:'VERIFY EVIDENCE',why:'The conclusion depends on whether supporting evidence can be checked.'};
+ if(/latest|current|today|news|recent|now/.test(q)) return {action:'SEARCH FOR EVIDENCE',why:'The requested information may have changed and needs current evidence.'};
+ if(/conflict|contradict|disagree|different/.test(q)) return {action:'CHECK CONTRADICTION',why:'The information may contain competing statements.'};
+ if(/should i|decide|choose|which|buy|purchase/.test(q)) return {action:'ASK FOR DECISION CRITERIA',why:'A decision cannot be supported until the important criteria are known.'};
+ return {action:'ASK ONE TARGETED QUESTION',why:'The smallest useful next step is to clarify the missing fact.'};
+}
+function routeAction(text){
+ const reason=routeReason(text); return reason.action;
+ const q=text.toLowerCase();
+ if(/document|file|contract|invoice|report|pdf/.test(q)) return 'INSPECT DOCUMENT';
+ if(/compare|versus|vs|difference/.test(q)) return 'COMPARE INFORMATION';
+ if(/source|evidence|prove|trust|true|accurate/.test(q)) return 'VERIFY EVIDENCE';
+ if(/calculate|cost|price|worth|percent|how much/.test(q)) return 'CALCULATE';
+ if(/search|latest|current|news|today/.test(q)) return 'SEARCH FOR EVIDENCE';
+ if(/contradict|conflict|disagree|different/.test(q)) return 'CHECK CONTRADICTION';
+ if(/should i|decide|choose|which|buy|purchase/.test(q)) return 'ASK FOR DECISION CRITERIA';
+ return 'ASK ONE TARGETED QUESTION';
+}
+document.getElementById('form').addEventListener('submit',e=>{e.preventDefault();send(input.value);input.value='';});
+document.querySelectorAll('.example').forEach(b=>b.addEventListener('click',()=>send(b.textContent)));
+conversation.addEventListener('click',e=>{const b=e.target.closest('[data-follow]');if(b){input.value=b.dataset.follow;input.focus();}});
+function refreshMemory(){const s=stateMemory();const el=document.getElementById('memoryLine');if(el)el.innerHTML='<span>Session state: '+(s.conflicts&&s.conflicts.length?'CONFLICT DETECTED':(s.intent||'ready'))+'</span><span>'+(s.confidence&&s.confidence.level&&s.confidence.level!=='UNASSESSED'?'Confidence: '+s.confidence.level+' · ':'')+(s.turns||0)+' turns</span>'}
+refreshMemory();
+const originalSend=send;
+send=function(text){originalSend(text);setTimeout(refreshMemory,220)};
+</script>
 </body>
 </html>
