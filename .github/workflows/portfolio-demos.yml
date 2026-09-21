@@ -90,13 +90,27 @@ jobs:
               await p.waitForTimeout(900); await p.getByText('Sensitivity',{exact:true}).click().catch(()=>{});
             },
             'meettrace': async p=>{
-              await p.goto(root+'/meettrace/'); await p.waitForTimeout(700);
-              await p.getByText('Start capture',{exact:true}).click().catch(()=>{});
-              await p.waitForTimeout(700);
-              const ta=p.locator('textarea').first(); if(await ta.count()){await ta.fill('Decision: approve the launch plan');}
-              await p.getByText('Decision',{exact:true}).last().click().catch(()=>{});
-              await p.getByText('Add to record',{exact:true}).click().catch(()=>{});
-              await p.waitForTimeout(600); await p.getByText('Commitments',{exact:true}).click().catch(()=>{});
+              await p.goto(root+'/meettrace/'); await p.waitForTimeout(900);
+              await p.locator('#title').fill('Weekly launch review');
+              await p.locator('#participants').fill('Operations, Product, Sales');
+              await p.locator('#purpose').fill('Confirm the launch decision and assign the next action');
+              await p.locator('#captureBtn').click();
+              await p.waitForTimeout(900);
+              await p.locator('#quick').fill('Approve the launch plan for next Monday');
+              await p.locator('#quickType').selectOption('decisions');
+              await p.locator('#addQuick').click();
+              await p.waitForTimeout(900);
+              await p.locator('#quick').fill('Operations to confirm final checklist');
+              await p.locator('#quickType').selectOption('actions');
+              await p.locator('#quickOwner').fill('Operations');
+              await p.locator('#addQuick').click();
+              await p.waitForTimeout(900);
+              await p.locator('[data-tab="decisions"]').click();
+              await p.waitForTimeout(800);
+              await p.locator('[data-tab="actions"]').click();
+              await p.waitForTimeout(800);
+              await p.locator('#captureBtn').click();
+              await p.waitForTimeout(900);
             },
             'pulzaflow': async p=>{
               await p.goto(root+'/pulzaflow/'); await p.waitForTimeout(800);
