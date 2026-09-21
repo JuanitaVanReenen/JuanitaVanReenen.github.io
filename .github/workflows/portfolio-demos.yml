@@ -1,8 +1,7 @@
-name: Portfolio product demo videos
+name: Improve LeakProof product demonstration
 on:
   push:
     paths:
-      - 'demo-manifest.json'
       - '.github/workflows/portfolio-demos.yml'
 permissions:
   contents: write
@@ -13,40 +12,29 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install ffmpeg
         run: sudo apt-get update && sudo apt-get install -y ffmpeg
-      - name: Render product walkthrough videos
-        env:
-          FONT: /usr/share/fonts/truetype/dejavu/DejaVuSans.ttf
-          FONT_BOLD: /usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf
+      - name: Render moving LeakProof walkthrough
         run: |
-          python3 - <<'PY'
-          import json, os, subprocess
-          from pathlib import Path
-          data=json.load(open('demo-manifest.json'))
-          out=Path('demo-assets'); out.mkdir(exist_ok=True)
-          for p in data:
-            slug=p['slug']; title=p['name'].replace(':',' - ')[:58]; sub=p['subtitle'][:72]; desc=p['description'][:150]; flow=p['flow'][:125]
-            def q(x): return x.replace('&','&amp;').replace('<','&lt;').replace('>','&gt;').replace('"','&quot;')
-            svg=f'''<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720">
-            <rect width="100%" height="100%" fill="#07111f"/>
-            <rect x="55" y="55" width="1170" height="610" rx="28" fill="#0f1d31" stroke="#263b59" stroke-width="2"/>
-            <text x="100" y="145" fill="#8ec5ff" font-family="Arial" font-size="28" font-weight="700">{q(title.upper())}</text>
-            <text x="100" y="220" fill="white" font-family="Arial" font-size="40" font-weight="700">{q(sub)}</text>
-            <text x="100" y="290" fill="#aebbd0" font-family="Arial" font-size="24">What it does</text>
-            <foreignObject x="100" y="315" width="1050" height="120"><div xmlns="http://www.w3.org/1999/xhtml" style="color:#d0d9e8;font-family:Arial;font-size:22px;line-height:1.35">{q(desc)}</div></foreignObject>
-            <text x="100" y="500" fill="#a8e5c0" font-family="Arial" font-size="22" font-weight="700">FLOW</text>
-            <foreignObject x="100" y="525" width="1050" height="75"><div xmlns="http://www.w3.org/1999/xhtml" style="color:#bce8d1;font-family:Arial;font-size:19px">{q(flow)}</div></foreignObject>
-            </svg>'''
-            svgp=out/f'{slug}.svg'; png=out/f'{slug}.png'; mp4=out/f'{slug}.mp4'
-            svgp.write_text(svg)
-            subprocess.run(['ffmpeg','-y','-loglevel','error','-i',str(svgp),'-frames:v','1',str(png)],check=True)
-            subprocess.run(['ffmpeg','-y','-loglevel','error','-loop','1','-i',str(png),'-t','7','-r','24','-c:v','libx264','-preset','veryfast','-crf','32','-pix_fmt','yuv420p','-movflags','+faststart',str(mp4)],check=True)
-            svgp.unlink(); png.unlink()
-          PY
-      - name: Commit generated videos
+          set -e
+          mkdir -p demo-assets lp-segments
+          FONT=/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf
+          BOLD=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf
+          make_seg () {
+            N="$1"; TITLE="$2"; A="$3"; B="$4"; C="$5"; D="$6"
+            ffmpeg -y -loglevel error -f lavfi -i "color=c=#07111f:s=1280x720:r=24:d=2.5" -vf "drawbox=x=45:y=35:w=1190:h=650:color=#263b59:t=2,drawtext=fontfile=$BOLD:text='LEAKPROOF':fontcolor=white:fontsize=44:x=85:y=68,drawtext=fontfile=$BOLD:text='Financial Leakage Forensics Engine':fontcolor=#8ec5ff:fontsize=28:x=85:y=125,drawtext=fontfile=$BOLD:text='$TITLE':fontcolor=#a8e5c0:fontsize=26:x=85:y=205,drawbox=x=85:y=250:w=1110:h=290:color=#091625:t=fill,drawtext=fontfile=$BOLD:text='$A':fontcolor=#d0d9e8:fontsize=28:x=125:y=295,drawtext=fontfile=$FONT:text='$B':fontcolor=#aebbd0:fontsize=24:x=125:y=355,drawtext=fontfile=$FONT:text='$C':fontcolor=#aebbd0:fontsize=24:x=125:y=415,drawtext=fontfile=$FONT:text='$D':fontcolor=#aebbd0:fontsize=24:x=125:y=475,drawtext=fontfile=$FONT:text='REFERENCE DEMONSTRATION | V1.75':fontcolor=#8293aa:fontsize=18:x=85:y=610,drawbox=x=85:y=650:w=1110:h=8:color=#263b59:t=fill,drawbox=x=85:y=650:w=$((1110*N/6)):h=8:color=#8ec5ff:t=fill" -c:v libx264 -preset veryfast -crf 23 -pix_fmt yuv420p "lp-segments/$N.mp4"
+          }
+          make_seg 1 "1  EVIDENCE INTAKE" "2,418 source records" "1,906 economic events" "734 evidence items" "48 cases"
+          make_seg 2 "2  CANONICAL MAPPING" "invoice_id  ->  INV-00418" "tenant      ->  T-001" "event_type  ->  PAYMENT" "amount      ->  18,450.00"
+          make_seg 3 "3  RECONSTRUCTION" "Source event  ->  Economic event" "Economic event  ->  Evidence binding" "Evidence binding  ->  Finding candidate" "Trace is preserved"
+          make_seg 4 "4  FORENSIC VERIFICATION" "Tenant isolation                         PASS" "Digest integrity                           PASS" "Proof-chain binding                       PASS" "Read-only state                             PASS"
+          make_seg 5 "5  FINDING" "Finding ID       LP-FND-00418" "Exposure          18,450.00" "Evidence status   BOUND + VERIFIED" "Decision boundary  REVIEW"
+          make_seg 6 "6  IMMUTABLE PUBLICATION" "Report ID        LP-RPT-7F2A" "Tenant / transaction binding   BOUND" "Artifact digest                 VERIFIED" "Underlying state               UNCHANGED"
+          printf "file '%s'\n" "$PWD/lp-segments/1.mp4" > lp-segments/list.txt
+          for n in 2 3 4 5 6; do printf "file '%s'\n" "$PWD/lp-segments/$n.mp4" >> lp-segments/list.txt; done
+          ffmpeg -y -loglevel error -f concat -safe 0 -i lp-segments/list.txt -c copy -movflags +faststart demo-assets/leakproof.mp4
+      - name: Commit LeakProof video
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add demo-assets/*.mp4
-          if git diff --cached --quiet; then exit 0; fi
-          git commit -m "Add portfolio product demo videos"
+          git add demo-assets/leakproof.mp4
+          git commit -m "Improve LeakProof product demonstration"
           git push
