@@ -75,7 +75,7 @@
         <source src="https://d2ol7oe51mr4n9.cloudfront.net/user_3JccjS9oSIhOaOB5TNzJnFtsjeP/9a5607b0-89a7-41be-b656-9f4a5b35e976.mp4" type="video/mp4">
       </video>
     </div>
-    <div class="demo-note">Real MVP walkthrough: chat list → conversation → Face Message experience.</div>
+    <div class="demo-note">Real MVP walkthrough: chat list → conversation → Face Message experience. Full acquisition walkthrough in preparation.</div>
   </section>
 </div>
 <script>
@@ -83,12 +83,12 @@ function show(id){document.querySelectorAll('.screen').forEach(x=>x.classList.re
 function openChat(name){document.getElementById('chatName').textContent=name;show('chat')}
 function sendText(){const i=document.getElementById('input'),v=i.value.trim();if(!v)return;document.getElementById('messages').insertAdjacentHTML('beforeend','<div class="msg me">'+v.replace(/[<>&]/g,'')+'</div>');i.value=''}
 function sendVoice(){document.getElementById('messages').insertAdjacentHTML('beforeend','<div class="msg me">🎙 Voice message · 0:04</div>')}
-function sendFace(){document.getElementById('modalTitle').textContent='Record Face Message';document.getElementById('faceModal').style.display='block'}
+function sendFace(){document.getElementById('modalTitle').textContent='Record Face Message';document.getElementById('faceModal').style.display='block';document.querySelector('#faceModal p').textContent='Imagine a short personal video: “I’m running late — see you soon.” Record it here, then send it as a Face Message.'}
 function openFace(){document.getElementById('modalTitle').textContent='Mia · Face Message';document.getElementById('faceModal').style.display='block'}
 function closeFace(){document.getElementById('faceModal').style.display='none'}
 function faceReply(){document.getElementById('faceModal').style.display='none';document.getElementById('messages').insertAdjacentHTML('beforeend','<div class="msg face"><div class="face-art"></div><p><b>Face Reply</b><br>Your personal video response</p></div>')}
 function faceReaction(){document.getElementById('faceModal').style.display='none';document.getElementById('messages').insertAdjacentHTML('beforeend','<div class="msg me">🎥 Face Reaction · ❤️</div>')}
-function faceIntro(){alert('Face Introduction: a short optional video that introduces you to new contacts.')}
+function faceIntro(){document.getElementById('modalTitle').textContent='Face Introduction';document.getElementById('faceModal').style.display='block';document.querySelector('#faceModal p').textContent='A short optional video that lets a new contact see and hear you before the conversation starts.'}
 </script>
 </body>
 </html>
