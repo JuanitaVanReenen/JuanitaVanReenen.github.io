@@ -25,3 +25,10 @@ The project number is internal Library/project tracking only. It must never appe
 
 ## Preservation rule
 All Sulia build changes, tests, visuals, demo recordings, source files, website updates, and outreach materials are to be preserved under the Sulia project record.
+
+## 21 September 2026 — Build preservation update
+- Clean public Sulia path created at /sulia/.
+- Portfolio link updated to the clean Sulia path.
+- Public Sulia page checked for internal project-number URL leakage: none found.
+- Current MVP interaction set preserved: chat list, contacts, alerts, profile, text entry, voice-message entry, Face Message, Face Reply, Face Reaction, Face Message viewer, and Face Introduction concept.
+- Initial real walkthrough video remains embedded as the current demo while a fuller acquisition walkthrough is prepared.
