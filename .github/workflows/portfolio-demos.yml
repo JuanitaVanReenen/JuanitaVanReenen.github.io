@@ -1,0 +1,52 @@
+name: Portfolio product demo videos
+on:
+  push:
+    paths:
+      - 'demo-manifest.json'
+      - '.github/workflows/portfolio-demos.yml'
+permissions:
+  contents: write
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install ffmpeg
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - name: Render product walkthrough videos
+        env:
+          FONT: /usr/share/fonts/truetype/dejavu/DejaVuSans.ttf
+          FONT_BOLD: /usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf
+        run: |
+          python3 - <<'PY'
+          import json, os, subprocess
+          from pathlib import Path
+          data=json.load(open('demo-manifest.json'))
+          out=Path('demo-assets'); out.mkdir(exist_ok=True)
+          for p in data:
+            slug=p['slug']; title=p['name'].replace(':',' - ')[:58]; sub=p['subtitle'][:72]; desc=p['description'][:150]; flow=p['flow'][:125]
+            def q(x): return x.replace('&','&amp;').replace('<','&lt;').replace('>','&gt;').replace('"','&quot;')
+            svg=f'''<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720">
+            <rect width="100%" height="100%" fill="#07111f"/>
+            <rect x="55" y="55" width="1170" height="610" rx="28" fill="#0f1d31" stroke="#263b59" stroke-width="2"/>
+            <text x="100" y="145" fill="#8ec5ff" font-family="Arial" font-size="28" font-weight="700">{q(title.upper())}</text>
+            <text x="100" y="220" fill="white" font-family="Arial" font-size="40" font-weight="700">{q(sub)}</text>
+            <text x="100" y="290" fill="#aebbd0" font-family="Arial" font-size="24">What it does</text>
+            <foreignObject x="100" y="315" width="1050" height="120"><div xmlns="http://www.w3.org/1999/xhtml" style="color:#d0d9e8;font-family:Arial;font-size:22px;line-height:1.35">{q(desc)}</div></foreignObject>
+            <text x="100" y="500" fill="#a8e5c0" font-family="Arial" font-size="22" font-weight="700">FLOW</text>
+            <foreignObject x="100" y="525" width="1050" height="75"><div xmlns="http://www.w3.org/1999/xhtml" style="color:#bce8d1;font-family:Arial;font-size:19px">{q(flow)}</div></foreignObject>
+            </svg>'''
+            svgp=out/f'{slug}.svg'; png=out/f'{slug}.png'; mp4=out/f'{slug}.mp4'
+            svgp.write_text(svg)
+            subprocess.run(['ffmpeg','-y','-loglevel','error','-i',str(svgp),'-frames:v','1',str(png)],check=True)
+            subprocess.run(['ffmpeg','-y','-loglevel','error','-loop','1','-i',str(png),'-t','7','-r','24','-c:v','libx264','-preset','veryfast','-crf','32','-pix_fmt','yuv420p','-movflags','+faststart',str(mp4)],check=True)
+            svgp.unlink(); png.unlink()
+          PY
+      - name: Commit generated videos
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add demo-assets/*.mp4
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Add portfolio product demo videos"
+          git push
