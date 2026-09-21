@@ -66,18 +66,18 @@ const steps=[
 {title:"Your turn",body:"Choose the delivery option you want to explore.",options:["Standard delivery","Express delivery"],status:"Take control to create a branch."},
 {title:"Alternative path",body:"Your choice created a different continuation of the experience.",status:"Branch created. You can return and try again."}
 ];
-let current=0,controlled=false;
+let current=0,controlled=false,chosen="";
 function render(){
 const s=steps[current],m=document.getElementById('mock');
-m.innerHTML='<h3>'+s.title+'</h3><p>'+s.body+'</p>'+(current===2?'<div class="option-grid"><button class="option" onclick="choose("Standard delivery")">Standard delivery · 3 days</button><button class="option" onclick="choose("Express delivery")">Express delivery · 1 day</button></div>':'')+'<div class="status" id="status">'+s.status+'</div>';
+m.innerHTML='<div style="display:flex;justify-content:space-between;gap:12px;align-items:center"><span style="font-size:10px;text-transform:uppercase;letter-spacing:1.6px;color:var(--accent);font-weight:900">'+(controlled?"TAKEOVER MODE":"REPLAY MODE")+'</span><span style="font-size:11px;color:var(--muted)">Experience mapped</span></div><h3 style="margin-top:14px">'+s.title+'</h3><p>'+s.body+'</p>'+(current===2?'<div class="option-grid"><button class="option" onclick="choose('Standard delivery')">Standard delivery · 3 days</button><button class="option" onclick="choose('Express delivery')">Express delivery · 1 day</button></div>':'')+'<div class="status" id="status">'+s.status+'</div>';
 document.getElementById('stepLabel').textContent='Step '+(current+1)+' of 4';
 for(let i=1;i<=4;i++)document.getElementById('d'+i).classList.toggle('on',i<=current+1);
 }
 function nextStep(){if(current<3){current++;render()}}
 function previousStep(){if(current>0){current--;render()}}
 function takeControl(){current=2;controlled=true;render();document.getElementById('status').textContent='You are in control. Choose an option to branch the replay.'}
-function choose(choice){current=3;controlled=true;render();document.getElementById('status').textContent='You chose '+choice+'. Orveli continued the replay from your choice.'}
-function restartDemo(){current=0;controlled=false;render()}
+function choose(choice){chosen=choice;current=3;controlled=true;render();document.getElementById('status').textContent='You chose '+choice+'. Orveli continued the replay from your choice.'}
+function restartDemo(){current=0;controlled=false;chosen="";render()}
 render();
 </script>
 </body>
