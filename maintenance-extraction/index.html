@@ -4,7 +4,7 @@
 <meta name="description" content="Configurable Maintenance Extraction Simulator — a physical engineering and maintenance-planning instrument for route verification and mechanical path-sequence capture.">
 <style>
 body{margin:0;background:#090f1d;color:#f7f8fb;font-family:system-ui,-apple-system,Segoe UI,sans-serif;line-height:1.65}.wrap{width:min(1050px,92%);margin:auto}header{padding:80px 0 55px;border-bottom:1px solid #293753}.k{letter-spacing:2px;text-transform:uppercase;font-size:12px;font-weight:800;color:#9fc3ff}h1{font-size:clamp(38px,6vw,68px);line-height:1.05;margin:15px 0}.lead{color:#aeb9cc;font-size:18px;max-width:820px}.box{margin:25px 0;padding:24px;border:1px solid #2a3957;border-radius:16px;background:#111a2d}.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}.step{padding:18px;border:1px solid #2a3957;border-radius:12px;background:#17233b;font-weight:750;text-align:center}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}.card{padding:20px;border:1px solid #2a3957;border-radius:15px;background:#111a2d}.muted{color:#aeb9cc;font-size:14px}.back{display:inline-block;margin-top:25px;padding:11px 16px;border:1px solid #415271;border-radius:10px}
-.diagram{margin:30px 0;padding:28px;border:1px solid #2a3957;border-radius:16px;background:linear-gradient(145deg,#111a2d,#17233b);overflow:hidden}.frame{position:relative;height:300px;max-width:760px;margin:auto}.base{position:absolute;left:12%;right:12%;bottom:24px;height:24px;border:2px solid #7f91ad;border-radius:4px}.mast{position:absolute;left:50%;bottom:48px;width:18px;height:170px;transform:translateX(-50%);border:2px solid #7f91ad}.env{position:absolute;left:27%;top:48px;width:46%;height:120px;border:3px solid #9fc3ff}.cross{position:absolute;left:27%;right:27%;top:108px;border-top:2px dashed #7f91ad}.arm{position:absolute;left:73%;top:108px;width:22%;border-top:3px solid #9fc3ff;transform:rotate(-12deg);transform-origin:left}.marker{position:absolute;right:5%;top:73px;width:16px;height:16px;border:2px solid #9fc3ff;border-radius:50%}.caption{margin-top:12px;text-align:center;color:#aeb9cc;font-size:13px}
+.diagram{margin:30px 0;padding:28px;border:1px solid #2a3957;border-radius:16px;background:linear-gradient(145deg,#111a2d,#17233b);overflow:hidden}.frame{position:relative;height:300px;max-width:760px;margin:auto}.base{position:absolute;left:12%;right:12%;bottom:24px;height:24px;border:2px solid #7f91ad;border-radius:4px}.mast{position:absolute;left:50%;bottom:48px;width:18px;height:170px;transform:translateX(-50%);border:2px solid #7f91ad}.env{position:absolute;left:27%;top:48px;width:46%;height:120px;border:3px solid #9fc3ff}.cross{position:absolute;left:27%;right:27%;top:108px;border-top:2px dashed #7f91ad}.arm{position:absolute;left:73%;top:108px;width:22%;border-top:3px solid #9fc3ff;transform:rotate(-12deg);transform-origin:left}.marker{position:absolute;right:5%;top:73px;width:16px;height:16px;border:2px solid #9fc3ff;border-radius:50%;transition:.55s ease;box-shadow:0 0 0 0 rgba(159,195,255,.25)}.marker.active{box-shadow:0 0 0 10px rgba(159,195,255,.08)}.route-controls{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:20px}.route-controls button{border:1px solid #415271;border-radius:10px;padding:10px 14px;background:#0d1627;color:#f7f8fb;font-weight:750;cursor:pointer}.route-status{text-align:center;margin-top:12px;color:#aeb9cc;font-size:13px}.caption{margin-top:12px;text-align:center;color:#aeb9cc;font-size:13px}
 footer{padding:35px 0;color:#8f9bb0;border-top:1px solid #293753}@media(max-width:720px){.frame{height:250px}.env{left:18%;width:55%}.cross{left:18%;right:27%}}
 </style></head><body>
 <header><div class="wrap"><div class="k">Physical Product / Maintenance Planning Instrument</div>
@@ -13,7 +13,7 @@ footer{padding:35px 0;color:#8f9bb0;border-top:1px solid #293753}@media(max-widt
 <p class="muted">Public portfolio summary. Detailed engineering, development and buyer materials are reserved for direct review.</p>
 <a class="back" href="../">← Back to technology portfolio</a></div></header>
 <main><section class="wrap" style="padding:60px 0">
-<div class="diagram"><div class="frame"><div class="env"></div><div class="cross"></div><div class="mast"></div><div class="base"></div><div class="arm"></div><div class="marker"></div></div><div class="caption">Conceptual physical envelope, datum structure and route-reference geometry.</div></div>
+<div class="diagram"><div class="frame"><div class="env"></div><div class="cross"></div><div class="mast"></div><div class="base"></div><div class="arm"></div><div class="marker"></div></div><div class="caption">Conceptual physical envelope, datum structure and route-reference geometry.</div><div class="route-controls"><button id="routePlay">Play route sequence</button><button id="routeReset">Reset</button></div><div class="route-status" id="routeStatus">Ready: CONFIGURE</div></div>
 <h2>What it does</h2>
 <p class="lead">The simulator provides a physical way to configure a component envelope, place it against a reference environment, reproduce lift/translation/rotation movements, identify interference, and preserve a workable route for repeatable review.</p>
 <div class="steps"><div class="step">CONFIGURE</div><div class="step">POSITION</div><div class="step">LIFT</div><div class="step">TRANSLATE</div><div class="step">ROTATE</div><div class="step">CHECK</div><div class="step">LOCK</div><div class="step">RECORD</div></div>
@@ -27,4 +27,23 @@ footer{padding:35px 0;color:#8f9bb0;border-top:1px solid #293753}@media(max-widt
 <div class="card"><h3>Commercial route</h3><p class="muted">Prepared as a potential strategic acquisition asset for an industrial tooling, fixturing, maintenance-equipment or engineered-product company.</p></div>
 </div>
 <div class="box"><h2>Engineering status</h2><p class="muted">Development Release V2.0. This is a conceptual physical engineering/planning instrument, not a lifting device and not a certified production product. The concept has not been represented as physically prototype-tested. Detailed CAD, tolerance definition, mechanism refinement, prototype fabrication, qualified engineering review and controlled testing remain part of the manufacturer development path.</p></div>
-</section></main><footer><div class="wrap">© Juanita Van Reenen</div></footer></body></html>
+</section></main><footer><div class="wrap">© Juanita Van Reenen</div></footer>
+<script>
+const routeSteps=["CONFIGURE","POSITION","LIFT","TRANSLATE","ROTATE","CHECK","LOCK","RECORD"];
+let routeIndex=0,routeTimer=null;
+const marker=document.querySelector(".marker"),status=document.getElementById("routeStatus");
+function showRouteStep(){
+  const s=routeSteps[routeIndex];
+  status.textContent="Route step: "+s;
+  marker.classList.toggle("active",true);
+  const pos=[["right","5%","top","73px"],["right","18%","top","92px"],["right","25%","top","55px"],["right","38%","top","95px"],["right","49%","top","72px"],["right","58%","top","110px"],["right","70%","top","92px"],["right","82%","top","70px"]][routeIndex];
+  marker.style.right=pos[1];marker.style.top=pos[3];
+}
+document.getElementById("routePlay").addEventListener("click",()=>{
+  clearInterval(routeTimer);routeIndex=0;showRouteStep();
+  routeTimer=setInterval(()=>{routeIndex++;if(routeIndex>=routeSteps.length){clearInterval(routeTimer);routeIndex=routeSteps.length-1;showRouteStep();return}showRouteStep()},850);
+});
+document.getElementById("routeReset").addEventListener("click",()=>{
+  clearInterval(routeTimer);routeIndex=0;marker.style.right="5%";marker.style.top="73px";marker.classList.remove("active");status.textContent="Ready: CONFIGURE";
+});
+</script></body></html>
