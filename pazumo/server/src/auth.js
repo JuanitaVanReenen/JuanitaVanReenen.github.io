@@ -39,7 +39,18 @@ export function requireAuth(req, res, next) {
   const header = req.headers.authorization || '';
   const token = header.startsWith('Bearer ') ? header.slice(7) : null;
   const session = token ? sessions.get(token) : null;
-  if (!session) return res.status(401).json({ error: 'AUTH_REQUIRED' });
+  if (!session) {
+    const body = JSON.stringify({ error: 'AUTH_REQUIRED' });
+    res.writeHead(401, {
+      'content-type': 'application/json; charset=utf-8',
+      'cache-control': 'no-store',
+      'x-content-type-options': 'nosniff',
+      'x-frame-options': 'DENY',
+      'content-length': Buffer.byteLength(body)
+    });
+    res.end(body);
+    return;
+  }
   req.userId = session.userId;
   req.sessionToken = token;
   next();
