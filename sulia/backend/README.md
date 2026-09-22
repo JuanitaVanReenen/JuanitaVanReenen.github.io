@@ -1,11 +1,11 @@
-# Sulia Communication Core — v0.3
+# Sulia Communication Core — v0.4
 
 Sulia is being developed beyond a front-end messaging demonstration into a more transferable communication product foundation.
 
 ## Implemented in v0.3
 
 - Conversation objects with explicit membership boundaries
-- Identity registration with bearer-token authentication
+- Identity registration with bearer-token authentication\n- Expiring sessions and explicit token revocation
 - Authenticated sender identity
 - Access control for conversations, events, reactions and read receipts
 - Typed messages: text, voice and face
@@ -18,24 +18,24 @@ Sulia is being developed beyond a front-end messaging demonstration into a more 
 - Input validation and bounded request/message sizes
 - Basic per-client rate limiting
 - Security-oriented HTTP response headers
-- Atomic JSON persistence for core state and notification state
+- Atomic JSON persistence for core, identity, notification and media metadata state
 - Local media storage foundation with allow-listed media types and bounded size
 - Server-sent event (SSE) realtime delivery for conversation events
 - Per-user notification queue with unread/read state
-- Deterministic Node.js test coverage
+- Deterministic Node.js unit and end-to-end HTTP API test coverage
 - CI archive of the tested backend source
 
 ## API
 
 ### Identity
-- POST /api/auth/register
+- POST /api/auth/register\n- POST /api/auth/revoke
 
 ### Media
 - POST /api/media
   - authenticated binary upload
   - content type must be one of the supported audio/video/image types
   - default maximum: 25 MB
-  - returns a media ID that can be referenced by a voice or Face message
+  - returns a media ID that can be referenced by a voice or Face message; media references are owner-checked at message creation
 
 ### Conversations
 - POST /api/conversations
@@ -69,9 +69,9 @@ Media files use:
 
 SULIA_MEDIA_DIR=/path/to/media
 
-The runtime data directory is intentionally excluded from source control.
+The runtime data directory is intentionally excluded from source control. Media metadata is persisted separately from the binary media files.
 
-## Current boundary
+## Verification\n\n`npm test` runs both the core unit suite and an end-to-end HTTP API suite covering authentication, access control, media ownership, notifications, persistence boundaries and token revocation.\n\n## Current boundary
 
 This is a transferable reference backend, not a production messaging service. It does **not** claim production-grade account recovery, credential/password security, encrypted media transport, end-to-end encryption, object-storage/CDN integration, push-notification infrastructure, moderation operations, horizontal scaling, distributed concurrency control, production observability, or app-store deployment.
 
