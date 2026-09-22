@@ -28,6 +28,6 @@ jobs:
       - name: Archive verified backend source
         uses: actions/upload-artifact@v4
         with:
-          name: sulia-communication-core-v0.2
+          name: sulia-communication-core-v0.4
           path: sulia/backend
           if-no-files-found: error
