@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Flexible Line Recovery Robot — Product Demonstration</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#03080c;color:#eef6f8;font-family:Inter,system-ui,sans-serif;overflow:hidden}
+.stage{position:relative;width:100vw;height:100vh;background:#050b10}.scene{position:absolute;inset:0;opacity:0;transform:scale(1.04);transition:opacity 1.2s ease,transform 7s ease}.scene.active{opacity:1;transform:scale(1)}
+.scene img{width:100%;height:100%;object-fit:cover;filter:saturate(1.08) contrast(1.04)}
+.overlay{position:absolute;inset:0;background:linear-gradient(90deg,rgba(2,7,11,.86),rgba(2,7,11,.15) 70%),linear-gradient(0deg,rgba(2,7,11,.72),transparent 42%)}
+.copy{position:absolute;left:7vw;bottom:13vh;max-width:650px}.eyebrow{font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:#8edcf5}.copy h1{font-size:clamp(34px,5vw,70px);line-height:1;margin:12px 0}.copy p{font-size:20px;line-height:1.5;color:#c1d1d9}
+.timeline{position:absolute;left:7vw;right:7vw;bottom:6vh;height:3px;background:#50626d}.progress{height:100%;width:0;background:#d9f2fb}.controls{position:absolute;right:7vw;bottom:7vh}.controls button{border:1px solid #49606d;background:rgba(5,12,17,.8);color:#eef6f8;border-radius:9px;padding:10px 14px}
+.badge{position:absolute;top:5vh;left:7vw;border:1px solid #49606d;border-radius:999px;padding:8px 12px;background:rgba(5,12,17,.65);font-size:13px}
+</style>
+</head>
+<body>
+<div class="stage">
+<div class="badge">FLEXIBLE LINE RECOVERY ROBOT · ENGINEERING DEMONSTRATION</div>
+<div class="scene active"><img src="https://dnznrvs05pmza.cloudfront.net/gemini/gemini-3.1-flash-image/images/f5ad2236-1f65-42a9-a06a-3dadd33aa880/ec136324-b0c7-4729-a6db-c80457fc64d8/Photorealistic_premium_industrial_product_hero_image_for_a_m.png"><div class="overlay"></div><div class="copy"><span class="eyebrow">01 · The problem</span><h1>Recover the disorder.</h1><p>Disordered flexible lines enter a controlled recovery chamber instead of an open robot workspace.</p></div></div>
+<div class="scene"><img src="https://dnznrvs05pmza.cloudfront.net/gemini/gemini-3.1-flash-image/images/20dd780b-f9fd-44ef-ba17-8b95ee8c35e7/b87d1bf7-00ea-4456-8675-11a0d733d47d/Photorealistic_industrial_product_film_frame_of_the_same_Fle.png"><div class="overlay"></div><div class="copy"><span class="eyebrow">02 · Sense</span><h1>Map the line state.</h1><p>Vision, depth and physical sensing establish endpoints, crossings, loops and handling state.</p></div></div>
+<div class="scene"><img src="https://dnznrvs05pmza.cloudfront.net/gemini/gemini-3.1-flash-image/images/2ac7fd02-238a-4397-9dab-5d1b1e269c3d/d0ee941d-c6a2-4be2-b7b5-bd1c144fb4e3/Photorealistic_industrial_product_film_frame_of_the_same_Fle.png"><div class="overlay"></div><div class="copy"><span class="eyebrow">03 · Recover</span><h1>Create slack before separation.</h1><p>Distributed compliant modules manipulate local sections and transfer the line while keeping the recovery field constrained.</p></div></div>
+<div class="scene"><img src="https://dnznrvs05pmza.cloudfront.net/gemini/gemini-3.1-flash-image/images/495098a0-1da1-4405-ad27-c6d7f4487e18/b1dbecec-98cb-4f5c-bdfc-36f6ceb75cde/Photorealistic_industrial_product_film_frame_of_the_same_Fle.png"><div class="overlay"></div><div class="copy"><span class="eyebrow">04 · Organize</span><h1>Finish with a controlled output.</h1><p>Recovered lines move into the straightening and organization path for downstream handling.</p></div></div>
+<div class="timeline"><div class="progress" id="progress"></div></div>
+<div class="controls"><button id="toggle">Pause</button></div>
+</div>
+<script>
+const scenes=[...document.querySelectorAll('.scene')],bar=document.getElementById('progress'),btn=document.getElementById('toggle');
+let i=0,elapsed=0,running=true,last=performance.now(),duration=6500;
+function show(n){scenes.forEach((s,k)=>s.classList.toggle('active',k===n))}
+function loop(now){let dt=now-last;last=now;if(running){elapsed+=dt;if(elapsed>=duration){elapsed=0;i=(i+1)%scenes.length;show(i)}bar.style.width=((i*duration+elapsed)/(scenes.length*duration)*100)+'%'}requestAnimationFrame(loop)}
+btn.onclick=()=>{running=!running;btn.textContent=running?'Pause':'Play'};requestAnimationFrame(loop);
+</script>
+</body></html>
