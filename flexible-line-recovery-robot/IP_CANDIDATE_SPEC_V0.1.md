@@ -1,7 +1,7 @@
 # Flexible Line Recovery Robot — IP Candidate Specification V0.1
 
 ## Status
-Working engineering/IP candidate. This document is not a patent grant and does not claim legal novelty.
+Engineering/IP disclosure package completed in V1.0. This document is not a patent grant or legal opinion. The master disclosure and working claim set are prepared for professional patent review.
 
 ## Problem
 Flexible lines such as electrical leads, extension cords, ropes, straps and selected hoses become crossed, looped, knotted, partially hidden and difficult to recover. Existing industrial equipment commonly handles controlled feeding, winding or storage, while robotics research demonstrates untangling with robot arms but still faces difficult perception and manipulation problems.
