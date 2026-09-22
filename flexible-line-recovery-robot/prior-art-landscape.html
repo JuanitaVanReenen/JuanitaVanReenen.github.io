@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Flexible Line Recovery Robot — Prior-Art Landscape</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#050b10;color:#edf5f8;font-family:Inter,system-ui,sans-serif}main{max-width:1180px;margin:auto;padding:42px 7%}
+h1{font-size:clamp(38px,6vw,66px);line-height:1;margin:8px 0 18px}.eyebrow{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:#8edcf5}.lead{color:#b8cbd5;line-height:1.55;font-size:19px;max-width:880px}.card{margin-top:20px;background:#0d1820;border:1px solid #263846;border-radius:16px;padding:22px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:15px}.item{background:#0b151d;border:1px solid #223846;border-radius:14px;padding:18px}.item h2{font-size:19px;margin-top:0}.item p{color:#b8cbd5;line-height:1.55}.tag{display:inline-block;padding:5px 8px;border-radius:999px;background:#172936;color:#8edcf5;font-size:11px;text-transform:uppercase;letter-spacing:.08em}
+.note{border-left:3px solid #75d5ff;padding:15px 18px;background:#0b151d;color:#b8cbd5;line-height:1.55}a{display:inline-block;margin:12px 10px 0 0;padding:11px 15px;border-radius:9px;background:#d9f2fb;color:#071018;text-decoration:none;font-weight:800}.alt{background:#142532;color:#d9edf5;border:1px solid #294455}
+</style></head><body><main>
+<div class="eyebrow">Research record · 22 September 2026</div>
+<h1>Prior-Art Landscape</h1>
+<p class="lead">The project is deliberately not framed as “robots can untangle cables.” That broad capability is already established. The relevant question is which parts of the proposed constrained recovery architecture, taken together, may warrant formal claim analysis.</p>
+<div class="card"><h2>Established areas</h2><div class="grid">
+<div class="item"><span class="tag">Existing research</span><h2>Autonomous cable untangling</h2><p>Published work has demonstrated RGB-D perception, motion primitives and specialized grippers for autonomously untangling long cables. This is a direct boundary condition for the concept.</p></div>
+<div class="item"><span class="tag">Existing research</span><h2>Multi-cable unweaving</h2><p>Recent research represents multiple interwoven cables with graph-based topological/geometric state and iterates perception, planning and action. The project must therefore avoid claiming graph representation or visual unweaving alone as novel.</p></div>
+<div class="item"><span class="tag">Industrial research</span><h2>Constrained cable handling</h2><p>Industrial cabling research already covers grasping, routing, insertion, specialized grippers and constrained-space requirements.</p></div>
+</div></div>
+<div class="card"><h2>Proposed boundary for formal review</h2><div class="grid">
+<div class="item"><h2>Constrained recovery chamber</h2><p>A purpose-built shallow handling environment that makes flexible-line recovery a defined machine process rather than an open robot-arm task.</p></div>
+<div class="item"><h2>Distributed compliant modules</h2><p>Multiple local modules cooperate around the line instead of depending on a single general-purpose manipulator.</p></div>
+<div class="item"><h2>Slack-first + verification loop</h2><p>The proposed control sequence explicitly treats slack creation as a recovery primitive and requires physical/geometry verification before advancing.</p></div>
+<div class="item"><h2>Verified-state rollback</h2><p>When an expected transition is not confirmed, the system returns to a previously verified state and selects an alternative action.</p></div>
+</div></div>
+<div class="note"><b>Important:</b> This is a research and claim-boundary record, not a legal opinion. Existing work may disclose individual elements or combinations not captured here. A professional patent search, claim chart and freedom-to-operate review are required before any patent filing, licensing statement or “novel” claim.</div>
+<div class="card"><h2>Research references</h2><p><b>Viswanath et al. (2022)</b> — autonomous untangling of long cables using RGB-D perception and motion primitives. <a href="https://arxiv.org/abs/2207.07813">Research paper</a></p>
+<p><b>Tian et al. (2025)</b> — autonomous unweaving of multiple cables using visual feedback and graph-based cable state. <a href="https://arxiv.org/abs/2512.12468">Research paper</a></p>
+<p><b>Jaya et al. (2024)</b> — industrial cabling in constrained environments, including gripping, routing and insertion. <a href="https://arxiv.org/abs/2404.10829">Research paper</a></p>
+</div>
+<a href="index.html">Main project</a><a class="alt" href="manufacturer-overview.html">Manufacturer overview</a><a class="alt" href="validation-dashboard.html">Validation dashboard</a>
+</main></body></html>
