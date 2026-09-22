@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PAZUMO — Short Video Social</title>
+<meta name="description" content="PAZUMO is a short-video social platform built around expressive reactions and community discovery.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar"><div class="logo">PAZUMO</div><nav><a href="#feed">Home</a><a href="#discover">Discover</a><a href="#create">Create</a><a href="#profile">Profile</a></nav></header>
+<main>
+<section class="hero"><p class="eyebrow">SHORT-VIDEO SOCIAL</p><h1>Watch. React. Let it travel.</h1><p>PAZUMO keeps short-video social simple while making reactions meaningful to discovery.</p><a class="primary" href="#feed">Enter PAZUMO</a></section>
+<section id="feed" class="feed-shell">
+<div class="feed-card">
+<div class="video-stage"><div class="play">▶</div><div class="video-meta"><b>@pazumo_creator</b><span>See it. Feel it. Share it.</span></div></div>
+<div class="controls">
+<button data-reaction="LOVE">❤️ <span>Love</span></button>
+<button data-reaction="FUNNY">😂 <span>Funny</span></button>
+<button data-reaction="WOW">🔥 <span>Wow</span></button>
+<button data-reaction="CURIOUS">👀 <span>Curious</span></button>
+<button class="travel" data-reaction="TRAVEL">✈️ <span>Travel</span></button>
+<button>💬 <span>Comment</span></button><button>↗ <span>Share</span></button><button>⇩ <span>Download</span></button>
+</div>
+</div>
+</section>
+<section id="discover" class="panel"><p class="eyebrow">DISCOVER</p><h2>Community-discovered videos.</h2><p>PAZUMO uses structured interaction signals to help decide what enters discovery, while keeping the viewer experience familiar and simple.</p></section>
+<section id="create" class="panel"><p class="eyebrow">CREATE</p><h2>Make a short video.</h2><div class="create-grid"><button>Record video</button><button>Upload video</button><label><input type="checkbox" checked> Allow downloads</label><button class="primary">Publish</button></div></section>
+<section id="profile" class="panel"><p class="eyebrow">PROFILE</p><h2>Your videos. Your audience.</h2><div class="profile-stats"><span><b>0</b> Videos</span><span><b>0</b> Followers</span><span><b>0</b> Following</span></div></section>
+</main>
+<script src="app.js"></script>
+</body>
+</html>
