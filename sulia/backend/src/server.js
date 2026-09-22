@@ -105,7 +105,8 @@ const server=http.createServer(async(req,res)=>{
       if(r.method==='GET'&&r.parts.length===3)return json(res,200,conversation);
 
       if(r.method==='POST'&&r.parts[3]==='messages'){
-        const input=await body(req);\n        if(input.mediaId)media.getOwned(input.mediaId,user.userId);\n        const message=store.createMessage(id,{...input,senderId:user.userId});
+        const input=await body(req);
+        if(input.mediaId)media.getOwned(input.mediaId,user.userId);
         notifyOthers(conversation,user.userId,'message.received',{conversationId:id,messageId:message.id,type:message.type});
         save();publish(id,'message.created',{message});return json(res,201,message);
       }
