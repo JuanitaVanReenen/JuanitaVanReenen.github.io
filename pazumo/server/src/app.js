@@ -1,7 +1,7 @@
 import http from 'node:http';
 import { URL } from 'node:url';
 import { createStore } from './store.js';
-import { issueSession, revokeSession, requireAuth } from './auth.js';
+import { issueSession, revokeSession, requireAuth, hashPassword, verifyPassword } from './auth.js';
 import { rankVideos } from './discovery.js';
 
 const store = createStore();
@@ -44,28 +44,39 @@ function route(req, res) {
   const path = url.pathname;
 
   if (req.method === 'GET' && path === '/api/health') {
-    return json(res, 200, { ok: true, service: 'pazumo-api', version: '1.0.0' });
+    return json(res, 200, { ok: true, service: 'pazumo-api', version: '1.1.0' });
   }
 
   if (req.method === 'POST' && path === '/api/auth/register') {
-    return readBody(req).then(body => {
-      if (!validText(body.username, 40) || !validText(body.email, 160) || !validText(body.password, 72)) {
+    return readBody(req).then(async body => {
+      if (!validText(body.username, 40) || !validText(body.email, 160) || !validText(body.password, 72) || body.password.length < 8) {
         return json(res, 400, { error: 'INVALID_REGISTRATION' });
       }
       if ([...store.users.values()].some(u => u.email.toLowerCase() === body.email.toLowerCase())) {
         return json(res, 409, { error: 'EMAIL_EXISTS' });
       }
       const userId = store.id('usr');
+      const passwordHash = await hashPassword(body.password);
       store.users.set(userId, {
         id: userId,
         username: body.username.trim(),
-        email: body.email.trim(),
-        passwordHash: 'DEPLOYMENT_PASSWORD_HASH_REQUIRED',
+        email: body.email.trim().toLowerCase(),
+        passwordHash,
         createdAt: new Date().toISOString()
       });
       store.notifications.set(userId, []);
       const token = issueSession(userId);
       return json(res, 201, { user: store.users.get(userId), token });
+    }).catch(err => json(res, err.status || 500, { error: err.message }));
+  }
+
+  if (req.method === 'POST' && path === '/api/auth/login') {
+    return readBody(req).then(async body => {
+      const user = [...store.users.values()].find(u => u.email === String(body.email || '').toLowerCase());
+      if (!user || !(await verifyPassword(String(body.password || ''), user.passwordHash))) {
+        return json(res, 401, { error: 'INVALID_CREDENTIALS' });
+      }
+      return json(res, 200, { user, token: issueSession(user.id) });
     }).catch(err => json(res, err.status || 500, { error: err.message }));
   }
 
@@ -106,11 +117,36 @@ function route(req, res) {
         replayRate: 0,
         shareCount: 0,
         commentCount: 0,
-        followCount: 0
+        followCount: 0,
+        downloadCount: 0,
+        reportCount: 0
       };
       store.videos.set(videoId, video);
       store.addEvent({ type: 'VIDEO_PUBLISHED', userId: req.userId, videoId });
       return json(res, 201, video);
+    }).catch(err => json(res, err.status || 500, { error: err.message })));
+  }
+
+  const viewMatch = path.match(/^\/api\/videos\/([^/]+)\/view$/);
+  if (req.method === 'POST' && viewMatch) {
+    return requireAuth(req, res, () => {
+      const video = store.videos.get(viewMatch[1]);
+      if (!video || video.status !== 'PUBLISHED') return json(res, 404, { error: 'VIDEO_NOT_FOUND' });
+      store.addEvent({ type: 'VIEW', userId: req.userId, videoId: video.id });
+      return json(res, 200, { ok: true });
+    });
+  }
+
+  const completionMatch = path.match(/^\/api\/videos\/([^/]+)\/completion$/);
+  if (req.method === 'POST' && completionMatch) {
+    return requireAuth(req, res, () => readBody(req).then(body => {
+      const video = store.videos.get(completionMatch[1]);
+      const completion = Number(body.completion);
+      if (!video || video.status !== 'PUBLISHED') return json(res, 404, { error: 'VIDEO_NOT_FOUND' });
+      if (!Number.isFinite(completion) || completion < 0 || completion > 1) return json(res, 400, { error: 'INVALID_COMPLETION' });
+      video.avgCompletion = video.avgCompletion === 0 ? completion : (video.avgCompletion * 0.8) + (completion * 0.2);
+      store.addEvent({ type: 'COMPLETION', userId: req.userId, videoId: video.id, value: completion });
+      return json(res, 200, { ok: true });
     }).catch(err => json(res, err.status || 500, { error: err.message })));
   }
 
@@ -127,12 +163,31 @@ function route(req, res) {
       video.reactions[body.type] = (video.reactions[body.type] || 0) + 1;
       store.reactions.set(key, body.type);
       store.addEvent({ type: 'REACTION', userId: req.userId, videoId: video.id, reaction: body.type });
-      return json(res, 200, {
-        ok: true,
-        reaction: body.type,
-        discoverySignal: body.type === 'TRAVEL'
-      });
+      return json(res, 200, { ok: true, reaction: body.type, discoverySignal: body.type === 'TRAVEL' });
     }).catch(err => json(res, err.status || 500, { error: err.message })));
+  }
+
+  const shareMatch = path.match(/^\/api\/videos\/([^/]+)\/share$/);
+  if (req.method === 'POST' && shareMatch) {
+    return requireAuth(req, res, () => {
+      const video = store.videos.get(shareMatch[1]);
+      if (!video || video.status !== 'PUBLISHED') return json(res, 404, { error: 'VIDEO_NOT_FOUND' });
+      video.shareCount++;
+      store.addEvent({ type: 'SHARE', userId: req.userId, videoId: video.id });
+      return json(res, 200, { ok: true });
+    });
+  }
+
+  const downloadMatch = path.match(/^\/api\/videos\/([^/]+)\/download$/);
+  if (req.method === 'GET' && downloadMatch) {
+    return requireAuth(req, res, () => {
+      const video = store.videos.get(downloadMatch[1]);
+      if (!video || video.status !== 'PUBLISHED') return json(res, 404, { error: 'VIDEO_NOT_FOUND' });
+      if (!video.allowDownload && video.creatorId !== req.userId) return json(res, 403, { error: 'DOWNLOAD_DISABLED' });
+      video.downloadCount++;
+      store.addEvent({ type: 'DOWNLOAD', userId: req.userId, videoId: video.id });
+      return json(res, 200, { allowed: true, mediaUrl: video.mediaUrl });
+    });
   }
 
   const followMatch = path.match(/^\/api\/users\/([^/]+)\/follow$/);
@@ -154,13 +209,7 @@ function route(req, res) {
       const video = store.videos.get(commentMatch[1]);
       if (!video || video.status !== 'PUBLISHED') return json(res, 404, { error: 'VIDEO_NOT_FOUND' });
       if (!validText(body.text, 500)) return json(res, 400, { error: 'INVALID_COMMENT' });
-      const comment = {
-        id: store.id('com'),
-        videoId: video.id,
-        userId: req.userId,
-        text: body.text.trim(),
-        createdAt: new Date().toISOString()
-      };
+      const comment = { id: store.id('com'), videoId: video.id, userId: req.userId, text: body.text.trim(), createdAt: new Date().toISOString() };
       if (!store.comments.has(video.id)) store.comments.set(video.id, []);
       store.comments.get(video.id).push(comment);
       video.commentCount++;
@@ -169,10 +218,20 @@ function route(req, res) {
     }).catch(err => json(res, err.status || 500, { error: err.message })));
   }
 
+  const reportMatch = path.match(/^\/api\/videos\/([^/]+)\/report$/);
+  if (req.method === 'POST' && reportMatch) {
+    return requireAuth(req, res, () => readBody(req).then(body => {
+      const video = store.videos.get(reportMatch[1]);
+      if (!video || video.status !== 'PUBLISHED') return json(res, 404, { error: 'VIDEO_NOT_FOUND' });
+      const reason = validText(body.reason || 'OTHER', 100) ? String(body.reason || 'OTHER').trim() : 'OTHER';
+      video.reportCount++;
+      store.addEvent({ type: 'REPORT', userId: req.userId, videoId: video.id, reason });
+      return json(res, 202, { accepted: true });
+    }).catch(err => json(res, err.status || 500, { error: err.message })));
+  }
+
   if (req.method === 'GET' && path === '/api/notifications') {
-    return requireAuth(req, res, () => json(res, 200, {
-      items: store.notifications.get(req.userId) || []
-    }));
+    return requireAuth(req, res, () => json(res, 200, { items: store.notifications.get(req.userId) || [] }));
   }
 
   json(res, 404, { error: 'NOT_FOUND' });
