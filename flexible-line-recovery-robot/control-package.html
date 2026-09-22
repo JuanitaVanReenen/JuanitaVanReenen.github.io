@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Flexible Line Recovery Robot — Control Package</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#050b10;color:#edf5f8;font-family:Inter,system-ui,sans-serif}main{max-width:1180px;margin:auto;padding:42px 7%}
+.eyebrow{color:#8edcf5;letter-spacing:.18em;text-transform:uppercase;font-size:12px}h1{font-size:clamp(38px,6vw,64px);line-height:1;margin:10px 0 18px}.lead{color:#b8cbd5;line-height:1.55;font-size:19px;max-width:900px}
+.card{margin-top:20px;background:#0d1820;border:1px solid #263846;border-radius:16px;padding:22px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(245px,1fr));gap:14px}.item{background:#0b151d;border:1px solid #223846;border-radius:13px;padding:18px}.item h2{font-size:18px;margin-top:0}.item p,.item li{color:#b8cbd5;line-height:1.5}
+.state{display:inline-block;padding:6px 9px;border-radius:999px;background:#172936;color:#8edcf5;font-size:11px;letter-spacing:.06em}.flow{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.flow b{padding:10px 12px;border:1px solid #315466;border-radius:9px;background:#101f29}.arrow{color:#75d5ff}
+pre{white-space:pre-wrap;background:#071018;border:1px solid #203440;border-radius:12px;padding:16px;color:#b9d8e2;line-height:1.5;overflow:auto}.note{border-left:3px solid #75d5ff;padding:15px 18px;background:#0b151d;color:#b8cbd5;line-height:1.55}a{display:inline-block;margin:12px 10px 0 0;padding:11px 15px;border-radius:9px;background:#d9f2fb;color:#071018;text-decoration:none;font-weight:800}.alt{background:#142532;color:#d9edf5;border:1px solid #294455}
+</style></head><body><main>
+<div class="eyebrow">Implementation blueprint</div><h1>Control Package</h1>
+<p class="lead">A manufacturer-facing control blueprint for the proposed recovery machine. It defines the supervisory state machine, local module interface, sensor contract, manipulation primitives and fault handling without pretending that untested values are production limits.</p>
+<div class="card"><h2>Supervisory state machine</h2><div class="flow"><b>BOOT</b><span class="arrow">→</span><b>SAFE</b><span class="arrow">→</span><b>OBSERVE</b><span class="arrow">→</span><b>MAP</b><span class="arrow">→</span><b>SELECT_ACTION</b><span class="arrow">→</span><b>EXECUTE</b><span class="arrow">→</span><b>VERIFY</b><span class="arrow">→</span><b>COMMIT / ROLLBACK</b></div><p class="lead">Every state transition should be logged with timestamp, sensor confidence, action ID, module ownership and verification result.</p></div>
+<div class="grid">
+<div class="item"><h2>Sensor contract</h2><ul><li>RGB/depth frame + timestamp</li><li>Endpoint/crossing candidates</li><li>Module position and encoder state</li><li>Grip/contact state</li><li>Tension/force estimate</li><li>Motor current / fault state</li></ul></div>
+<div class="item"><h2>Line-state record</h2><ul><li>Segment IDs</li><li>Endpoint confidence</li><li>Crossing relationships</li><li>Loop candidates</li><li>Local tension class</li><li>Module ownership</li><li>Last verified state ID</li></ul></div>
+<div class="item"><h2>Action primitives</h2><ul><li>ACQUIRE</li><li>SLIDE</li><li>CREATE_SLACK</li><li>LIFT</li><li>SEPARATE</li><li>TRANSFER</li><li>REVERSE</li><li>RELEASE</li></ul></div>
+<div class="item"><h2>Verification gates</h2><ul><li>Expected geometry change</li><li>Expected motion response</li><li>Grip/contact consistency</li><li>Tension within configured envelope</li><li>No new unsafe crossing</li><li>Confidence threshold met</li></ul></div>
+</div>
+<div class="card"><h2>Module interface</h2><pre>COMMAND
+module_id
+action_id
+target_position
+motion_profile
+contact_mode
+verification_required
+
+FEEDBACK
+position
+velocity
+grip_state
+contact_force
+motor_current
+fault_code
+timestamp
+
+SAFETY
+enable
+limit_state
+emergency_release
+watchdog
+safe_stop</pre></div>
+<div class="card"><h2>Failure handling</h2><div class="grid">
+<div class="item"><span class="state">SENSOR FAULT</span><h2>Preserve state</h2><p>Freeze or move to a predefined safe state. Do not commit an uncertain line-state transition.</p></div>
+<div class="item"><span class="state">ACTION FAILURE</span><h2>Rollback</h2><p>Return to the last verified state when physically safe, then select an alternate action.</p></div>
+<div class="item"><span class="state">TENSION LIMIT</span><h2>Release / retreat</h2><p>Stop the current manipulation and reduce stored load according to the physical safety design.</p></div>
+<div class="item"><span class="state">WATCHDOG</span><h2>Safe stop</h2><p>Remove motion authority and require an explicit recovery sequence before re-enabling movement.</p></div>
+</div></div>
+<div class="card"><h2>Data record for every action</h2><pre>RUN_ID
+STATE_BEFORE
+ACTION_ID
+MODULES_USED
+TARGET_SEGMENT
+SENSOR_CONFIDENCE
+EXPECTED_CHANGE
+OBSERVED_CHANGE
+TENSION_RESPONSE
+VERIFICATION_RESULT
+STATE_AFTER
+FAULT_CODE
+ROLLBACK_STATE
+OPERATOR_INTERVENTION
+TIMESTAMP</pre></div>
+<div class="note"><b>Engineering boundary:</b> This blueprint defines interfaces and logic, not certified safety functions. Real force limits, safe speeds, stop categories, risk reduction measures and hardware interfaces must be determined by qualified engineering analysis and applicable standards.</div>
+<a href="prototype-build-spec.html">Prototype build specification</a><a class="alt" href="validation-dashboard.html">Validation dashboard</a><a class="alt" href="manufacturer-overview.html">Manufacturer overview</a>
+</main></body></html>
