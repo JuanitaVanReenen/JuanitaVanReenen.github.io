@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Flexible Line Recovery Robot — Prototype Build Specification</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#050b10;color:#edf5f8;font-family:Inter,system-ui,sans-serif}main{max-width:1180px;margin:auto;padding:42px 7%}
+.eyebrow{color:#8edcf5;letter-spacing:.18em;text-transform:uppercase;font-size:12px}h1{font-size:clamp(38px,6vw,64px);line-height:1;margin:10px 0 18px}.lead{color:#b8cbd5;line-height:1.55;font-size:19px;max-width:850px}
+.card{margin-top:20px;background:#0d1820;border:1px solid #263846;border-radius:16px;padding:22px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(245px,1fr));gap:14px}.item{background:#0b151d;border:1px solid #223846;border-radius:13px;padding:18px}.item h2{font-size:19px;margin-top:0}.item p,.item li{color:#b8cbd5;line-height:1.5}
+table{width:100%;border-collapse:collapse;margin-top:12px}th,td{padding:12px;border-bottom:1px solid #203440;text-align:left}th{color:#8edcf5;font-size:12px;text-transform:uppercase}td{color:#b8cbd5}.note{border-left:3px solid #75d5ff;padding:15px 18px;background:#0b151d;color:#b8cbd5;line-height:1.55}a{display:inline-block;margin:12px 10px 0 0;padding:11px 15px;border-radius:9px;background:#d9f2fb;color:#071018;text-decoration:none;font-weight:800}.alt{background:#142532;color:#d9edf5;border:1px solid #294455}
+</style></head><body><main>
+<div class="eyebrow">Prototype engineering specification</div><h1>Flexible Line Recovery Robot</h1>
+<p class="lead">A manufacturer-facing starting specification for a bench/chamber demonstrator. Dimensions and component choices are deliberately presented as development targets, not certified production specifications.</p>
+<div class="card"><h2>Prototype envelope</h2><table><tr><th>Item</th><th>Development target</th><th>Purpose</th></tr>
+<tr><td>Recovery field</td><td>~1000 × 600 mm shallow chamber</td><td>Controlled visible handling area</td></tr>
+<tr><td>Handling modules</td><td>4 independent modules</td><td>Local acquire, lift, slide, transfer and release</td></tr>
+<tr><td>Primary vision</td><td>1 overhead RGB-D camera</td><td>Geometry / endpoint / crossing estimation</td></tr>
+<tr><td>Local sensing</td><td>Optional 2–4 cameras</td><td>Occlusion and close-range verification</td></tr>
+<tr><td>Physical sensing</td><td>Tension/force + motor current</td><td>Slip, load and action verification</td></tr>
+<tr><td>Control</td><td>Real-time controller + supervisory computer</td><td>Motion safety plus state planning</td></tr>
+<tr><td>Output</td><td>Straightening / loose-coil path</td><td>Controlled recovered-line handoff</td></tr></table></div>
+<div class="card"><h2>Functional module set</h2><div class="grid">
+<div class="item"><h2>Compliant guide/grip</h2><p>Low-damage contact surfaces, adjustable preload, position feedback and controlled release.</p></div>
+<div class="item"><h2>Drive</h2><p>Low-speed reversible actuation with encoder feedback and conservative force/tension limits.</p></div>
+<div class="item"><h2>Perception</h2><p>Depth-aware line segmentation, endpoint candidates, crossings/loops and confidence estimates.</p></div>
+<div class="item"><h2>State engine</h2><p>Stores segments, crossings, loops, tension state, module ownership and last verified state.</p></div>
+<div class="item"><h2>Planner</h2><p>Selects manipulation primitives using predicted risk and current line state.</p></div>
+<div class="item"><h2>Verifier</h2><p>Compares expected versus observed geometry and physical response before committing state.</p></div>
+</div></div>
+<div class="card"><h2>Prototype sequence</h2><ol><li>Build one compliant handling module and instrument it.</li><li>Demonstrate acquire → slide → create slack → release on a single line.</li><li>Add a second module and demonstrate controlled transfer.</li><li>Add overhead depth perception and line-state reconstruction.</li><li>Run simple crossing and loop scenarios.</li><li>Add verification and rollback fault injection.</li><li>Scale to four modules and the complete chamber.</li></ol></div>
+<div class="card"><h2>Manufacturer handoff data</h2><div class="grid"><div class="item"><h2>Mechanical</h2><p>CAD concept, module envelope, materials/contact surfaces, mounting points and service access.</p></div><div class="item"><h2>Electrical</h2><p>Motor/encoder interfaces, sensing inputs, safety interlocks and emergency-release architecture.</p></div><div class="item"><h2>Software</h2><p>State machine, perception interface, planner primitives, verifier and fault-state behavior.</p></div><div class="item"><h2>Validation</h2><p>Defined test matrix, measured tension, recovery time, success rate, intervention count and material-damage checks.</p></div></div></div>
+<div class="note"><b>Engineering caution:</b> This is a development specification. No component has been certified for the proposed application and no physical performance is claimed. Actual force limits, dimensions, materials and safety functions must be established through engineering analysis and testing.</div>
+<a href="manufacturer-overview.html">Manufacturer overview</a><a class="alt" href="validation-dashboard.html">Validation dashboard</a><a class="alt" href="simulation.html">Simulation</a><a class="alt" href="product-demo.html">Product demonstration</a>
+</main></body></html>
