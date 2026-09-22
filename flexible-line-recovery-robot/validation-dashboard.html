@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Flexible Line Recovery Robot — Validation Dashboard</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#050b10;color:#edf5f8;font-family:Inter,system-ui,sans-serif}main{max-width:1200px;margin:auto;padding:42px 7%}
+h1{font-size:clamp(38px,6vw,66px);line-height:1;margin:8px 0 18px}.eyebrow{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:#8edcf5}.lead{color:#b8cbd5;line-height:1.55;font-size:19px;max-width:850px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:25px}.card{background:#0d1820;border:1px solid #263846;border-radius:16px;padding:20px}.metric{font-size:30px;font-weight:800}.muted{color:#91a8b5;font-size:13px}.bar{height:8px;background:#172936;border-radius:99px;overflow:hidden;margin-top:12px}.fill{height:100%;width:0;background:#75d5ff;transition:width .7s}
+table{width:100%;border-collapse:collapse;margin-top:18px;background:#0b151d;border-radius:14px;overflow:hidden}th,td{padding:13px;border-bottom:1px solid #203440;text-align:left}th{color:#8edcf5;font-size:12px;text-transform:uppercase;letter-spacing:.08em}td{color:#b8cbd5}
+button,a{display:inline-block;margin:12px 10px 0 0;padding:11px 15px;border-radius:9px;background:#d9f2fb;color:#071018;text-decoration:none;font-weight:800;border:0;cursor:pointer}.alt{background:#142532;color:#d9edf5;border:1px solid #294455}
+.note{margin-top:24px;border-left:3px solid #75d5ff;background:#0b151d;padding:15px 18px;color:#b8cbd5;line-height:1.5}
+</style></head><body><main>
+<div class="eyebrow">Validation readiness</div><h1>Engineering Validation Dashboard</h1>
+<p class="lead">A structured view of what the proposed system must prove before physical performance or commercial claims are made.</p>
+<div class="grid">
+<div class="card"><div class="muted">SOFTWARE LOGIC</div><div class="metric" id="m1">0%</div><div class="bar"><div class="fill" id="b1"></div></div><p>State transitions, rollback and alternate actions represented in the demonstrator.</p></div>
+<div class="card"><div class="muted">PHYSICAL PROTOTYPE</div><div class="metric">NOT TESTED</div><p>Bench and chamber hardware evidence still required.</p></div>
+<div class="card"><div class="muted">MATERIAL COVERAGE</div><div class="metric">0</div><p>Physical material classes validated so far in this record.</p></div>
+<div class="card"><div class="muted">IP REVIEW</div><div class="metric">REQUIRED</div><p>Formal patent search and claim review remain external steps.</p></div>
+</div>
+<div class="card" style="margin-top:22px"><h2>Test matrix</h2><table><thead><tr><th>Scenario</th><th>Software</th><th>Bench</th><th>Chamber</th><th>Evidence needed</th></tr></thead><tbody>
+<tr><td>Simple crossing</td><td>Ready</td><td>Planned</td><td>Planned</td><td>Verified separation</td></tr>
+<tr><td>Single loop</td><td>Ready</td><td>Planned</td><td>Planned</td><td>Loop release + tension</td></tr>
+<tr><td>Multiple crossings</td><td>Represented</td><td>Planned</td><td>Planned</td><td>Actions / success</td></tr>
+<tr><td>Failed grasp</td><td>Represented</td><td>Planned</td><td>Planned</td><td>Rollback record</td></tr>
+<tr><td>Sensor disagreement</td><td>Represented</td><td>Planned</td><td>Planned</td><td>Fault + safe state</td></tr>
+<tr><td>Interrupted action</td><td>Represented</td><td>Planned</td><td>Planned</td><td>Recovery from verified state</td></tr>
+<tr><td>Organization output</td><td>Represented</td><td>Planned</td><td>Planned</td><td>Coil/output success</td></tr>
+</tbody></table></div>
+<div class="card" style="margin-top:22px"><h2>Failure-injection console</h2><p class="muted">This is a planning demonstrator, not a physical test result.</p>
+<button onclick="inject('Camera dropout')">Camera dropout</button><button onclick="inject('Tension spike')">Tension spike</button><button onclick="inject('Actuator stall')">Actuator stall</button><button onclick="inject('Transfer failure')">Transfer failure</button>
+<div id="console" class="note">READY — no fault injected.</div></div>
+<div class="note">Validation status is deliberately conservative: simulation evidence is not physical evidence. Each future physical result should identify material, dimensions, initial configuration, machine configuration and measured outcomes.</div>
+<a href="simulation.html">Open recovery simulation</a><a class="alt" href="manufacturer-overview.html">Manufacturer overview</a><a class="alt" href="product-demo.html">Product demonstration</a>
+</main><script>
+let p=0;const b=document.getElementById('b1'),m=document.getElementById('m1');setTimeout(()=>{p=75;b.style.width=p+'%';m.textContent=p+'%';},250);
+function inject(name){document.getElementById('console').textContent='FAULT INJECTION: '+name+' → expected behavior: detect fault, enter safe state, preserve last verified state, then replan when permitted.'}
+</script></body></html>
