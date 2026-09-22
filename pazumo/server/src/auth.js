@@ -2,6 +2,29 @@ import crypto from 'node:crypto';
 
 const sessions = new Map();
 
+export async function hashPassword(password) {
+  const salt = crypto.randomBytes(16);
+  return new Promise((resolve, reject) => {
+    crypto.scrypt(password, salt, 64, (err, derived) => {
+      if (err) return reject(err);
+      resolve('scrypt$' + salt.toString('hex') + '$' + derived.toString('hex'));
+    });
+  });
+}
+
+export async function verifyPassword(password, stored) {
+  const parts = String(stored).split('$');
+  if (parts.length !== 3 || parts[0] !== 'scrypt') return false;
+  const salt = Buffer.from(parts[1], 'hex');
+  const expected = Buffer.from(parts[2], 'hex');
+  return new Promise((resolve, reject) => {
+    crypto.scrypt(password, salt, expected.length, (err, derived) => {
+      if (err) return reject(err);
+      resolve(crypto.timingSafeEqual(expected, derived));
+    });
+  });
+}
+
 export function issueSession(userId) {
   const token = crypto.randomBytes(32).toString('hex');
   sessions.set(token, { userId, createdAt: Date.now() });
