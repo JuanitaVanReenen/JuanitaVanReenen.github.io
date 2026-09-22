@@ -7,27 +7,43 @@
 *{box-sizing:border-box}body{margin:0;background:#03080c;color:#eef6f8;font-family:Inter,system-ui,sans-serif;overflow:hidden}
 .stage{position:relative;width:100vw;height:100vh;background:#050b10}.scene{position:absolute;inset:0;opacity:0;transform:scale(1.04);transition:opacity 1.2s ease,transform 7s ease}.scene.active{opacity:1;transform:scale(1)}
 .scene img{width:100%;height:100%;object-fit:cover;filter:saturate(1.08) contrast(1.04)}
-.overlay{position:absolute;inset:0;background:linear-gradient(90deg,rgba(2,7,11,.86),rgba(2,7,11,.15) 70%),linear-gradient(0deg,rgba(2,7,11,.72),transparent 42%)}
-.copy{position:absolute;left:7vw;bottom:13vh;max-width:650px}.eyebrow{font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:#8edcf5}.copy h1{font-size:clamp(34px,5vw,70px);line-height:1;margin:12px 0}.copy p{font-size:20px;line-height:1.5;color:#c1d1d9}
-.timeline{position:absolute;left:7vw;right:7vw;bottom:6vh;height:3px;background:#50626d}.progress{height:100%;width:0;background:#d9f2fb}.controls{position:absolute;right:7vw;bottom:7vh}.controls button{border:1px solid #49606d;background:rgba(5,12,17,.8);color:#eef6f8;border-radius:9px;padding:10px 14px}
-.badge{position:absolute;top:5vh;left:7vw;border:1px solid #49606d;border-radius:999px;padding:8px 12px;background:rgba(5,12,17,.65);font-size:13px}
+.overlay{position:absolute;inset:0;background:linear-gradient(90deg,rgba(2,7,11,.88),rgba(2,7,11,.12) 72%),linear-gradient(0deg,rgba(2,7,11,.78),transparent 44%)}
+.copy{position:absolute;left:7vw;bottom:13vh;max-width:690px}.eyebrow{font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:#8edcf5}.copy h1{font-size:clamp(34px,5vw,70px);line-height:1;margin:12px 0}.copy p{font-size:20px;line-height:1.5;color:#c1d1d9}
+.timeline{position:absolute;left:7vw;right:7vw;bottom:6vh;height:3px;background:#50626d}.progress{height:100%;width:0;background:#d9f2fb}.controls{position:absolute;right:7vw;bottom:7vh}.controls button{border:1px solid #49606d;background:rgba(5,12,17,.84);color:#eef6f8;border-radius:9px;padding:10px 14px}
+.badge{position:absolute;top:5vh;left:7vw;border:1px solid #49606d;border-radius:999px;padding:8px 12px;background:rgba(5,12,17,.68);font-size:13px;z-index:5}
+.telemetry{position:absolute;right:7vw;top:15vh;width:245px;border:1px solid rgba(142,220,245,.35);border-radius:12px;background:rgba(3,10,15,.72);backdrop-filter:blur(8px);padding:14px;z-index:5;font:12px/1.7 ui-monospace,monospace;color:#b9d8e2}
+.telemetry b{color:#eef6f8}.state{display:inline-block;padding:2px 7px;border-radius:999px;background:rgba(142,220,245,.13);color:#8edcf5;margin-left:5px}
+.scan{position:absolute;left:7vw;top:15vh;width:120px;height:120px;border:1px solid rgba(142,220,245,.45);border-radius:50%;z-index:4;opacity:.65;box-shadow:0 0 35px rgba(142,220,245,.12)}
+.scan:after{content:"";position:absolute;left:50%;top:50%;width:48%;height:1px;background:#8edcf5;transform-origin:left center;animation:sweep 2.2s linear infinite}
+@keyframes sweep{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
 <div class="stage">
 <div class="badge">FLEXIBLE LINE RECOVERY ROBOT · ENGINEERING DEMONSTRATION</div>
+<div class="telemetry"><div><b>RECOVERY CONTROLLER</b></div><div>MODE <span class="state" id="mode">OBSERVE</span></div><div>LINE STATE <span id="lineState">unmapped</span></div><div>VERIFICATION <span id="verify">pending</span></div><div>RECOVERY <span id="recovery">0%</span></div></div>
+<div class="scan" id="scan"></div>
+
 <div class="scene active"><img src="https://dnznrvs05pmza.cloudfront.net/gemini/gemini-3.1-flash-image/images/f5ad2236-1f65-42a9-a06a-3dadd33aa880/ec136324-b0c7-4729-a6db-c80457fc64d8/Photorealistic_premium_industrial_product_hero_image_for_a_m.png"><div class="overlay"></div><div class="copy"><span class="eyebrow">01 · The problem</span><h1>Recover the disorder.</h1><p>Disordered flexible lines enter a controlled recovery chamber instead of an open robot workspace.</p></div></div>
 <div class="scene"><img src="https://dnznrvs05pmza.cloudfront.net/gemini/gemini-3.1-flash-image/images/20dd780b-f9fd-44ef-ba17-8b95ee8c35e7/b87d1bf7-00ea-4456-8675-11a0d733d47d/Photorealistic_industrial_product_film_frame_of_the_same_Fle.png"><div class="overlay"></div><div class="copy"><span class="eyebrow">02 · Sense</span><h1>Map the line state.</h1><p>Vision, depth and physical sensing establish endpoints, crossings, loops and handling state.</p></div></div>
 <div class="scene"><img src="https://dnznrvs05pmza.cloudfront.net/gemini/gemini-3.1-flash-image/images/2ac7fd02-238a-4397-9dab-5d1b1e269c3d/d0ee941d-c6a2-4be2-b7b5-bd1c144fb4e3/Photorealistic_industrial_product_film_frame_of_the_same_Fle.png"><div class="overlay"></div><div class="copy"><span class="eyebrow">03 · Recover</span><h1>Create slack before separation.</h1><p>Distributed compliant modules manipulate local sections and transfer the line while keeping the recovery field constrained.</p></div></div>
-<div class="scene"><img src="https://dnznrvs05pmza.cloudfront.net/gemini/gemini-3.1-flash-image/images/495098a0-1da1-4405-ad27-c6d7f4487e18/b1dbecec-98cb-4f5c-bdfc-36f6ceb75cde/Photorealistic_industrial_product_film_frame_of_the_same_Fle.png"><div class="overlay"></div><div class="copy"><span class="eyebrow">04 · Organize</span><h1>Finish with a controlled output.</h1><p>Recovered lines move into the straightening and organization path for downstream handling.</p></div></div>
+<div class="scene"><img src="https://dnznrvs05pmza.cloudfront.net/gemini/gemini-3.1-flash-image/images/2ac7fd02-238a-4397-9dab-5d1b1e269c3d/d0ee941d-c6a2-4be2-b7b5-bd1c144fb4e3/Photorealistic_industrial_product_film_frame_of_the_same_Fle.png"><div class="overlay"></div><div class="copy"><span class="eyebrow">04 · Verify & recover</span><h1>Detect. Roll back. Try another action.</h1><p>If the expected geometry or physical response is not verified, the controller returns to the last verified state and selects an alternate manipulation primitive.</p></div></div>
+<div class="scene"><img src="https://dnznrvs05pmza.cloudfront.net/gemini/gemini-3.1-flash-image/images/495098a0-1da1-4405-ad27-c6d7f4487e18/b1dbecec-98cb-4f5c-bdfc-36f6ceb75cde/Photorealistic_industrial_product_film_frame_of_the_same_Fle.png"><div class="overlay"></div><div class="copy"><span class="eyebrow">05 · Organize</span><h1>Finish with a controlled output.</h1><p>Recovered lines move into the straightening and organization path for downstream handling.</p></div></div>
+
 <div class="timeline"><div class="progress" id="progress"></div></div>
 <div class="controls"><button id="toggle">Pause</button></div>
 </div>
 <script>
 const scenes=[...document.querySelectorAll('.scene')],bar=document.getElementById('progress'),btn=document.getElementById('toggle');
-let i=0,elapsed=0,running=true,last=performance.now(),duration=6500;
+const mode=document.getElementById('mode'),lineState=document.getElementById('lineState'),verify=document.getElementById('verify'),recovery=document.getElementById('recovery'),scan=document.getElementById('scan');
+let i=0,elapsed=0,running=true,last=performance.now(),duration=5600,total=scenes.length*duration;
+const telemetry=[
+['OBSERVE','unmapped','pending','0%'],['MAP','mapped','pending','18%'],['SELECT_ACTION','crossings + loops','ready','34%'],
+['VERIFY','last action rejected','ROLLBACK','52%'],['EXECUTE','replanned segment','verified','72%'],['SUCCESS','organized output','verified','100%']
+];
 function show(n){scenes.forEach((s,k)=>s.classList.toggle('active',k===n))}
-function loop(now){let dt=now-last;last=now;if(running){elapsed+=dt;if(elapsed>=duration){elapsed=0;i=(i+1)%scenes.length;show(i)}bar.style.width=((i*duration+elapsed)/(scenes.length*duration)*100)+'%'}requestAnimationFrame(loop)}
-btn.onclick=()=>{running=!running;btn.textContent=running?'Pause':'Play'};requestAnimationFrame(loop);
+function updateTelemetry(){const t=telemetry[Math.min(telemetry.length-1,Math.floor((i+elapsed/duration)*telemetry.length/scenes.length))];mode.textContent=t[0];lineState.textContent=t[1];verify.textContent=t[2];recovery.textContent=t[3];scan.style.opacity=(i===1||i===3)?'.9':'.45'}
+function loop(now){let dt=now-last;last=now;if(running){elapsed+=dt;if(elapsed>=duration){elapsed=0;i=(i+1)%scenes.length;show(i)}bar.style.width=((i*duration+elapsed)/total*100)+'%';updateTelemetry()}requestAnimationFrame(loop)}
+btn.onclick=()=>{running=!running;btn.textContent=running?'Pause':'Play'};updateTelemetry();requestAnimationFrame(loop);
 </script>
 </body></html>
