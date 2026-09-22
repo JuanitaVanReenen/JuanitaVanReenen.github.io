@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Flexible Line Recovery Robot</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#050b10;color:#edf5f8;font-family:Inter,system-ui,sans-serif}
+.hero{min-height:78vh;padding:70px 7%;display:flex;align-items:center;background:radial-gradient(circle at 75% 35%,#17394a 0,#08131b 42%,#050b10 78%)}
+h1{font-size:clamp(44px,7vw,88px);line-height:.95;max-width:900px;margin:0 0 24px}
+.lead{font-size:22px;line-height:1.55;color:#b8cbd5;max-width:780px}
+.pill{display:inline-block;padding:8px 12px;border:1px solid #315466;border-radius:999px;color:#8edcf5;margin-bottom:22px}
+a{display:inline-block;margin-top:25px;margin-right:12px;padding:13px 18px;border-radius:10px;background:#d9f2fb;color:#071018;text-decoration:none;font-weight:800}
+.alt{background:#142532;color:#d9edf5;border:1px solid #294455}
+section{padding:70px 7%;max-width:1300px;margin:auto}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px}
+.card{background:#0d1820;border:1px solid #223846;border-radius:18px;padding:25px}.card h3{margin-top:0}
+small{color:#91a8b5}
+</style>
+</head>
+<body>
+<div class="hero">
+<div>
+<div class="pill">Industrial robotics • IP candidate</div>
+<h1>Flexible Line Recovery Robot</h1>
+<p class="lead">A purpose-built robotic system designed to recover disordered flexible lines—separating, verifying, straightening and organizing cables, cords, ropes and selected hoses.</p>
+<a href="simulation.html">Open recovery simulation</a>
+<a class="alt" href="#system">See the system</a>
+</div>
+</div>
+<section id="system">
+<h2>Designed around the problem</h2>
+<p class="lead">Instead of asking a conventional robot arm to imitate a human hand, the proposed architecture creates a controlled recovery environment around flexible-line behavior.</p>
+<div class="grid">
+<div class="card"><h3>Sense</h3><p>Vision, depth, tension and motion data build a live representation of the flexible-line state.</p></div>
+<div class="card"><h3>Recover</h3><p>Manipulation prioritizes slack creation and low-risk separation before higher-force actions.</p></div>
+<div class="card"><h3>Verify</h3><p>Each manipulation is checked before the machine advances to the next state.</p></div>
+<div class="card"><h3>Organize</h3><p>Recovered lines can move into a controlled straightening and coiling path.</p></div>
+</div>
+</section>
+<section>
+<h2>Engineering program</h2>
+<p>Software architecture, simulation, mechanism design, sensing, safety logic and manufacturer-facing documentation are being developed as one integrated system.</p>
+<small>Working IP candidate. Formal patentability and freedom-to-operate require professional legal review.</small>
+</section>
+</body>
+</html>
