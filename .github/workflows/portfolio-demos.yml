@@ -1,4 +1,7 @@
 name: Real MVP walkthrough recordings
+concurrency:
+  group: portfolio-demo-recordings
+  cancel-in-progress: true
 on:
   push:
     paths:
@@ -155,5 +158,7 @@ jobs:
           if git diff --cached --quiet; then exit 0; fi
           git commit -m "Record unique walkthroughs from real MVP interfaces"
           git fetch origin main
-          git rebase origin/main
+          git reset --soft origin/main
+          git add demo-assets/*.mp4
+          git commit -m "Record unique walkthroughs from real MVP interfaces" || exit 0
           git push origin HEAD:main
