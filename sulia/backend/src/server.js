@@ -15,7 +15,7 @@ const saved=persistence.load();
 const store=new SuliaStore(saved.store||{});
 const identity=new IdentityService(saved.identity||{});
 const notifications=new NotificationQueue(saved.notifications||[]);
-const media=new MediaService(mediaRoot);
+const media=new MediaService(mediaRoot,{seed:saved.media||{}});
 const realtime=new RealtimeHub();
 const rate=new Map();
 const MAX_MEDIA_BYTES=25*1024*1024;
@@ -48,7 +48,7 @@ function enforceRate(req){
   if(prior.count>120)throw new Error('Rate limit exceeded');
 }
 function auth(req){return identity.authenticate(req.headers.authorization);}
-function save(){persistence.save({version:2,store:store.snapshot(),identity:identity.snapshot(),notifications:notifications.snapshot()});}
+function save(){persistence.save({version:3,store:store.snapshot(),identity:identity.snapshot(),notifications:notifications.snapshot(),media:media.snapshot()});}
 function notifyOthers(conversation,actorId,type,payload){
   for(const member of conversation.members){if(member!==actorId)notifications.enqueue({userId:member,type,payload});}
 }
@@ -60,7 +60,7 @@ const server=http.createServer(async(req,res)=>{
     const r=route(req.method,req.url);
     if(r.parts[0]!=='api')return json(res,404,{error:'Not found'});
 
-    if(r.method==='POST'&&r.parts.join('/')==='api/auth/register'){
+    if(r.method==='POST'&&r.parts.join('/')==='api/auth/revoke'){\n      const result=identity.revoke(req.headers.authorization);save();return json(res,200,result);\n    }\n\n    if(r.method==='POST'&&r.parts.join('/')==='api/auth/register'){
       const result=identity.register(await body(req));save();return json(res,201,result);
     }
 
@@ -137,8 +137,8 @@ const server=http.createServer(async(req,res)=>{
 
     return json(res,404,{error:'Route not found'});
   }catch(e){
-    const status=e.message==='Authentication required'||e.message==='Invalid authentication token'?401:
-      e.message==='Conversation access denied'?403:
+    const status=e.message==='Authentication required'||e.message==='Invalid authentication token'||e.message==='Authentication token expired'?401:
+      e.message==='Conversation access denied'||e.message==='Media access denied'?403:
       e.message==='Rate limit exceeded'||e.message==='Request body too large'||e.message==='Media payload exceeds limit'?429:
       e.message==='Not found'?404:400;
     return json(res,status,{error:e.message});
