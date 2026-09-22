@@ -21,6 +21,8 @@ class IdentityService {
     return {user, token};
   }
 
+  hasUser(userId){ return this.users.has(userId); }
+
   authenticate(authorization){
     if(typeof authorization!=='string' || !authorization.startsWith('Bearer ')) throw new Error('Authentication required');
     const token=authorization.slice(7).trim();
