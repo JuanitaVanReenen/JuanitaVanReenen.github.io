@@ -60,7 +60,11 @@ const server=http.createServer(async(req,res)=>{
     const r=route(req.method,req.url);
     if(r.parts[0]!=='api')return json(res,404,{error:'Not found'});
 
-    if(r.method==='POST'&&r.parts.join('/')==='api/auth/revoke'){\n      const result=identity.revoke(req.headers.authorization);save();return json(res,200,result);\n    }\n\n    if(r.method==='POST'&&r.parts.join('/')==='api/auth/register'){
+    if(r.method==='POST'&&r.parts.join('/')==='api/auth/revoke'){
+      const result=identity.revoke(req.headers.authorization);save();return json(res,200,result);
+    }
+
+    if(r.method==='POST'&&r.parts.join('/')==='api/auth/register'){
       const result=identity.register(await body(req));save();return json(res,201,result);
     }
 
