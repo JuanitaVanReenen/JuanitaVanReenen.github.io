@@ -154,4 +154,6 @@ jobs:
           git add demo-assets/*.mp4
           if git diff --cached --quiet; then exit 0; fi
           git commit -m "Record unique walkthroughs from real MVP interfaces"
-          git push
+          git fetch origin main
+          git rebase origin/main
+          git push origin HEAD:main
