@@ -36,20 +36,31 @@
 The simulation is explicitly treated as an engineering planning demonstrator, not proof of physical performance. The validation plan defines software, bench, chamber and representative-material testing before any performance claims are made.
 
 ### Visual production
-A photorealistic industrial hero image has been generated and incorporated into the public product page.
+A photorealistic industrial hero image and supporting engineering scene images have been incorporated into the public product demonstration.
+
+### Product demonstration
+The free browser-based product demonstration has been upgraded to show a complete control narrative:
+- problem intake;
+- sensing and line-state mapping;
+- slack-first manipulation;
+- verification failure;
+- rollback and alternate action;
+- successful recovery and organized output.
+
+The demonstration is intentionally presented as an engineering visualization. It is not represented as proof of physical performance and is not described as a generated MP4.
 
 ### Video status
-A cinematic product video has not been generated yet because the connected Runway workspace currently does not provide video-generation access on its Free plan. No video is represented as completed.
+A cinematic MP4 product video has not been generated because the connected Runway workspace currently does not provide video-generation access on its Free plan. The current free deliverable is the interactive browser-based product demonstration.
 
 ### Prior-art discipline
 The current record does not claim that the combined architecture is patentable. Recent screening confirms substantial existing work in robotic cable manipulation, DLO planning and autonomous cable recovery, including MIT cable manipulation, RoboCable, 2025 DLO path planning and 2026 autonomous error recovery research. A formal patent search, claim chart and professional patent review remain required before filing.
 
 ## Current status
-**Engineering/IP candidate package substantially completed.**
+**Engineering/IP candidate package substantially completed and public demonstration upgraded.**
 
 Remaining external step:
 - obtain physical prototype evidence and formal legal IP review;
-- generate the cinematic commercial video when video-generation access is available.
+- generate the cinematic commercial MP4 when video-generation access is available.
 
 ## Important
 This repository material describes a proposed engineering system. It is not evidence of physical performance, a granted patent, a certification or a legal opinion.
