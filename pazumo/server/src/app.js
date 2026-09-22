@@ -39,6 +39,33 @@ function validText(value, max) {
   return typeof value === 'string' && value.trim().length > 0 && value.length <= max;
 }
 
+const RATE_WINDOW_MS = 60_000;
+const RATE_LIMIT = 120;
+const rateBuckets = new Map();
+
+function clientKey(req) {
+  return String(req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown').split(',')[0].trim();
+}
+
+function rateLimited(req) {
+  const now = Date.now();
+  const key = clientKey(req);
+  const bucket = rateBuckets.get(key) || { start: now, count: 0 };
+  if (now - bucket.start >= RATE_WINDOW_MS) {
+    bucket.start = now;
+    bucket.count = 0;
+  }
+  bucket.count++;
+  rateBuckets.set(key, bucket);
+  return bucket.count > RATE_LIMIT;
+}
+
+function safeUser(user) {
+  if (!user) return null;
+  const { passwordHash, email, ...publicUser } = user;
+  return publicUser;
+}
+
 function route(req, res) {
   const url = new URL(req.url, 'http://localhost');
   const path = url.pathname;
@@ -66,7 +93,7 @@ function route(req, res) {
       });
       store.notifications.set(userId, []);
       const token = issueSession(userId);
-      return json(res, 201, { user: store.users.get(userId), token });
+      return json(res, 201, { user: safeUser(store.users.get(userId)), token });
     }).catch(err => json(res, err.status || 500, { error: err.message }));
   }
 
@@ -76,7 +103,7 @@ function route(req, res) {
       if (!user || !(await verifyPassword(String(body.password || ''), user.passwordHash))) {
         return json(res, 401, { error: 'INVALID_CREDENTIALS' });
       }
-      return json(res, 200, { user, token: issueSession(user.id) });
+      return json(res, 200, { user: safeUser(user), token: issueSession(user.id) });
     }).catch(err => json(res, err.status || 500, { error: err.message }));
   }
 
@@ -238,6 +265,7 @@ function route(req, res) {
 }
 
 const server = http.createServer((req, res) => {
+  if (rateLimited(req)) return json(res, 429, { error: 'RATE_LIMITED' });
   try { route(req, res); }
   catch { json(res, 500, { error: 'INTERNAL_ERROR' }); }
 });
