@@ -40,7 +40,7 @@ main{flex:1;padding:20px 16px 150px}.welcome{text-align:center;padding:35px 8px 
 </div>
 </section>
 <div id="conversation"></div>
-<div class="footnote">Prototype decision support. Shileen does not replace professional, legal, medical or financial advice.</div>
+<div class="footnote">Working software decision support. Shileen does not replace professional, legal, medical or financial advice.</div>
 </main>
 <div class="composer">
 <form id="form"><textarea id="input" rows="1" placeholder="Ask Shileen anything…"></textarea><button class="send" aria-label="Send">↑</button></form>
@@ -132,7 +132,7 @@ function shileenFinalCheck(){
 }
 function finalBuildStatusCard(){
  const t=shileenFinalCheck();
- return '<div class="decision"><strong>Shileen build status</strong><br>'+(t.ready?'CORE MVP CHECK: READY':'CORE MVP CHECK: REVIEW REQUIRED')+(t.missing.length?'<br>Missing: '+escapeHtml(t.missing.join(', ')):'')+'<br><small>Local reasoning prototype; production integrations remain an implementation boundary.</small></div>';
+ return '<div class="decision"><strong>Shileen build status</strong><br>'+(t.ready?'CORE MVP CHECK: READY':'CORE MVP CHECK: REVIEW REQUIRED')+(t.missing.length?'<br>Missing: '+escapeHtml(t.missing.join(', ')):'')+'<br><small>Local reasoning software demonstration; production integrations remain an implementation boundary.</small></div>';
 }
 function userControlCard(text){
  return '<div class="decision"><strong>User control</strong><br>Shileen presents its reasoning state and lets the user decide whether to provide more information, save the assessment, or start a new question.<br><small>It supports the decision; it does not make the decision for the user.</small></div>';
