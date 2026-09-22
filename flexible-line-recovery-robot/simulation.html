@@ -1,59 +1,36 @@
 <!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Flexible Line Recovery Robot — Recovery Simulation</title>
 <style>
-body{margin:0;background:#071018;color:#eaf2f7;font-family:Inter,system-ui,sans-serif}
-main{max-width:1180px;margin:auto;padding:32px}
-h1{font-size:34px;margin:0 0 8px}p{color:#a9bac7}
-.panel{background:#101c26;border:1px solid #263846;border-radius:18px;padding:20px;margin-top:18px}
-canvas{width:100%;height:480px;background:#0a131b;border-radius:14px}
-button{background:#d8eef7;color:#071018;border:0;border-radius:10px;padding:11px 16px;font-weight:700;cursor:pointer}
-.status{display:flex;gap:12px;flex-wrap:wrap;margin-top:15px}
-.badge{padding:8px 11px;border-radius:999px;background:#172936;color:#cce8f3}
-</style>
-</head>
-<body>
-<main>
-<h1>Flexible Line Recovery Robot</h1>
-<p>Digital engineering demonstrator — recovery sequence concept.</p>
-<div class="panel">
-<canvas id="c" width="1100" height="480"></canvas>
-<div class="status" id="status"></div>
-<br><button id="run">Run recovery sequence</button>
-</div>
-</main>
-<script>
-const c=document.getElementById('c'),x=c.getContext('2d'),status=document.getElementById('status');
-let phase=0,t=0,running=false;
-const phases=["CHAOS DETECTED","LINE MAP BUILT","SLACK CREATED","CROSSING SEPARATED","STATE VERIFIED","LINE RECOVERED","COIL READY"];
-function badge(){status.innerHTML=phases.map((p,i)=>'<span class="badge">'+(i===phase?'● ':'✓ ')+p+'</span>').join('')}
-function line(points,offset=0){
- x.beginPath(); points.forEach((p,i)=>{let xx=p[0]+offset,yy=p[1];i?x.lineTo(xx,yy):x.moveTo(xx,yy)});x.stroke();
-}
+body{margin:0;background:#071018;color:#eaf2f7;font-family:Inter,system-ui,sans-serif}main{max-width:1180px;margin:auto;padding:32px}
+h1{font-size:34px;margin:0 0 8px}p{color:#a9bac7}.panel{background:#101c26;border:1px solid #263846;border-radius:18px;padding:20px;margin-top:18px}
+canvas{width:100%;height:480px;background:#0a131b;border-radius:14px}button{background:#d8eef7;color:#071018;border:0;border-radius:10px;padding:11px 16px;font-weight:700;cursor:pointer}
+button.secondary{background:#172936;color:#cce8f3;border:1px solid #304a5b;margin-left:8px}.status{display:flex;gap:10px;flex-wrap:wrap;margin-top:15px}
+.badge{padding:8px 11px;border-radius:999px;background:#172936;color:#cce8f3}.log{margin-top:14px;padding:12px;border-radius:10px;background:#0b151d;color:#9ed9ec;font:13px ui-monospace,monospace;min-height:18px}
+</style></head><body><main>
+<h1>Flexible Line Recovery Robot</h1><p>Digital engineering demonstrator — closed-loop recovery, verification and rollback concept.</p>
+<div class="panel"><canvas id="c" width="1100" height="480"></canvas><div class="status" id="status"></div><div class="log" id="log">READY — press Run recovery sequence.</div><br>
+<button id="run">Run recovery sequence</button><button class="secondary" id="reset">Reset</button></div>
+</main><script>
+const c=document.getElementById('c'),x=c.getContext('2d'),status=document.getElementById('status'),log=document.getElementById('log');
+const phases=["CHAOS DETECTED","LINE MAP BUILT","SLACK CREATED","CROSSING SEPARATED","STATE VERIFIED","RECOVERY COMPLETE","COIL READY"];
+let phase=0,t=0,running=false,failed=false,frame=0;
+function badge(){status.innerHTML=phases.map((p,i)=>'<span class="badge">'+(i<phase?'✓ ':i===phase?'● ':'○ ')+p+'</span>').join('')}
+function poly(points,shift=0){x.beginPath();points.forEach((p,i)=>{let xx=p[0]+shift,yy=p[1];i?x.lineTo(xx,yy):x.moveTo(xx,yy)});x.stroke()}
 function draw(){
- x.clearRect(0,0,c.width,c.height);
- x.fillStyle="#0e1b25";x.fillRect(30,35,1040,410);
- x.strokeStyle="#304a5b";x.lineWidth=2;x.strokeRect(30,35,1040,410);
- x.fillStyle="#9db3c0";x.font="16px system-ui";x.fillText("Recovery chamber — live state",55,65);
- const tangled=phase<3;
- const paths=[
- [[80,170],[220,320],[380,120],[560,350],[760,160],[1010,300]],
- [[80,320],[240,150],[390,340],[560,160],[760,330],[1010,150]],
- [[80,250],[240,260],[380,180],[540,300],[730,230],[1010,260]]
- ];
- x.lineWidth=7;
- paths.forEach((p,i)=>{x.strokeStyle=["#4fd1c5","#ffd166","#ff7b8a"][i];line(p,tangled?Math.sin(t+i)*8:phase>4?i*18:0)});
- x.lineWidth=1;
- // handling modules
- [[180,105],[430,105],[680,105],[930,105]].forEach((m,i)=>{x.fillStyle=i<=phase?"#75d5ff":"#304a5b";x.beginPath();x.arc(m[0],m[1],14,0,Math.PI*2);x.fill()});
- x.fillStyle="#dbe8ee";x.font="14px system-ui";x.fillText("Vision + tension sensing",55,425);
+ x.clearRect(0,0,c.width,c.height);x.fillStyle="#0e1b25";x.fillRect(30,35,1040,410);x.strokeStyle="#304a5b";x.lineWidth=2;x.strokeRect(30,35,1040,410);
+ x.fillStyle="#9db3c0";x.font="16px system-ui";x.fillText("Recovery chamber — closed-loop state",55,65);
+ const tangled=phase<3||failed;
+ const paths=[[[80,170],[220,320],[380,120],[560,350],[760,160],[1010,300]],[[80,320],[240,150],[390,340],[560,160],[760,330],[1010,150]],[[80,250],[240,260],[380,180],[540,300],[730,230],[1010,260]]];
+ x.lineWidth=7;paths.forEach((p,i)=>{x.strokeStyle=["#4fd1c5","#ffd166","#ff7b8a"][i];poly(p,tangled?Math.sin(t+i)*9:phase>4?i*18:0)});
+ x.lineWidth=1;[[180,105],[430,105],[680,105],[930,105]].forEach((m,i)=>{x.fillStyle=i<=phase?"#75d5ff":"#304a5b";x.beginPath();x.arc(m[0],m[1],14,0,Math.PI*2);x.fill()});
+ x.fillStyle="#dbe8ee";x.font="14px system-ui";x.fillText("Vision + depth + tension sensing",55,425);
+ x.fillStyle=failed?"#ffb3bd":"#9ed9ec";x.fillText(failed?"VERIFICATION FAILED → ROLLBACK TO LAST VERIFIED STATE":"Controller state: "+(phases[Math.min(phase,6)]),780,425);
  badge();
- if(running){t+=.04;if(t>1){t=0;if(phase<6)phase++;else running=false}requestAnimationFrame(draw)}
-}
-document.getElementById('run').onclick=()=>{phase=0;t=0;running=true;draw()};draw();
-</script>
-</body>
-</html>
+ if(running){t+=.04;frame++;if(t>1){t=0;
+   if(phase===3&&!failed){failed=true;log.textContent="VERIFY: expected separation not confirmed. Rollback to last verified state.";setTimeout(()=>{failed=false;phase=4;log.textContent="ALTERNATIVE ACTION: local slack recreated; transfer path changed."},900)}
+   else if(phase<6){phase++;if(phase===2)log.textContent="SELECT_ACTION: create local slack before separation.";if(phase===4&&!failed)log.textContent="VERIFY: geometry + motion response confirmed.";if(phase===5)log.textContent="SUCCESS: recovered line moved to controlled output.";if(phase===6){log.textContent="COIL READY: downstream organization path complete.";running=false}}
+ }requestAnimationFrame(draw)}}
+document.getElementById('run').onclick=()=>{phase=0;t=0;frame=0;failed=false;running=true;log.textContent="OBSERVE: disordered flexible line detected.";draw()};
+document.getElementById('reset').onclick=()=>{phase=0;t=0;failed=false;running=false;log.textContent="READY — press Run recovery sequence.";draw()};draw();
+</script></body></html>
