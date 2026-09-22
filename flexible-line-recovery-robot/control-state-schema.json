@@ -1,0 +1,48 @@
+{
+  "system": "Flexible Line Recovery Robot",
+  "schema_version": "0.1",
+  "states": [
+    "BOOT","SAFE","OBSERVE","MAP","SELECT_ACTION","EXECUTE","VERIFY","COMMIT","ROLLBACK","FAULT","SAFE_STOP","OUTPUT"
+  ],
+  "line_state": {
+    "segments": ["id","endpoints","geometry_confidence","tension_class"],
+    "relations": ["crossing","loop","adjacency","ownership"],
+    "verified_state_id": "string",
+    "overall_confidence": "0..1"
+  },
+  "modules": {
+    "module_id": "string",
+    "position": "encoder_position",
+    "grip_state": ["OPEN","CONTACT","GRIP","RELEASE"],
+    "contact_force": "engineering_units",
+    "motor_current": "engineering_units",
+    "fault_code": "string|null"
+  },
+  "actions": [
+    "ACQUIRE","SLIDE","CREATE_SLACK","LIFT","SEPARATE","TRANSFER","REVERSE","RELEASE"
+  ],
+  "verification": {
+    "required_before_commit": true,
+    "checks": [
+      "geometry_change",
+      "motion_response",
+      "grip_consistency",
+      "tension_response",
+      "confidence_threshold"
+    ]
+  },
+  "failure_policy": {
+    "uncertain_state": "DO_NOT_COMMIT",
+    "safe_action_failure": "ROLLBACK_TO_LAST_VERIFIED",
+    "sensor_fault": "SAFE_STOP_OR_PREDEFINED_SAFE_STATE",
+    "tension_limit": "STOP_AND_REDUCE_LOAD",
+    "watchdog": "REMOVE_MOTION_AUTHORITY"
+  },
+  "logging": [
+    "run_id","timestamp","state_before","action_id","target_segment",
+    "sensor_confidence","expected_change","observed_change",
+    "verification_result","state_after","fault_code",
+    "rollback_state","operator_intervention"
+  ],
+  "note": "Engineering interface concept only; production safety limits and hardware-specific values require qualified engineering validation."
+}
