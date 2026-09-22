@@ -27,7 +27,7 @@ class SuliaStore {
 
   createMessage(conversationId,input={}){
     assertMessageInput(input);
-    const {senderId,type='text',body,replyTo=null,clientMessageId=null}=input;
+    const {senderId,type='text',body,replyTo=null,clientMessageId=null,mediaId=null}=input;
     const c=this.conversations.get(conversationId);
     if(!c)throw new Error('Conversation not found');
     if(!c.members.includes(senderId))throw new Error('Sender is not a conversation member');
@@ -38,7 +38,7 @@ class SuliaStore {
     }
     const now=new Date().toISOString();
     const m={
-      id:id('msg'),conversationId,senderId,type,body,replyTo,reactionCount:0,
+      id:id('msg'),conversationId,senderId,type,body,mediaId,replyTo,reactionCount:0,
       delivery:{state:'queued',queuedAt:now,deliveredAt:null,readAt:null},
       createdAt:now
     };
