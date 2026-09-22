@@ -119,7 +119,8 @@ function route(req, res) {
       const following = new Set([...store.follows]
         .filter(k => k.startsWith(req.userId + ':'))
         .map(k => k.split(':')[1]));
-      const ranked = rankVideos([...store.videos.values()], req.userId, { following });
+      const blocked = new Set([...store.blocks].filter(k => k.startsWith(req.userId + ':')).map(k => k.split(':')[1]));
+      const ranked = rankVideos([...store.videos.values()].filter(v => !blocked.has(v.creatorId) && !store.blocks.has(v.creatorId + ':' + req.userId)), req.userId, { following });
       json(res, 200, { items: ranked.slice(0, 50) });
     });
   }
