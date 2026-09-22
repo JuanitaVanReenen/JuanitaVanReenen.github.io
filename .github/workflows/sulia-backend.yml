@@ -25,3 +25,9 @@ jobs:
           node-version: "22"
       - name: Run tests
         run: npm test
+      - name: Archive verified backend source
+        uses: actions/upload-artifact@v4
+        with:
+          name: sulia-communication-core-v0.2
+          path: sulia/backend
+          if-no-files-found: error
