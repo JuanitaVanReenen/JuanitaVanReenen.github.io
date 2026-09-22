@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Flexible Line Recovery Robot — Manufacturer Overview</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#050b10;color:#edf5f8;font-family:Inter,system-ui,sans-serif}main{max-width:1200px;margin:auto;padding:42px 7%}
+h1{font-size:clamp(38px,6vw,68px);line-height:1;margin:8px 0 20px}.eyebrow{color:#8edcf5;letter-spacing:.18em;text-transform:uppercase;font-size:12px}.lead{font-size:20px;line-height:1.55;color:#b8cbd5;max-width:850px}
+.panel{margin-top:28px;padding:24px;border:1px solid #263846;border-radius:18px;background:#0d1820}.flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px;align-items:stretch}.node{padding:18px;border:1px solid #315466;border-radius:14px;background:#101f29;min-height:95px}.node b{display:block;margin-bottom:8px}.node span{font-size:13px;color:#9fb4bf}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}.card{padding:22px;border:1px solid #223846;border-radius:16px;background:#0b151d}.card h2{margin-top:0;font-size:21px}.card p,.card li{color:#b8cbd5;line-height:1.55}.note{border-left:3px solid #75d5ff;padding:14px 18px;background:#0b151d;color:#b8cbd5}a{display:inline-block;margin:10px 10px 0 0;padding:11px 15px;border-radius:9px;background:#d9f2fb;color:#071018;text-decoration:none;font-weight:800}.alt{background:#142532;color:#d9edf5;border:1px solid #294455}
+</style></head><body><main>
+<div class="eyebrow">Manufacturer / strategic-buyer overview</div><h1>Flexible Line Recovery Robot</h1>
+<p class="lead">A proposed physical automation architecture for recovering disordered flexible lines inside a constrained, sensor-rich handling chamber. The system is designed around closed-loop manipulation rather than a single open-workspace robot arm.</p>
+<div class="panel"><h2>System operating loop</h2><div class="flow">
+<div class="node"><b>1. LOAD</b><span>Place disordered line bundle in recovery field.</span></div>
+<div class="node"><b>2. SENSE</b><span>Capture geometry, endpoints and physical response.</span></div>
+<div class="node"><b>3. MAP</b><span>Build a live line-state representation.</span></div>
+<div class="node"><b>4. PLAN</b><span>Select a low-risk manipulation primitive.</span></div>
+<div class="node"><b>5. EXECUTE</b><span>Create slack, separate or transfer locally.</span></div>
+<div class="node"><b>6. VERIFY</b><span>Confirm expected geometry and response.</span></div>
+<div class="node"><b>7. RECOVER</b><span>Rollback and replan when verification fails.</span></div>
+<div class="node"><b>8. OUTPUT</b><span>Feed recovered line to straightening / coiling.</span></div>
+</div></div>
+<section class="grid">
+<div class="card"><h2>Mechanical layer</h2><ul><li>Shallow transparent recovery chamber</li><li>Independent compliant guide/grip modules</li><li>Motorized motion with encoder feedback</li><li>Interchangeable handling cartridges</li><li>Downstream straightening and organization path</li></ul></div>
+<div class="card"><h2>Sensing layer</h2><ul><li>Overhead RGB/depth vision</li><li>Local chamber cameras where required</li><li>Optional tension/force sensing</li><li>Motor current and position feedback</li><li>Line-state confidence and verification signals</li></ul></div>
+<div class="card"><h2>Control layer</h2><ul><li>Observe → Map → Select Action → Execute → Verify</li><li>Slack-first manipulation primitive</li><li>Distributed module transfer</li><li>Last-verified-state rollback</li><li>Alternate-action selection after failure</li></ul></div>
+<div class="card"><h2>Safety layer</h2><ul><li>Force, tension, position and velocity limits</li><li>Watchdog and fault-state handling</li><li>Emergency release</li><li>Operator-visible chamber</li><li>Validation gates before physical deployment</li></ul></div>
+</section>
+<section class="panel"><h2>Potential manufacturing pathway</h2><p class="lead">The architecture is intended as a platform concept that can be adapted to defined material classes and operating environments. A manufacturer could develop the mechanical frame, compliant modules, sensing package and industrial controls around the proposed recovery logic.</p><div class="grid"><div class="card"><h2>Prototype</h2><p>Bench-scale chamber, 3–4 handling modules, overhead depth camera, representative cables/cords, basic tension measurement.</p></div><div class="card"><h2>Pilot</h2><p>Guarded enclosure, industrial motion hardware, calibrated sensing, cartridge trials and repeatability testing.</p></div><div class="card"><h2>Production</h2><p>Material-specific cartridges, serviceable modules, industrial safety system, cycle-time validation and application-specific integration.</p></div></div></section>
+<section class="panel"><h2>IP position</h2><p class="note">This material describes an IP candidate and engineering demonstrator. It does not claim a granted patent, guaranteed patentability, novelty over all prior art, or freedom to operate. Formal patent search, claim construction and professional legal review are required before filing or licensing.</p>
+<a href="product-demo.html">Product demonstration</a><a class="alt" href="simulation.html">Interactive simulation</a><a class="alt" href="MANUFACTURER_SPEC_V0.1.md">Manufacturer specification</a></section>
+</main></body></html>
