@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>StopSure Safety — Intelligent Machine Safety Performance</title>
+<style>
+:root{--bg:#08111c;--panel:#101d2b;--panel2:#152536;--text:#eef4f8;--muted:#9db0bf;--yellow:#ffd32a;--green:#36d399;--amber:#ffbf4a;--red:#ff5d67;--line:#263b4e}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,Arial,sans-serif;background:linear-gradient(180deg,#07111c,#0b1622);color:var(--text)}
+.wrap{max-width:1180px;margin:auto;padding:24px}.hero{display:grid;grid-template-columns:1.2fr .8fr;gap:22px;align-items:stretch}.card{background:rgba(16,29,43,.94);border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:0 18px 50px rgba(0,0,0,.22)}
+h1{font-size:48px;line-height:1;margin:0 0 12px}.accent{color:var(--yellow)}h2{margin:0 0 12px}h3{margin:0 0 8px}.sub{font-size:18px;color:var(--muted);line-height:1.55}.badge{display:inline-block;border:1px solid #52687b;border-radius:999px;padding:7px 12px;color:#d8e5ed;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+.device{min-height:280px;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 40%,#24394b,#0d1825 65%);border-radius:14px;position:relative}
+.devicebox{width:220px;height:150px;border:2px solid #354b5e;border-radius:16px;background:#101820;box-shadow:0 20px 45px #0008;position:relative;padding:24px}.devicebox:before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--yellow);border-radius:14px 0 0 14px}.brand{font-weight:800;font-size:23px}.brand span{color:var(--yellow)}.lights{position:absolute;right:18px;top:20px;display:grid;gap:10px}.light{width:9px;height:9px;border-radius:50%;box-shadow:0 0 10px currentColor}.g{color:var(--green);background:currentColor}.b{color:#5eb5ff;background:currentColor}.a{color:var(--amber);background:currentColor}.r{color:var(--red);background:currentColor}
+.ports{position:absolute;bottom:-10px;left:38px;display:flex;gap:12px}.port{width:18px;height:18px;background:#263849;border-radius:5px;border:2px solid #587085}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px}.metric{background:var(--panel2);padding:16px;border-radius:14px}.metric .v{font-size:28px;font-weight:800}.metric .l{font-size:12px;color:var(--muted)}
+.controls{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0}.btn{border:1px solid #4b6376;background:#152536;color:var(--text);padding:11px 15px;border-radius:10px;cursor:pointer;font-weight:700}.btn.primary{background:var(--yellow);color:#07111c;border-color:var(--yellow)}.btn:hover{filter:brightness(1.08)}
+.status{display:flex;align-items:center;gap:10px;font-weight:800}.dot{width:12px;height:12px;border-radius:50%;background:var(--green);box-shadow:0 0 14px var(--green)}
+table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:10px;border-bottom:1px solid var(--line);font-size:13px}th{color:#a9bccb}.ok{color:var(--green)}.warn{color:var(--amber)}.bad{color:var(--red)}
+.bar{height:10px;background:#1d3041;border-radius:99px;overflow:hidden}.fill{height:100%;background:var(--yellow);width:0;transition:.5s}
+.flow{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.step{padding:15px;background:var(--panel2);border-radius:12px;text-align:center}.step strong{display:block;margin-bottom:5px}.step small{color:var(--muted);line-height:1.35}
+.note{font-size:12px;color:#91a5b5;line-height:1.5}.footer{margin-top:22px;color:#718698;font-size:12px}
+@media(max-width:800px){.hero{grid-template-columns:1fr}.grid{grid-template-columns:repeat(2,1fr)}.flow{grid-template-columns:1fr 1fr}h1{font-size:38px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hero">
+    <section class="card">
+      <span class="badge">Development concept</span>
+      <h1><span class="accent">StopSure</span> Safety</h1>
+      <p class="sub"><b>Intelligent Machine Safety Performance Device.</b><br>
+      A retrofit technology concept designed to observe the physical response of machinery after a safety event, compare it with an established machine signature, and identify meaningful changes before they become a hidden safety-performance problem.</p>
+      <div class="controls">
+        <button class="btn primary" onclick="simulate('normal')">Simulate Normal Stop</button>
+        <button class="btn" onclick="simulate('drift')">Simulate Deterioration</button>
+        <button class="btn" onclick="simulate('fault')">Simulate Sensor Fault</button>
+        <button class="btn" onclick="resetDemo()">Reset</button>
+      </div>
+      <div class="status"><span id="dot" class="dot"></span><span id="status">SYSTEM MONITORING — NORMAL</span></div>
+    </section>
+    <section class="card device">
+      <div class="devicebox">
+        <div class="brand"><span>StopSure</span><br>Safety</div>
+        <div style="font-size:11px;color:#a7bac9;margin-top:12px">Intelligent Machine<br>Safety Performance Device</div>
+        <div class="lights"><i class="light g"></i><i class="light b"></i><i class="light a"></i><i class="light r"></i></div>
+        <div class="ports"><i class="port"></i><i class="port"></i><i class="port"></i><i class="port"></i></div>
+      </div>
+    </section>
+  </div>
+
+  <section class="card" style="margin-top:18px">
+    <h2>Live safety-performance demonstration</h2>
+    <div class="grid">
+      <div class="metric"><div class="v" id="stopTime">1.84 s</div><div class="l">Observed stop response</div></div>
+      <div class="metric"><div class="v" id="baseline">1.70–2.00 s</div><div class="l">Established normal range</div></div>
+      <div class="metric"><div class="v" id="deviation">0%</div><div class="l">Deviation from baseline centre</div></div>
+      <div class="metric"><div class="v" id="confidence">96%</div><div class="l">Analysis confidence</div></div>
+    </div>
+    <div style="margin-top:20px">
+      <div style="display:flex;justify-content:space-between"><span>Stopping-response position</span><span id="positionLabel">NORMAL</span></div>
+      <div class="bar"><div id="fill" class="fill"></div></div>
+    </div>
+  </section>
+
+  <section class="card" style="margin-top:18px">
+    <h2>What the device is checking</h2>
+    <div class="flow">
+      <div class="step"><strong>1. Safety command</strong><small>Stop event is detected.</small></div>
+      <div class="step"><strong>2. Physical response</strong><small>Motion/timing signals are captured.</small></div>
+      <div class="step"><strong>3. Signature analysis</strong><small>Current response is compared with established behaviour.</small></div>
+      <div class="step"><strong>4. Trend detection</strong><small>Repeated changes are separated from one-off noise.</small></div>
+      <div class="step"><strong>5. Action</strong><small>Alert and maintenance investigation can be initiated.</small></div>
+    </div>
+  </section>
+
+  <section class="card" style="margin-top:18px">
+    <h2>Recent stop events</h2>
+    <table><thead><tr><th>Event</th><th>Observed</th><th>Deviation</th><th>Analysis</th></tr></thead>
+    <tbody id="events"></tbody></table>
+  </section>
+
+  <section class="card" style="margin-top:18px">
+    <h2>Technology architecture</h2>
+    <p class="note">Concept architecture for buyer/engineering discussion. The safety-critical machine stop function remains in appropriately certified safety hardware. StopSure is presented here as an independent monitoring/intelligence layer, not as a certified protective control.</p>
+    <div class="grid">
+      <div class="metric"><div class="v">Motion</div><div class="l">Linear/rotational movement sensing</div></div>
+      <div class="metric"><div class="v">Timing</div><div class="l">Stop-command to true-standstill timing</div></div>
+      <div class="metric"><div class="v">Signature</div><div class="l">Baseline machine behaviour model</div></div>
+      <div class="metric"><div class="v">Trend</div><div class="l">Repeated deviation and sensor-health logic</div></div>
+    </div>
+  </section>
+
+  <div class="footer">StopSure Safety is an independently developed development concept. Hardware design, certification, machine-specific validation and safety-system integration require qualified engineering and applicable standards review before real-world deployment.</div>
+</div>
+<script>
+const base=1.85; let history=[];
+function row(label,t,dev,analysis,cls){return `<tr><td>${label}</td><td>${t.toFixed(2)} s</td><td>${dev>=0?'+':''}${dev.toFixed(1)}%</td><td class="${cls}">${analysis}</td></tr>`}
+function render(){
+ const tb=document.getElementById('events'); tb.innerHTML=history.slice(-8).reverse().map((e,i)=>row('Stop '+(history.length-i),e.t,e.dev,e.a,e.c)).join('');
+}
+function simulate(type){
+ let t,dev,a,c,conf,fill;
+ if(type==='normal'){t=1.84+Math.random()*.12; a='NORMAL RESPONSE';c='ok';conf=96;fill=42}
+ if(type==='drift'){t=2.20+Math.random()*.35; a='DETERIORATION DETECTED';c='warn';conf=92;fill=72}
+ if(type==='fault'){t=0;a='SENSOR HEALTH CHECK REQUIRED';c='bad';conf=88;fill=96}
+ dev=t?((t-base)/base*100):0;
+ history.push({t,dev,a,c});
+ document.getElementById('stopTime').textContent=t?t.toFixed(2)+' s':'—';
+ document.getElementById('deviation').textContent=t?(dev>=0?'+':'')+dev.toFixed(1)+'%':'—';
+ document.getElementById('confidence').textContent=conf+'%';
+ document.getElementById('positionLabel').textContent=a;
+ document.getElementById('fill').style.width=fill+'%';
+ const dot=document.getElementById('dot'); dot.style.background=c==='ok'?'var(--green)':c==='warn'?'var(--amber)':'var(--red)'; dot.style.boxShadow='0 0 14px '+(c==='ok'?'var(--green)':c==='warn'?'var(--amber)':'var(--red)');
+ document.getElementById('status').textContent=c==='ok'?'SYSTEM MONITORING — NORMAL':c==='warn'?'EARLY DEVIATION — INVESTIGATION RECOMMENDED':'SENSOR FAULT — CHECK INPUT';
+ render();
+}
+function resetDemo(){history=[];document.getElementById('status').textContent='SYSTEM MONITORING — NORMAL';document.getElementById('dot').style.background='var(--green)';document.getElementById('dot').style.boxShadow='0 0 14px var(--green)';document.getElementById('stopTime').textContent='1.84 s';document.getElementById('deviation').textContent='0%';document.getElementById('confidence').textContent='96%';document.getElementById('positionLabel').textContent='NORMAL';document.getElementById('fill').style.width='42%';render()}
+for(let i=0;i<5;i++){let t=1.78+Math.random()*.14;history.push({t,dev:(t-base)/base*100,a:'NORMAL RESPONSE',c:'ok'})}render();
+</script>
+</body></html>
