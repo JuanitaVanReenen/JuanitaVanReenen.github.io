@@ -20,7 +20,7 @@ table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:10px;bor
 .flow{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.step{padding:15px;background:var(--panel2);border-radius:12px;text-align:center}.step strong{display:block;margin-bottom:5px}.step small{color:var(--muted);line-height:1.35}
 .note{font-size:12px;color:#91a5b5;line-height:1.5}.footer{margin-top:22px;color:#718698;font-size:12px}
 @media(max-width:800px){.hero{grid-template-columns:1fr}.grid{grid-template-columns:repeat(2,1fr)}.flow{grid-template-columns:1fr 1fr}h1{font-size:38px}}
-</style>
+.chart-legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:8px;font-size:12px;color:var(--muted)}</style>
 </head>
 <body>
 <div class="wrap">
@@ -82,6 +82,32 @@ table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:10px;bor
     </div>
   </section>
 
+
+  <section class="card" style="margin-top:18px">
+    <h2>Stopping-signature waveform</h2>
+    <p class="note">The prototype shows the physical-response signal that a production device could capture. Normal behaviour is compared with a slower response, while a sensor fault is treated separately from mechanical deterioration.</p>
+    <div style="background:#0b1622;border:1px solid #263b4e;border-radius:14px;padding:12px">
+      <canvas id="signalChart" height="220" style="width:100%;display:block"></canvas>
+    </div>
+    <div class="grid" style="margin-top:12px">
+      <div class="metric"><div class="v" id="signalQuality">98%</div><div class="l">Signal quality</div></div>
+      <div class="metric"><div class="v" id="signatureScore">96</div><div class="l">Signature match score</div></div>
+      <div class="metric"><div class="v" id="trendState">Stable</div><div class="l">Trend state</div></div>
+      <div class="metric"><div class="v" id="nextAction">Monitor</div><div class="l">Suggested next action</div></div>
+    </div>
+  </section>
+
+  <section class="card" style="margin-top:18px">
+    <h2>Analysis pipeline</h2>
+    <div class="flow">
+      <div class="step"><strong>Capture</strong><small>Timestamped stop event plus machine motion signal.</small></div>
+      <div class="step"><strong>Validate</strong><small>Check signal quality, sensor health and event completeness.</small></div>
+      <div class="step"><strong>Extract</strong><small>Calculate response time and normalized stopping signature.</small></div>
+      <div class="step"><strong>Compare</strong><small>Measure deviation against the machine's established baseline.</small></div>
+      <div class="step"><strong>Trend</strong><small>Separate isolated variation from repeated directional drift.</small></div>
+    </div>
+  </section>
+
   <section class="card" style="margin-top:18px">
     <h2>Recent stop events</h2>
     <table><thead><tr><th>Event</th><th>Observed</th><th>Deviation</th><th>Analysis</th></tr></thead>
@@ -102,28 +128,186 @@ table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:10px;bor
   <div class="footer">StopSure Safety is an independently developed development concept. Hardware design, certification, machine-specific validation and safety-system integration require qualified engineering and applicable standards review before real-world deployment.</div>
 </div>
 <script>
-const base=1.85; let history=[];
-function row(label,t,dev,analysis,cls){return `<tr><td>${label}</td><td>${t.toFixed(2)} s</td><td>${dev>=0?'+':''}${dev.toFixed(1)}%</td><td class="${cls}">${analysis}</td></tr>`}
+/*
+  StopSure Safety prototype intelligence engine.
+  This is a non-safety-critical demonstration of:
+  - machine-specific baseline estimation
+  - signal-quality validation
+  - stopping-signature comparison
+  - isolated anomaly vs repeated drift logic
+  - sensor-fault separation
+*/
+const baselineSamples=[1.82,1.86,1.79,1.88,1.84,1.91,1.80,1.87,1.83,1.85,1.89,1.81];
+const sorted=[...baselineSamples].sort((a,b)=>a-b);
+const base=sorted[Math.floor(sorted.length/2)-1]/2+sorted[Math.floor(sorted.length/2)]/2;
+const absDev=baselineSamples.map(x=>Math.abs(x-base)).sort((a,b)=>a-b);
+const mad=absDev[Math.floor(absDev.length/2)-1]/2+absDev[Math.floor(absDev.length/2)]/2;
+const band=Math.max(0.15,3*mad);
+const lower=base-band, upper=base+band;
+let history=[];
+
+document.getElementById('baseline').textContent=lower.toFixed(2)+'–'+upper.toFixed(2)+' s';
+
+function median(values){
+  const a=[...values].sort((x,y)=>x-y);
+  if(!a.length)return 0;
+  const m=Math.floor(a.length/2);
+  return a.length%2?a[m]:(a[m-1]+a[m])/2;
+}
+
+function makeSignal(type){
+  const n=90, signal=[];
+  for(let i=0;i<n;i++){
+    const p=i/(n-1);
+    let v;
+    if(type==='normal'){
+      v=Math.max(0,1-Math.pow(p,1.8));
+      v += (Math.sin(i*1.7)+Math.sin(i*.43))*0.008;
+    }else if(type==='drift'){
+      v=Math.max(0,1-Math.pow(p,1.25));
+      v += (Math.sin(i*1.3)+Math.sin(i*.31))*0.012;
+    }else{
+      v=(Math.sin(i*2.9)+Math.sin(i*.71))*0.17 + (i%9===0?0.28:0);
+    }
+    signal.push(Math.max(0,Math.min(1.05,v)));
+  }
+  return signal;
+}
+
+function signalQuality(signal,type){
+  if(type==='fault')return 34;
+  let rough=0;
+  for(let i=1;i<signal.length;i++) rough+=Math.abs(signal[i]-signal[i-1]);
+  const normalized=Math.min(1,rough/(signal.length*.045));
+  return Math.round(99-normalized*16);
+}
+
+function signatureScore(type,dev,quality){
+  if(type==='fault')return Math.max(0,Math.round(quality-10));
+  const penalty=Math.min(60,Math.abs(dev)*1.15);
+  return Math.max(0,Math.round(100-penalty));
+}
+
+function classifyTrend(t){
+  const valid=history.filter(e=>e.valid).slice(-3);
+  if(valid.length<2)return {label:'Stable',action:'Monitor'};
+  const positive=valid.filter(e=>e.dev>6).length;
+  const negative=valid.filter(e=>e.dev<-6).length;
+  if(positive>=2)return {label:'Persistent drift',action:'Inspect'};
+  if(negative>=2)return {label:'Faster response',action:'Review'};
+  return {label:'Stable',action:'Monitor'};
+}
+
+function drawSignal(type){
+  const canvas=document.getElementById('signalChart');
+  const rect=canvas.getBoundingClientRect();
+  const dpr=window.devicePixelRatio||1;
+  canvas.width=Math.max(300,Math.floor(rect.width*dpr));
+  canvas.height=220*dpr;
+  const ctx=canvas.getContext('2d');
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  const w=canvas.clientWidth,h=220,pad=28;
+  ctx.clearRect(0,0,w,h);
+  ctx.strokeStyle='#263b4e';ctx.lineWidth=1;
+  for(let i=0;i<4;i++){
+    const y=pad+i*(h-pad*2)/3;
+    ctx.beginPath();ctx.moveTo(pad,y);ctx.lineTo(w-pad,y);ctx.stroke();
+  }
+  ctx.fillStyle='#9db0bf';ctx.font='12px system-ui';
+  ctx.fillText('Motion response',pad,16);ctx.fillText('time →',w-58,h-8);
+  const normal=makeSignal('normal'), current=makeSignal(type);
+  function plot(data,stroke,dash){
+    ctx.beginPath();ctx.strokeStyle=stroke;ctx.lineWidth=2;ctx.setLineDash(dash||[]);
+    data.forEach((v,i)=>{
+      const x=pad+i*(w-pad*2)/(data.length-1);
+      const y=h-pad-v*(h-pad*2);
+      if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+    });
+    ctx.stroke();ctx.setLineDash([]);
+  }
+  plot(normal,'#36d399',[6,5]);
+  plot(current,type==='normal'?'#ffd32a':type==='drift'?'#ffbf4a':'#ff5d67');
+  ctx.fillStyle='#9db0bf';ctx.fillText('Established signature',pad+8,38);
+  ctx.fillStyle=type==='normal'?'#ffd32a':type==='drift'?'#ffbf4a':'#ff5d67';
+  ctx.fillText(type==='normal'?'Current: normal':type==='drift'?'Current: slower response':'Current: sensor fault',pad+150,38);
+}
+
+function row(label,t,dev,analysis,cls){
+  return '<tr><td>'+label+'</td><td>'+(t? t.toFixed(2)+' s':'—')+'</td><td>'+ (t?(dev>=0?'+':'')+dev.toFixed(1)+'%':'—') +'</td><td class="'+cls+'">'+analysis+'</td></tr>';
+}
+
 function render(){
- const tb=document.getElementById('events'); tb.innerHTML=history.slice(-8).reverse().map((e,i)=>row('Stop '+(history.length-i),e.t,e.dev,e.a,e.c)).join('');
+  const tb=document.getElementById('events');
+  tb.innerHTML=history.slice(-8).reverse().map((e,i)=>row('Stop '+(history.length-i),e.t,e.dev,e.a,e.c)).join('');
 }
+
+function setState(type,t,quality,score,trend){
+  document.getElementById('signalQuality').textContent=quality+'%';
+  document.getElementById('signatureScore').textContent=score;
+  document.getElementById('trendState').textContent=trend.label;
+  document.getElementById('nextAction').textContent=trend.action;
+  drawSignal(type);
+}
+
 function simulate(type){
- let t,dev,a,c,conf,fill;
- if(type==='normal'){t=1.84+Math.random()*.12; a='NORMAL RESPONSE';c='ok';conf=96;fill=42}
- if(type==='drift'){t=2.20+Math.random()*.35; a='DETERIORATION DETECTED';c='warn';conf=92;fill=72}
- if(type==='fault'){t=0;a='SENSOR HEALTH CHECK REQUIRED';c='bad';conf=88;fill=96}
- dev=t?((t-base)/base*100):0;
- history.push({t,dev,a,c});
- document.getElementById('stopTime').textContent=t?t.toFixed(2)+' s':'—';
- document.getElementById('deviation').textContent=t?(dev>=0?'+':'')+dev.toFixed(1)+'%':'—';
- document.getElementById('confidence').textContent=conf+'%';
- document.getElementById('positionLabel').textContent=a;
- document.getElementById('fill').style.width=fill+'%';
- const dot=document.getElementById('dot'); dot.style.background=c==='ok'?'var(--green)':c==='warn'?'var(--amber)':'var(--red)'; dot.style.boxShadow='0 0 14px '+(c==='ok'?'var(--green)':c==='warn'?'var(--amber)':'var(--red)');
- document.getElementById('status').textContent=c==='ok'?'SYSTEM MONITORING — NORMAL':c==='warn'?'EARLY DEVIATION — INVESTIGATION RECOMMENDED':'SENSOR FAULT — CHECK INPUT';
- render();
+  let t,analysis,cls,conf,fill;
+  if(type==='normal'){
+    t=1.82+(history.length%4)*0.02;
+    analysis='NORMAL RESPONSE';cls='ok';conf=97;fill=42;
+  }else if(type==='drift'){
+    t=2.16+(history.length%3)*0.07;
+    analysis='MECHANICAL DEVIATION';cls='warn';conf=93;fill=73;
+  }else{
+    t=null;analysis='SENSOR HEALTH CHECK REQUIRED';cls='bad';conf=86;fill=96;
+  }
+
+  const dev=t?((t-base)/base*100):0;
+  const signal=makeSignal(type);
+  const quality=signalQuality(signal,type);
+  const valid=type!=='fault' && quality>=70;
+  const score=signatureScore(type,dev,quality);
+
+  history.push({t,dev,a:analysis,c:cls,valid,quality});
+  const trend=classifyTrend(t);
+
+  document.getElementById('stopTime').textContent=t?t.toFixed(2)+' s':'—';
+  document.getElementById('deviation').textContent=t?(dev>=0?'+':'')+dev.toFixed(1)+'%':'—';
+  document.getElementById('confidence').textContent=conf+'%';
+  document.getElementById('positionLabel').textContent=analysis;
+
+  const dot=document.getElementById('dot');
+  const tone=cls==='ok'?'var(--green)':cls==='warn'?'var(--amber)':'var(--red)';
+  dot.style.background=tone;dot.style.boxShadow='0 0 14px '+tone;
+  document.getElementById('status').textContent=
+    cls==='ok' ? (trend.label==='Persistent drift'?'REPEATED DEVIATION — INSPECTION RECOMMENDED':'SYSTEM MONITORING — NORMAL') :
+    cls==='warn' ? (trend.label==='Persistent drift'?'PERSISTENT DRIFT — INSPECTION RECOMMENDED':'ONE-OFF DEVIATION — INVESTIGATE') :
+    'SENSOR FAULT — CHECK INPUT';
+
+  document.getElementById('fill').style.width=fill+'%';
+  setState(type,t,quality,score,trend);
+  render();
 }
-function resetDemo(){history=[];document.getElementById('status').textContent='SYSTEM MONITORING — NORMAL';document.getElementById('dot').style.background='var(--green)';document.getElementById('dot').style.boxShadow='0 0 14px var(--green)';document.getElementById('stopTime').textContent='1.84 s';document.getElementById('deviation').textContent='0%';document.getElementById('confidence').textContent='96%';document.getElementById('positionLabel').textContent='NORMAL';document.getElementById('fill').style.width='42%';render()}
-for(let i=0;i<5;i++){let t=1.78+Math.random()*.14;history.push({t,dev:(t-base)/base*100,a:'NORMAL RESPONSE',c:'ok'})}render();
+
+function resetDemo(){
+  history=[];
+  for(let i=0;i<5;i++){
+    const t=1.80+(i%4)*0.02;
+    history.push({t,dev:(t-base)/base*100,a:'NORMAL RESPONSE',c:'ok',valid:true,quality:98});
+  }
+  document.getElementById('status').textContent='SYSTEM MONITORING — NORMAL';
+  document.getElementById('dot').style.background='var(--green)';
+  document.getElementById('dot').style.boxShadow='0 0 14px var(--green)';
+  document.getElementById('stopTime').textContent='1.84 s';
+  document.getElementById('deviation').textContent='0%';
+  document.getElementById('confidence').textContent='96%';
+  document.getElementById('positionLabel').textContent='NORMAL';
+  document.getElementById('fill').style.width='42%';
+  const trend=classifyTrend();
+  setState('normal',1.84,98,96,trend);
+  render();
+}
+
+window.addEventListener('resize',()=>drawSignal('normal'));
+resetDemo();
 </script>
 </body></html>
