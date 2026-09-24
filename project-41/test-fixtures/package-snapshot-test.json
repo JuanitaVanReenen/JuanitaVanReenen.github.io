@@ -1,0 +1,40 @@
+{
+  "previous": {
+    "schemaVersion": "0.1",
+    "snapshotId": "SNAP-001",
+    "readiness": "blocked_pending_resolution",
+    "sections": {
+      "requirementStatus": [
+        {"id":"TECH-002","status":"conflicting","evidenceIds":["E-CAP-1","E-CAP-2"],"issues":["Conflicting capacity claims"]},
+        {"id":"ENERGY-001","status":"partially_established","evidenceIds":["E-ENERGY-1"],"issues":[]}
+      ],
+      "criticalFindings": [
+        {"id":"FND-001","severity":"critical","title":"Conflicting plant capacity claims","status":"open"}
+      ],
+      "openActions": [
+        {"id":"ACT-001","findingId":"FND-001","status":"open"}
+      ],
+      "evidenceRegister": [
+        {"id":"E-CAP-1","source":"Design basis v1","version":1,"verificationStatus":"verified"}
+      ]
+    },
+    "humanDecision":{"required":true,"outcome":null}
+  },
+  "current": {
+    "schemaVersion": "0.1",
+    "snapshotId": "SNAP-002",
+    "readiness": "ready_for_human_decision",
+    "sections": {
+      "requirementStatus": [
+        {"id":"TECH-002","status":"established","evidenceIds":["E-CAP-2"],"issues":[]},
+        {"id":"ENERGY-001","status":"partially_established","evidenceIds":["E-ENERGY-1"],"issues":[]}
+      ],
+      "criticalFindings": [],
+      "openActions": [],
+      "evidenceRegister": [
+        {"id":"E-CAP-2","source":"Design basis v2","version":2,"verificationStatus":"verified"}
+      ]
+    },
+    "humanDecision":{"required":true,"outcome":null}
+  }
+}
