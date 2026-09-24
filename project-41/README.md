@@ -14,7 +14,3 @@ Core software foundations, controlled fixtures, regression tests, governance spe
 
 ## Boundary
 This is a controlled software/IP foundation, not a claim of production readiness or regulatory certification.
-
-
-## Verification checkpoint
-The assurance test suite is configured to run automatically on changes under `project-41/`. Any failing regression must be resolved before this build is treated as verified.
