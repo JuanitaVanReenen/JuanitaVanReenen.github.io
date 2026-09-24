@@ -1,0 +1,9 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Authorization Audit Control</title>
+<style>body{margin:0;background:#07111f;color:#eaf1f8;font:15px system-ui,sans-serif}main{max-width:1050px;margin:auto;padding:36px 20px}.card{background:#0d1b2e;border:1px solid #21334a;border-radius:14px;padding:18px;margin:14px 0}.muted{color:#9db0c5}.ok{color:#c9ffdc}.bad{color:#ffd8dc}</style></head><body><main>
+<h1>Authorization Audit</h1><p class="muted">Security-relevant authorization outcomes remain traceable.</p>
+<div class="card"><p class="bad"><strong>AUTH-001</strong> analyst-4 → record_decision → denied</p><p>Reason: role_not_authorized</p></div>
+<div class="card"><p class="ok"><strong>AUTH-002</strong> reviewer-7 → record_decision → granted</p><p>Scope: Tenant A / Project Alpha</p></div>
+<div class="card">Authorization events are separate from assurance findings and human decision outcomes.</div>
+</main></body></html>
