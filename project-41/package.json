@@ -1,0 +1,1 @@
+{"name":"water-infrastructure-decision-assurance","private":true,"type":"module","scripts":{"test":"node test-all.js"}}
