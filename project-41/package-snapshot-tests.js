@@ -1,7 +1,11 @@
 import assert from "node:assert/strict";
 import { createPackageSnapshot, comparePackageSnapshots } from "./package-snapshots.js";
 
-const fixture = JSON.parse(await import("node:fs/promises").then(fs => fs.readFile("project-41/test-fixtures/package-snapshot-test.json", "utf8")));
+const fixture = JSON.parse(
+  await import("node:fs/promises").then(fs =>
+    fs.readFile("./test-fixtures/package-snapshot-test.json", "utf8")
+  )
+);
 
 const previous = createPackageSnapshot(fixture.previous, { snapshotId: fixture.previous.snapshotId });
 const current = createPackageSnapshot(fixture.current, { snapshotId: fixture.current.snapshotId });
