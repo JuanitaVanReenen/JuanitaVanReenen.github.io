@@ -1,0 +1,10 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dependency Assurance Control</title>
+<style>body{margin:0;background:#07111f;color:#eaf1f8;font:15px system-ui,sans-serif}main{max-width:1050px;margin:auto;padding:36px 20px}.card{background:#0d1b2e;border:1px solid #21334a;border-radius:14px;padding:18px;margin:14px 0}.affected{color:#ffd8dc}.muted{color:#9db0c5}.flow{padding:12px;border-left:3px solid #62c4d6;margin:12px 0}</style></head><body><main>
+<h1>Dependency Assurance Control</h1>
+<p class="muted">Controlled demonstration of downstream impact propagation.</p>
+<div class="card"><h2>DEP-POWER</h2><p class="affected"><strong>Affected</strong></p><p>Linked unresolved finding: FND-001</p><p>Linked change: CHG-002</p></div>
+<div class="card"><h2>Downstream impact</h2><div class="flow">FND-001 → DEP-POWER → Procurement Gate</div><div class="flow">FND-001 → DEP-POWER → Construction Gate</div></div>
+<div class="card"><strong>Control:</strong> Dependency impact identifies where human reviewers should investigate. It does not authorize progression.</div>
+</main></body></html>
