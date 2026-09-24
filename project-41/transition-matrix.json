@@ -1,0 +1,39 @@
+{
+  "schemaVersion":"0.1",
+  "lifecycleStages":[
+    "definition",
+    "development",
+    "procurement",
+    "construction",
+    "commissioning",
+    "operation"
+  ],
+  "transitionPolicies":[
+    {
+      "from":"definition","to":"development",
+      "requiredReadiness":"ready_for_human_decision",
+      "humanReviewRequired":true
+    },
+    {
+      "from":"development","to":"procurement",
+      "requiredReadiness":"ready_for_human_decision",
+      "humanReviewRequired":true
+    },
+    {
+      "from":"procurement","to":"construction",
+      "requiredReadiness":"ready_for_human_decision",
+      "humanReviewRequired":true
+    },
+    {
+      "from":"construction","to":"commissioning",
+      "requiredReadiness":"ready_for_human_decision",
+      "humanReviewRequired":true
+    },
+    {
+      "from":"commissioning","to":"operation",
+      "requiredReadiness":"ready_for_human_decision",
+      "humanReviewRequired":true
+    }
+  ],
+  "principle":"The matrix configures review prerequisites; it never creates an approval."
+}
