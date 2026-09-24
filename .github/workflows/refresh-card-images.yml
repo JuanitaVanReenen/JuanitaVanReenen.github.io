@@ -1,0 +1,70 @@
+name: Refresh Portfolio Card Images
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'index.html'
+      - '.github/workflows/refresh-card-images.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build crisp named card images
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p assets/cards
+          declare -A URLS
+          URLS[leakproof]='https://d2ol7oe51mr4n9.cloudfront.net/user_3JccjS9oSIhOaOB5TNzJnFtsjeP/f65ae4da-7bbc-4697-8a59-ba249c833bae.jpg'
+          URLS[workready]='https://d2ol7oe51mr4n9.cloudfront.net/user_3JccjS9oSIhOaOB5TNzJnFtsjeP/7f4104b0-b1fe-4682-a095-577d6855a8cf.jpg'
+          URLS[fieldflow-audit]='https://d2ol7oe51mr4n9.cloudfront.net/user_3JccjS9oSIhOaOB5TNzJnFtsjeP/0b5d0c86-2038-420b-bf79-7bb8207cfcab.jpg'
+          URLS[capital-decision-analyzer]='https://d2ol7oe51mr4n9.cloudfront.net/user_3JccjS9oSIhOaOB5TNzJnFtsjeP/0c4788ca-0e51-47f2-a949-619476da087f.jpg'
+          URLS[physical-ai-underwriting]='https://d2ol7oe51mr4n9.cloudfront.net/user_3JccjS9oSIhOaOB5TNzJnFtsjeP/e954beb6-f501-4167-9b7d-3de20086179f.jpg'
+          URLS[adaptive-maintenance-fixture]='https://d2ol7oe51mr4n9.cloudfront.net/user_3JccjS9oSIhOaOB5TNzJnFtsjeP/72b721d6-4592-45df-b517-d2aa490077d7.jpg'
+          URLS[ai-actionproof]='https://d2ol7oe51mr4n9.cloudfront.net/user_3JccjS9oSIhOaOB5TNzJnFtsjeP/4b2e5cbf-72a8-416c-bdc5-425e998e93a0.jpg'
+          URLS[acquisition-revenue-protection]='https://d2ol7oe51mr4n9.cloudfront.net/user_3JccjS9oSIhOaOB5TNzJnFtsjeP/65f4b6e2-540a-4c54-8c84-157861dbf904.jpg'
+          URLS[moneyquest-kids]='https://d2ol7oe51mr4n9.cloudfront.net/user_3JccjS9oSIhOaOB5TNzJnFtsjeP/77f2c8a9-5967-4ce7-9583-568da1a140e2.jpg'
+          URLS[enterprise-exitability]='https://d2ol7oe51mr4n9.cloudfront.net/user_3JccjS9oSIhOaOB5TNzJnFtsjeP/8f774b27-c36d-44ea-b524-f229b3b5c5d5.jpg'
+          URLS[workflow-gap-capture]='https://d2ol7oe51mr4n9.cloudfront.net/user_3JccjS9oSIhOaOB5TNzJnFtsjeP/6a4ae790-f1fa-4e62-9fee-c2e5af1c260e.jpg'
+          URLS[hvac-acquisition]='https://d2ol7oe51mr4n9.cloudfront.net/user_3JccjS9oSIhOaOB5TNzJnFtsjeP/e0ac90b4-01c4-48be-ae0f-d5760047b68e.jpg'
+          URLS[technical-evidence-sufficiency]='https://d2ol7oe51mr4n9.cloudfront.net/user_3JccjS9oSIhOaOB5TNzJnFtsjeP/ec1e14be-d137-4fec-9a3b-098e21632d08.jpg'
+          URLS[hydraulic-connection]='https://d2ol7oe51mr4n9.cloudfront.net/user_3JccjS9oSIhOaOB5TNzJnFtsjeP/0a1a0e1e-ad99-4e91-aaa5-191637c18f76.jpg'
+          URLS[maintenance-extraction]='https://d2ol7oe51mr4n9.cloudfront.net/user_3JccjS9oSIhOaOB5TNzJnFtsjeP/643fcebb-6a0b-4d74-a216-1a45f13ac8a3.jpg'
+          URLS[changeimpact-4d]='https://d2ol7oe51mr4n9.cloudfront.net/user_3JccjS9oSIhOaOB5TNzJnFtsjeP/462c9ff7-52c8-45ec-8f9b-5532d42c8cb7.jpg'
+          declare -A TITLES
+          TITLES[leakproof]='LeakProof'
+          TITLES[workready]='WorkReady'
+          TITLES[fieldflow-audit]='FieldFlow Audit'
+          TITLES[capital-decision-analyzer]='Capital Decision Analyzer'
+          TITLES[physical-ai-underwriting]='Physical AI Deployment Underwriting Engine'
+          TITLES[adaptive-maintenance-fixture]='Adaptive Maintenance Capture & Positioning Fixture'
+          TITLES[ai-actionproof]='AI ActionProof'
+          TITLES[acquisition-revenue-protection]='Acquisition Revenue Protection'
+          TITLES[moneyquest-kids]='MoneyQuest Kids'
+          TITLES[enterprise-exitability]='Enterprise Exitability Intelligence'
+          TITLES[workflow-gap-capture]='Workflow Gap Capture Engine'
+          TITLES[hvac-acquisition]='HVAC Technical Building Services Acquisition Intelligence'
+          TITLES[technical-evidence-sufficiency]='Technical Evidence Sufficiency Engine'
+          TITLES[hydraulic-connection]='Hydraulic Connection Management System'
+          TITLES[maintenance-extraction]='Configurable Maintenance Extraction Simulator'
+          TITLES[changeimpact-4d]='ChangeImpact 4D'
+          for key in "${!URLS[@]}"; do
+            curl -fsSL --retry 3 "${URLS[$key]}" -o "/tmp/$key.src"
+            magick "/tmp/$key.src" -resize '800x467^' -gravity center -extent 800x467 -unsharp 0x1.1+1.2+0 -quality 84 "/tmp/$key.jpg"
+            magick "/tmp/$key.jpg" -gravity north -fill '#041223' -draw 'rectangle 0,0 800,105' -font DejaVu-Sans-Bold -pointsize 32 -fill white -gravity northwest -annotate +24+32 "${TITLES[$key]}" "assets/cards/$key.jpg"
+          done
+      - name: Commit card images
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/cards/*.jpg
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'Add crisp named portfolio card images'
+          git push
