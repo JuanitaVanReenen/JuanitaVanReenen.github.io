@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lifecycle Assurance Control</title>
+<style>
+body{margin:0;background:#07111f;color:#eaf1f8;font:15px system-ui,sans-serif}main{max-width:1100px;margin:auto;padding:36px 20px 60px}
+h1{margin-bottom:8px}.muted{color:#9db0c5}.flow{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:24px 0}.card{background:#0d1b2e;border:1px solid #21334a;border-radius:14px;padding:18px}.stage{font-weight:700;font-size:18px}.status{display:inline-block;margin-top:10px;padding:5px 9px;border-radius:999px;font-weight:700}.blocked{background:#51252d;color:#ffd8dc}.ready{background:#193d2b;color:#c9ffdc}.line{border-left:3px solid #62c4d6;padding-left:14px;margin:18px 0}.warning{background:#4a3a18;color:#ffe8a8;padding:12px;border-radius:10px}
+@media(max-width:800px){.flow{grid-template-columns:1fr}}
+</style></head><body><main>
+<h1>Lifecycle Assurance Control</h1>
+<p class="muted">Controlled demonstration of one evidence change moving through successive gate reviews without erasing the prior state.</p>
+
+<div class="flow">
+<div class="card"><div class="stage">Development</div><div class="status blocked">BLOCKED</div><p>Capacity basis contains conflicting claims: 100 vs 120 ML/day.</p></div>
+<div class="card"><div class="stage">Evidence Change</div><div class="status ready">VERSION 2</div><p>New evidence establishes an authoritative 120 ML/day basis and is separately traceable.</p></div>
+<div class="card"><div class="stage">Procurement</div><div class="status ready">ELIGIBLE FOR HUMAN REVIEW</div><p>Critical blocker is resolved. The system presents the package for authorized human gate review.</p></div>
+</div>
+
+<div class="card">
+<h2>Traceable chain</h2>
+<div class="line">Evidence version change → claim reassessment → requirement status → finding resolution → action completion → gate package → lifecycle review</div>
+<div class="line">Development review remains preserved as an immutable historical state.</div>
+<div class="line">Procurement review receives its own package snapshot and review record.</div>
+</div>
+
+<div class="card">
+<h2>Human control</h2>
+<div class="warning"><strong>Important:</strong> “Eligible for human review” is not approval. The software does not authorize procurement, construction, investment, engineering or regulatory progression.</div>
+</div>
+
+<div class="card">
+<h2>What this demonstrates</h2>
+<ul>
+<li>Cross-gate continuity rather than isolated dashboards.</li>
+<li>Evidence versioning and downstream impact traceability.</li>
+<li>Package snapshots that preserve what was presented at each gate.</li>
+<li>Separate human decision records.</li>
+<li>An audit-oriented lifecycle history.</li>
+</ul>
+</div>
+</main></body></html>
