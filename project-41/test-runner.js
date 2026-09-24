@@ -26,7 +26,7 @@ const gate = assessGate(
 );
 
 const expected = {
-  hasCapacityConflict: conflicts.some(c => c.subject === "plant.capacity"),
+  hasCapacityConflict: conflicts.some(c => c.subject === "plant_capacity_ml_day"),
   capacityIsConflicting: assessments.some(
     a => a.requirementId === "TECH-002" && a.status === "conflicting"
   ),
