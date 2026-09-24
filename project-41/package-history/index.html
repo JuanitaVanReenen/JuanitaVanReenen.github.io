@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gate Package Change Report</title>
+<style>
+body{font-family:system-ui,sans-serif;margin:0;background:#f5f7fa;color:#172033}
+main{max-width:1050px;margin:40px auto;padding:24px}
+.card{background:#fff;border:1px solid #dbe1e8;border-radius:14px;padding:20px;margin:16px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.label{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:#667085}
+.value{font-size:22px;font-weight:700;margin-top:5px}
+.good{color:#16794c}.blocked{color:#a23b3b}
+li{margin:8px 0}
+small{color:#667085}
+</style>
+</head>
+<body>
+<main>
+<h1>Gate Package Change Report</h1>
+<p><small>Controlled demonstration of how an assurance package changes between two review snapshots.</small></p>
+
+<section class="grid">
+<div class="card"><div class="label">Previous snapshot</div><div class="value">SNAP-001</div></div>
+<div class="card"><div class="label">Current snapshot</div><div class="value">SNAP-002</div></div>
+<div class="card"><div class="label">Previous readiness</div><div class="value blocked">Blocked</div></div>
+<div class="card"><div class="label">Current readiness</div><div class="value good">Ready for human decision</div></div>
+</section>
+
+<div class="card">
+<h2>What changed?</h2>
+<ul>
+<li><strong>TECH-002:</strong> capacity requirement changed from <em>conflicting</em> to <em>established</em>.</li>
+<li><strong>FND-001:</strong> the critical capacity conflict is no longer present in the current package.</li>
+<li><strong>ACT-001:</strong> the associated resolution action is no longer open.</li>
+<li><strong>Evidence:</strong> a new capacity evidence record is present in the current package.</li>
+</ul>
+</div>
+
+<div class="card">
+<h2>Assurance chain</h2>
+<p><strong>Evidence change → claim → requirement assessment → finding/action → gate readiness → decision package</strong></p>
+<p><small>The report explains the recorded change. It does not itself approve the project or replace qualified engineering, regulatory, environmental, financial or investment judgement.</small></p>
+</div>
+
+<div class="card">
+<h2>Why the snapshot matters</h2>
+<p>The historical package remains preserved. A later package can be compared with it without rewriting what reviewers previously saw.</p>
+</div>
+</main>
+</body>
+</html>
