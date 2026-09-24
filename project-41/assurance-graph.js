@@ -62,6 +62,7 @@ export function validateGraph(graph) {
 
   const allowedRelations = new Set([
     "supported_by",
+    "supports",
     "states",
     "assumed_by",
     "verified_by",
