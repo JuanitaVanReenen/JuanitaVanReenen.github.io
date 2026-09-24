@@ -49,6 +49,7 @@ export function processGateReview(input){
     id:input.reviewId,
     gate:input.gate,
     snapshotId:snapshot.snapshotId,
+    packageSnapshot:snapshot,
     readiness:packageWorkflow.decisionPackage.readiness,
     unresolvedFindingIds:packageWorkflow.decisionPackage.sections.criticalFindings.map(f=>f.id),
     openActionIds:packageWorkflow.decisionPackage.sections.openActions.map(a=>a.id),
@@ -60,7 +61,8 @@ export function processGateReview(input){
   const lifecycle=recordGateReview(input.lifecycle ?? {id:input.project.id},review);
   const previous=input.previousReview ?? null;
   const comparison=previous?compareGateReviews(previous,review):null;
-  const packageComparison=input.previousPackage?comparePackageSnapshots(input.previousPackage,snapshot):null;
+  const previousPackage=input.previousPackage ?? previous?.packageSnapshot ?? null;
+  const packageComparison=previousPackage?comparePackageSnapshots(previousPackage,snapshot):null;
   const transition=input.targetGate?evaluateGateTransition({currentReview:review,targetGate:input.targetGate}):null;
 
   let ledger=[...(input.ledger ?? [])];
