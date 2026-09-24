@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cross-Gate Assurance Lifecycle</title>
+<style>
+body{font-family:system-ui,sans-serif;background:#f5f7fa;color:#172033;margin:0}main{max-width:1100px;margin:40px auto;padding:24px}
+.card{background:#fff;border:1px solid #dbe1e8;border-radius:14px;padding:20px;margin:14px 0}.rail{display:flex;gap:10px;overflow:auto;margin:20px 0}
+.stage{min-width:150px;padding:14px;border:1px solid #ccd4df;border-radius:12px;background:#fff}.done{font-weight:700}
+table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:10px;border-bottom:1px solid #edf0f3}.muted{color:#667085}
+</style></head><body><main>
+<h1>Cross-Gate Assurance Lifecycle</h1>
+<p class="muted">A controlled demonstration of assurance state preserved across successive decision gates.</p>
+<div class="rail">
+<div class="stage done">Definition</div><div class="stage done">Development</div><div class="stage done">Procurement</div><div class="stage">Construction</div><div class="stage">Commissioning</div><div class="stage">Operation</div>
+</div>
+<div class="card"><h2>Review transition</h2><table><tr><th>Previous</th><th>Current</th><th>Change</th></tr><tr><td>Development · SNAP-001</td><td>Procurement · SNAP-002</td><td>Blocked → Ready for human decision</td></tr></table></div>
+<div class="card"><h2>Carried-forward assurance</h2><ul><li>Previous critical finding: FND-001</li><li>Current unresolved findings: none in this controlled scenario</li><li>Evidence change: capacity evidence v2</li><li>Downstream impact: TECH-002 reassessed</li></ul></div>
+<div class="card"><h2>Decision integrity</h2><p>The system preserves each review rather than overwriting the previous state. “Ready for human decision” does not mean approved.</p></div>
+</main></body></html>
