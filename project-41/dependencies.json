@@ -1,0 +1,47 @@
+{
+  "schemaVersion": "0.1",
+  "description": "Dependency register for traceable major water-infrastructure decision assurance.",
+  "dependencyTypes": [
+    "technical",
+    "energy",
+    "environmental",
+    "regulatory",
+    "commercial",
+    "schedule",
+    "interface",
+    "data"
+  ],
+  "statuses": ["open", "mitigated", "accepted", "closed"],
+  "records": [
+    {
+      "id": "DEP-001",
+      "type": "energy",
+      "name": "Firm power availability",
+      "from": "ENERGY-001",
+      "to": "TECH-002",
+      "status": "open",
+      "criticality": "critical",
+      "rationale": "Delivered water capacity depends on an evidenced and deliverable energy basis."
+    },
+    {
+      "id": "DEP-002",
+      "type": "environmental",
+      "name": "Intake and discharge approvals",
+      "from": "ENV-001",
+      "to": "REG-001",
+      "status": "open",
+      "criticality": "high",
+      "rationale": "Environmental evidence and approval requirements must remain traceable to the regulatory path."
+    },
+    {
+      "id": "DEP-003",
+      "type": "commercial",
+      "name": "Offtake commitment",
+      "from": "COMM-001",
+      "to": "COST-001",
+      "status": "open",
+      "criticality": "high",
+      "rationale": "Demand/offtake assumptions influence cost and capacity decisions."
+    }
+  ]
+}
