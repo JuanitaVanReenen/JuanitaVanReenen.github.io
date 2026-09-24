@@ -1,0 +1,28 @@
+{
+  "schemaVersion": "0.1",
+  "findingStatuses": ["open", "accepted", "resolved", "superseded"],
+  "actionStatuses": ["open", "in_progress", "blocked", "complete"],
+  "findings": [
+    {
+      "id": "FND-001",
+      "type": "conflict",
+      "severity": "critical",
+      "title": "Conflicting plant capacity claims",
+      "source": "Controlled test fixture",
+      "status": "open",
+      "relatedRequirements": ["TECH-002"],
+      "requiredResolution": "Establish the authoritative capacity basis and trace it to approved evidence."
+    }
+  ],
+  "actions": [
+    {
+      "id": "ACT-001",
+      "findingId": "FND-001",
+      "ownerRole": "project_authority",
+      "status": "open",
+      "dueAt": null,
+      "requiredEvidence": ["Authoritative capacity basis"],
+      "completionRule": "Finding cannot be closed until the conflicting claims are resolved and verification is recorded."
+    }
+  ]
+}
