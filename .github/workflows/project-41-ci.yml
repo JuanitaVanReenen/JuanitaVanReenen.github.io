@@ -2,11 +2,8 @@ name: Project 41 assurance tests
 
 on:
   push:
-    paths:
-      - "project-41/**"
   pull_request:
-    paths:
-      - "project-41/**"
+  workflow_dispatch:
 
 jobs:
   test:
