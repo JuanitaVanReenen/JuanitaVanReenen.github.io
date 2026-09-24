@@ -10,8 +10,8 @@ const policy={
 
 const base={
  decision:{
-   decisionId:"DEC-001",packageSnapshotId:"SNAP-002",rulesetId:"WATER-ASSURANCE",
-   rulesetVersion:"1.1.0",decisionMaker:"reviewer-7",outcome:"accepted_for_next_gate",
+   decisionId:"DEC-001",snapshotId:"SNAP-002",rulesetRef:{id:"WATER-ASSURANCE",version:"1.1.0"},
+   gateId:"GATE-DEV",decisionMaker:{id:"reviewer-7",role:"gate_reviewer"},outcome:"accepted_for_next_gate",
    rationale:"Controlled test decision",decidedAt:"2026-09-24T09:00:00Z",sourceRefs:["E-CAP-2"]
  }
 };
@@ -19,6 +19,6 @@ const base={
 assert.throws(()=>recordAuthorizedDecision({...base,actor:{role:"project_analyst"}},policy));
 const allowed=recordAuthorizedDecision({...base,actor:{role:"gate_reviewer"}},policy);
 assert.equal(allowed.authorization.authorized,true);
-assert.equal(allowed.decision.packageSnapshotId,"SNAP-002");
+assert.equal(allowed.decision.snapshotId,"SNAP-002");
 
 console.log("Authorized decision tests passed.");
