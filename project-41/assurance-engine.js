@@ -14,7 +14,7 @@ const STATUS = Object.freeze({
   UNSUPPORTED: "unsupported"
 });
 
-function assessRequirement(requirement, evidenceItems = []) {
+export function assessRequirement(requirement, evidenceItems = []) {
   const linked = evidenceItems.filter(e =>
     Array.isArray(e.supports) && e.supports.includes(requirement.id)
   );
@@ -59,7 +59,7 @@ function assessRequirement(requirement, evidenceItems = []) {
   };
 }
 
-function detectConflicts(claims = []) {
+export function detectConflicts(claims = []) {
   const groups = new Map();
 
   for (const claim of claims) {
@@ -86,14 +86,15 @@ function detectConflicts(claims = []) {
   return conflicts;
 }
 
-function assessGate(requirements, assessments, criticalStatuses = [
+export function assessGate(requirements, assessments, criticalStatuses = [
   STATUS.MISSING,
   STATUS.CONFLICTING,
   STATUS.UNSUPPORTED
 ]) {
+  const blockedStatuses = criticalStatuses instanceof Set ? criticalStatuses : new Set(criticalStatuses);
   const criticalFailures = assessments.filter(a => {
     const req = requirements.find(r => r.id === a.requirementId);
-    return req?.criticality === "critical" && criticalStatuses.includes(a.status);
+    return req?.criticality === "critical" && blockedStatuses.has(a.status);
   });
 
   return {
