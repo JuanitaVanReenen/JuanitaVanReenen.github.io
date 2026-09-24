@@ -1,0 +1,27 @@
+{
+  "project": {"id":"PROJ-001","name":"Coastal Water Supply Programme"},
+  "gate": {"id":"GATE-DEV","name":"Development Gate"},
+  "requirements": [
+    {"id":"TECH-001","status":"established"},
+    {"id":"TECH-002","status":"conflicting"},
+    {"id":"ENERGY-001","status":"partially_established"}
+  ],
+  "findings": [
+    {
+      "id":"FND-001",
+      "severity":"critical",
+      "title":"Conflicting plant capacity claims",
+      "status":"open"
+    }
+  ],
+  "actions": [
+    {"id":"ACT-001","findingId":"FND-001","status":"open"}
+  ],
+  "changes": [
+    {"id":"CHG-001","summary":"Capacity basis changed from 100 to 120 ML/day"}
+  ],
+  "evidence": [
+    {"id":"EVD-001","source":"Design basis","version":"v3","verification":{"status":"unverified"}}
+  ],
+  "decisions": []
+}
