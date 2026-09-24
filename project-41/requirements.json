@@ -1,0 +1,62 @@
+{
+  "schema_version": "0.1",
+  "domain": "major_water_infrastructure",
+  "requirements": [
+    {
+      "id": "TECH-001",
+      "category": "Technical",
+      "title": "Project design basis established",
+      "evidence_types": ["approved design basis", "engineering report"],
+      "criticality": "critical"
+    },
+    {
+      "id": "TECH-002",
+      "category": "Technical",
+      "title": "Required water capacity is established and consistent",
+      "evidence_types": ["demand forecast", "engineering basis", "capacity model"],
+      "criticality": "critical"
+    },
+    {
+      "id": "ENERGY-001",
+      "category": "Energy",
+      "title": "Energy supply basis is established",
+      "evidence_types": ["energy study", "grid assessment", "renewable assessment"],
+      "criticality": "critical"
+    },
+    {
+      "id": "ENV-001",
+      "category": "Environmental",
+      "title": "Intake and discharge requirements are evidenced",
+      "evidence_types": ["environmental assessment", "marine study", "regulatory documentation"],
+      "criticality": "critical"
+    },
+    {
+      "id": "COMM-001",
+      "category": "Commercial",
+      "title": "Demand/offtake basis is documented",
+      "evidence_types": ["demand forecast", "offtake evidence", "commercial assessment"],
+      "criticality": "high"
+    },
+    {
+      "id": "COST-001",
+      "category": "Financial",
+      "title": "Capital and operating cost assumptions are traceable",
+      "evidence_types": ["CAPEX estimate", "OPEX model", "supplier quotation"],
+      "criticality": "high"
+    },
+    {
+      "id": "REG-001",
+      "category": "Regulatory",
+      "title": "Required approvals and permits are identified",
+      "evidence_types": ["permit register", "regulatory correspondence", "approval documentation"],
+      "criticality": "high"
+    },
+    {
+      "id": "DEL-001",
+      "category": "Delivery",
+      "title": "Critical delivery dependencies are identified",
+      "evidence_types": ["schedule", "procurement plan", "risk register"],
+      "criticality": "high"
+    }
+  ]
+}
