@@ -1,0 +1,19 @@
+{
+  "project":{"id":"PROJ-002","name":"Controlled Resolved Water Project"},
+  "gate":{"id":"GATE-DEV","name":"Development Gate"},
+  "requirements":[
+    {"id":"TECH-001","name":"Design basis","criticality":"critical"},
+    {"id":"TECH-002","name":"Capacity basis","criticality":"critical"}
+  ],
+  "evidence":[
+    {"id":"EVD-101","source":"Approved design basis","supportsRequirements":["TECH-001"],"status":"verified"},
+    {"id":"EVD-102","source":"Approved capacity schedule","supportsRequirements":["TECH-002"],"status":"verified"}
+  ],
+  "claims":[
+    {"id":"CLM-101","subject":"plant.capacity","value":120,"unit":"ML/day"}
+  ],
+  "findings":[],
+  "actions":[],
+  "changes":[],
+  "decisions":[]
+}
