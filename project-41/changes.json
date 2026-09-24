@@ -1,0 +1,17 @@
+{
+  "schemaVersion": "0.1",
+  "description": "Change and golden-thread register. Changes are explicit events, not silent overwrites.",
+  "changeTypes": ["requirement", "evidence", "claim", "assumption", "design", "cost", "schedule", "regulatory"],
+  "records": [
+    {
+      "id": "CHG-001",
+      "type": "design",
+      "date": "2026-09-24",
+      "summary": "Illustrative capacity change from 100 to 120 ML/day.",
+      "source": "test-fixtures/sample-project.json",
+      "affectedNodes": ["TECH-002", "CLAIM-CAP-100", "CLAIM-CAP-120"],
+      "reason": "Controlled test of conflict and downstream impact detection.",
+      "status": "unresolved"
+    }
+  ]
+}
