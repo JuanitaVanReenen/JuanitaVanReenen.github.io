@@ -1,0 +1,22 @@
+{
+  "project": {
+    "name": "Coastal Water Supply Programme",
+    "stage": "Development",
+    "domain": "desalination"
+  },
+  "evidence": [
+    {"id":"E-001","supports":["TECH-001"],"verified":true,"status":"verified"},
+    {"id":"E-002","supports":["TECH-002"],"verified":true,"status":"verified"},
+    {"id":"E-003","supports":["TECH-002"],"verified":true,"status":"conflict"},
+    {"id":"E-004","supports":["ENERGY-001"],"verified":false,"status":"pending"},
+    {"id":"E-005","supports":["ENV-001"],"verified":false,"status":"pending"},
+    {"id":"E-006","supports":["COMM-001"],"verified":true,"status":"verified"},
+    {"id":"E-007","supports":["COST-001"],"verified":true,"status":"verified"},
+    {"id":"E-008","supports":["REG-001"],"verified":false,"status":"pending"},
+    {"id":"E-009","supports":["DEL-001"],"verified":true,"status":"verified"}
+  ],
+  "claims": [
+    {"id":"C-001","subject":"plant_capacity_ml_day","value":100,"source":"E-002"},
+    {"id":"C-002","subject":"plant_capacity_ml_day","value":120,"source":"E-003"}
+  ]
+}
