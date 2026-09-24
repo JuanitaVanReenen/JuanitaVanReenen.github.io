@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Assurance Ledger</title>
+<style>
+body{font-family:system-ui,sans-serif;background:#f5f7fa;color:#172033;margin:0}main{max-width:1050px;margin:40px auto;padding:24px}
+.card{background:#fff;border:1px solid #dbe1e8;border-radius:14px;padding:20px;margin:14px 0}.event{padding:12px 0;border-bottom:1px solid #edf0f3}
+.badge{display:inline-block;padding:4px 8px;border-radius:8px;background:#eef2f6;font-size:12px}.muted{color:#667085}
+</style></head><body><main>
+<h1>Project Assurance Ledger</h1>
+<p class="muted">Chronological trace of material assurance events.</p>
+<div class="card">
+<div class="event"><span class="badge">evidence_added</span><strong> E-CAP-1</strong><div>Capacity evidence added · source DOC-1</div></div>
+<div class="event"><span class="badge">requirement_reassessed</span><strong> TECH-002</strong><div>Capacity requirement reassessed · source E-CAP-1</div></div>
+<div class="event"><span class="badge">finding_created</span><strong> FND-001</strong><div>Conflicting capacity basis identified · source E-CAP-1, E-CAP-2</div></div>
+<div class="event"><span class="badge">action_created</span><strong> ACT-001</strong><div>Resolve authoritative capacity basis · source FND-001</div></div>
+<div class="event"><span class="badge">gate_assessed</span><strong> GATE-DEV</strong><div>Gate remains blocked pending resolution.</div></div>
+<div class="event"><span class="badge">package_snapshot_created</span><strong> SNAP-001</strong><div>Historical gate package preserved.</div></div>
+</div>
+<div class="card"><strong>Traceability:</strong> Evidence → Requirement → Finding → Action → Gate → Package</div>
+<div class="card"><strong>Important:</strong> The ledger records assurance events; it does not create approval or replace qualified human judgement.</div>
+</main></body></html>
