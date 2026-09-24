@@ -1,0 +1,35 @@
+{
+  "schemaVersion":"0.1",
+  "cases":[
+    {
+      "id":"EDGE-001",
+      "name":"No evidence",
+      "requirement":{"id":"TECH-X","criticality":"critical"},
+      "evidence":[],
+      "expected":"missing"
+    },
+    {
+      "id":"EDGE-002",
+      "name":"Unverified evidence",
+      "requirement":{"id":"TECH-X","criticality":"critical"},
+      "evidence":[{"id":"E-X","supports":["TECH-X"],"verified":false}],
+      "expected":"partially_established"
+    },
+    {
+      "id":"EDGE-003",
+      "name":"Verified evidence",
+      "requirement":{"id":"TECH-X","criticality":"critical"},
+      "evidence":[{"id":"E-X","supports":["TECH-X"],"verified":true}],
+      "expected":"established"
+    },
+    {
+      "id":"EDGE-004",
+      "name":"Conflicting claims",
+      "claims":[
+        {"id":"C-X1","subject":"capacity","value":100},
+        {"id":"C-X2","subject":"capacity","value":120}
+      ],
+      "expected":"conflict"
+    }
+  ]
+}
