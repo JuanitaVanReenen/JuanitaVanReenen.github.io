@@ -64,8 +64,8 @@ export function processGateReview(input){
   const transition=input.targetGate?evaluateGateTransition({currentReview:review,targetGate:input.targetGate}):null;
 
   let ledger=[...(input.ledger ?? [])];
-  ledger=appendLedgerEvent(ledger,{type:"gate_assessed",gateId:input.gate.id,reviewId:review.id,readiness:review.readiness});
-  ledger=appendLedgerEvent(ledger,{type:"package_snapshot_created",gateId:input.gate.id,snapshotId:snapshot.snapshotId});
+  ledger=appendLedgerEvent(ledger,{id:`LEDGER-${review.id}-GATE`,occurredAt:input.occurredAt ?? new Date().toISOString(),type:"gate_assessed",gateId:input.gate.id,reviewId:review.id,readiness:review.readiness,summary:`Gate assessed: ${input.gate.id}`});
+  ledger=appendLedgerEvent(ledger,{id:`LEDGER-${review.id}-SNAPSHOT`,occurredAt:input.occurredAt ?? new Date().toISOString(),type:"package_snapshot_created",gateId:input.gate.id,snapshotId:snapshot.snapshotId,summary:`Package snapshot created: ${snapshot.snapshotId}`});
 
   return {workflow:packageWorkflow,snapshot,review,lifecycle,comparison,packageComparison,transition,lifecycleSummary:lifecycleSummary(lifecycle),ledger,findings,actions};
 }
