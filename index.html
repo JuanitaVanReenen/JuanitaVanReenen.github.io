@@ -683,87 +683,105 @@ document.getElementById('enquiryForm')?.addEventListener('submit',function(e){
 </script>
 
 <script>
-/* Category navigation: each category has its own dedicated section. Existing cards are cloned without changing their media or links. */
+/* Dedicated category sections — explicit product-to-category assignment. */
 (function(){
   const source=document.querySelector('.featured');
-  const sectionHost=document.getElementById('categorySections');
+  const host=document.getElementById('categorySections');
   const buttons=[...document.querySelectorAll('.category-btn')];
   const status=document.getElementById('categoryStatus');
-  if(!source||!sectionHost||!buttons.length)return;
+  if(!source||!host)return;
 
-  /* Explicit portfolio classification keeps every existing product in the correct dedicated section. */
-  const categoryMap={
-    apps:[
-      "SitePulse","StopSure Safety","PAZUMO","LeakProof","WorkReady","FieldFlow Audit","ProductFit Studio","PromiseCheck","Robot Job Fit","Shileen","Orveli","PulzaFlow","Sulia","Usperiment","BuildCheck Reconcile","AI ActionProof","MoneyQuest Kids","Next Action","Configurable Maintenance Extraction Simulator","ChangeImpact — 4D Change-Propagation Visualizer"
-    ],
-    ai:[
-      "Water Infrastructure Decision Assurance","Enterprise Decision Conflict Resolver","Capital Decision Analyzer","Physical AI Deployment Underwriting Engine","Kaylics","Acquisition Revenue Protection","Enterprise Exitability Intelligence","Workflow Gap Capture Engine","HVAC Technical Building Services Acquisition Intelligence","Technical Evidence Sufficiency Engine","AI Reliance Calibration Engine","Intelligent Charging Environment Safety System","NEXORA"
-    ],
-    vehicles:["VAYRION","Autonomous Modular Work Vehicle","VEYORA","TARVION"],
-    robotics:["Flexible Line Recovery Robot","Adaptive Maintenance Capture & Positioning Fixture","Hydraulic Connection Management System"],
-    physical:["JVR Sneaker","AQUASEAL™"],
-    other:[]
+  const categories={
+    apps:{
+      label:"Apps & Software",
+      description:"Apps, platforms and working software products.",
+      products:["SitePulse","StopSure Safety","PAZUMO","LeakProof","WorkReady","FieldFlow Audit","ProductFit Studio","PromiseCheck","Robot Job Fit","Shileen","Orveli","PulzaFlow","Sulia","Usperiment","BuildCheck Reconcile","AI ActionProof","MoneyQuest Kids","Next Action","Configurable Maintenance Extraction Simulator","ChangeImpact — 4D Change-Propagation Visualizer"]
+    },
+    ai:{
+      label:"AI & Intelligence",
+      description:"AI, decision-support, evidence and enterprise intelligence technologies.",
+      products:["Water Infrastructure Decision Assurance","Enterprise Decision Conflict Resolver","Capital Decision Analyzer","Physical AI Deployment Underwriting Engine","Kaylics","Acquisition Revenue Protection","Enterprise Exitability Intelligence","Workflow Gap Capture Engine","HVAC Technical Building Services Acquisition Intelligence","Technical Evidence Sufficiency Engine","AI Reliance Calibration Engine","Intelligent Charging Environment Safety System","NEXORA"]
+    },
+    vehicles:{
+      label:"Vehicles & Mobility",
+      description:"Automotive, mobility and work-vehicle concepts.",
+      products:["VAYRION","Autonomous Modular Work Vehicle","VEYORA","TARVION"]
+    },
+    robotics:{
+      label:"Robotics & Industrial",
+      description:"Robotics, machinery and industrial technology.",
+      products:["Flexible Line Recovery Robot","Adaptive Maintenance Capture & Positioning Fixture","Hydraulic Connection Management System"]
+    },
+    physical:{
+      label:"Physical Products",
+      description:"Consumer products and physical invention packages.",
+      products:["JVR Sneaker","AQUASEAL™"]
+    }
   };
-  const categoryByTitle={};
-  Object.entries(categoryMap).forEach(([category,titles])=>titles.forEach(title=>categoryByTitle[title]=category));
 
-  const info={
-    all:["All Technology","The complete technology portfolio."],
-    apps:["Apps & Software","Standalone apps, platforms and working software products."],
-    ai:["AI & Intelligence","AI, decision-support, evidence and enterprise intelligence technologies."],
-    vehicles:["Vehicles & Mobility","Automotive, mobility and work-vehicle concepts."],
-    robotics:["Robotics & Industrial","Robotics, machinery and industrial technology."],
-    physical:["Physical Products","Consumer products and physical invention packages."],
-    other:["Other Technology","Additional technology assets outside the main categories."]
-  };
-
-  const cards=[...source.querySelectorAll(':scope > .card')];
-  const categorized=cards.map(card=>{
-    const title=(card.querySelector("h3")?.textContent||"").replace(/\s+/g," ").trim();
-    return {card,category:categoryByTitle[title]||"other"};
+  const normalize=s=>(s||"").replace(/\s+/g," ").trim();
+  const cards=[...source.querySelectorAll(":scope > .card")];
+  const byTitle=new Map();
+  cards.forEach(card=>{
+    const title=normalize(card.querySelector("h3")?.textContent);
+    byTitle.set(title,card);
   });
 
-  const order=["all","apps","ai","vehicles","robotics","physical"];
-  const sections={};
+  /* Remove any previously generated sections before rebuilding them. */
+  host.innerHTML="";
 
-  order.forEach(key=>{
+  const allSection=document.createElement("section");
+  allSection.className="category-section";
+  allSection.id="category-all";
+  allSection.innerHTML='<div class="category-section-head"><h3>All Technology</h3><p>The complete technology portfolio.</p></div><div class="category-grid"></div>';
+  host.appendChild(allSection);
+  const allGrid=allSection.querySelector(".category-grid");
+
+  Object.entries(categories).forEach(([key,meta])=>{
     const section=document.createElement("section");
     section.className="category-section";
     section.id="category-"+key;
-    const head=document.createElement("div");
-    head.className="category-section-head";
-    const h=document.createElement("h3");
-    h.textContent=info[key][0];
-    const p=document.createElement("p");
-    p.textContent=info[key][1];
-    head.append(h,p);
-    const grid=document.createElement("div");
-    grid.className="category-grid";
-    section.append(head,grid);
-    sectionHost.appendChild(section);
-    sections[key]=grid;
+    section.innerHTML='<div class="category-section-head"><h3></h3><p></p></div><div class="category-grid"></div>';
+    section.querySelector("h3").textContent=meta.label;
+    section.querySelector("p").textContent=meta.description;
+    const grid=section.querySelector(".category-grid");
+    host.appendChild(section);
+
+    meta.products.forEach(title=>{
+      const card=byTitle.get(title);
+      if(!card)return;
+      const clone=card.cloneNode(true);
+      clone.removeAttribute("id");
+      grid.appendChild(clone);
+    });
   });
 
-  categorized.forEach(({card,category})=>{
-    const clone=card.cloneNode(true);
-    clone.removeAttribute("id");
-    sections[category].appendChild(clone);
-    const allClone=card.cloneNode(true);
-    allClone.removeAttribute("id");
-    sections.all.appendChild(allClone);
+  /* All Technology contains each product exactly once, in original portfolio order. */
+  cards.forEach(card=>{
+    const title=normalize(card.querySelector("h3")?.textContent);
+    let known=false;
+    Object.values(categories).forEach(meta=>{if(meta.products.includes(title))known=true;});
+    if(known){
+      const clone=card.cloneNode(true);
+      clone.removeAttribute("id");
+      allGrid.appendChild(clone);
+    }
   });
 
   source.style.display="none";
 
-  function select(key){
-    buttons.forEach(btn=>btn.classList.toggle("active",btn.dataset.filter===key));
-    const label=info[key][0];
-    status.textContent="Showing the dedicated "+label+" section";
-    const target=document.getElementById("category-"+key);
-    if(target) target.scrollIntoView({behavior:"smooth",block:"start"});
-  }
-  buttons.forEach(btn=>btn.addEventListener("click",()=>select(btn.dataset.filter)));
+  buttons.forEach(button=>{
+    button.addEventListener("click",()=>{
+      const key=button.dataset.filter;
+      buttons.forEach(b=>b.classList.toggle("active",b===button));
+      const target=document.getElementById("category-"+key);
+      if(target){
+        status.textContent="Showing the dedicated "+(categories[key]?.label||"All Technology")+" section";
+        target.scrollIntoView({behavior:"smooth",block:"start"});
+      }
+    });
+  });
 })();
-</script>
+
 </body>
 </html>
