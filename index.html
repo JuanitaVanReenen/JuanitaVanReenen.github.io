@@ -203,13 +203,23 @@ footer{padding:36px 0;color:#8293aa;font-size:12px}
 #tarvion .project-cover img{filter:contrast(1.08) saturate(1.04) brightness(1.02);image-rendering:auto;}\n
 /* Portfolio category redesign — content and existing product media remain unchanged */
 .category-intro{margin:18px 0 24px;color:var(--muted);font-size:14px;max-width:820px}
-.category-bar{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 28px;padding:10px;border:1px solid var(--line);border-radius:16px;background:rgba(15,29,49,.62);position:sticky;top:82px;z-index:20;backdrop-filter:blur(14px)}
-.category-btn{appearance:none;border:1px solid var(--line);background:#0b1728;color:var(--muted);border-radius:999px;padding:10px 15px;font:inherit;font-size:12px;font-weight:850;letter-spacing:.15px;cursor:pointer;transition:.2s ease}
-.category-btn:hover{color:#fff;border-color:#53769d;transform:translateY(-1px)}
-.category-btn.active{background:var(--accent);border-color:var(--accent);color:#07111f}
+.category-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:0 0 34px}
+.category-btn{appearance:none;text-align:left;border:1px solid var(--line);background:linear-gradient(145deg,rgba(15,29,49,.96),rgba(19,36,60,.76));color:var(--ink);border-radius:16px;padding:18px 18px;font:inherit;font-size:14px;font-weight:850;letter-spacing:.15px;cursor:pointer;transition:.2s ease;min-height:74px}
+.category-btn:hover{color:#fff;border-color:#53769d;transform:translateY(-2px)}
+.category-btn.active{background:linear-gradient(145deg,#173453,#10243b);border-color:#6e9dcc;color:#fff}
+.category-btn small{display:block;color:var(--muted);font-size:11px;font-weight:500;margin-top:4px}
 .portfolio-grid .card.category-hidden{display:none}
+.category-section{padding:58px 0;border-top:1px solid rgba(142,197,255,.09)}
+.category-section:first-child{border-top:0}
+.category-section-head{margin-bottom:24px}
+.category-section-head h3{font-size:28px;margin:5px 0 7px;letter-spacing:-.5px}
+.category-section-head p{margin:0;color:var(--muted);max-width:760px;font-size:14px}
+.category-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.category-grid .card{height:100%}
+.category-grid .card.category-hidden{display:none}
 .category-status{margin:-12px 0 22px;color:#8497b3;font-size:12px}
-@media(max-width:720px){.category-bar{top:70px;overflow-x:auto;flex-wrap:nowrap;padding:8px}.category-btn{white-space:nowrap}.category-status{margin-top:-8px}}
+@media(max-width:900px){.category-bar{grid-template-columns:repeat(2,1fr)}.category-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:720px){.category-bar{grid-template-columns:1fr}.category-grid{grid-template-columns:1fr}.category-btn{min-height:68px}.category-status{margin-top:-8px}}
 </style>
 </head>
 
@@ -259,19 +269,21 @@ footer{padding:36px 0;color:#8293aa;font-size:12px}
       </div>
     </div>
 
-    <div id="categories" class="category-intro">Explore the portfolio by technology type. The existing product pages, descriptions, photographs and demonstrations remain unchanged — this redesign simply gives visitors a clearer way to navigate the collection.</div>
-    <div class="category-bar" role="tablist" aria-label="Technology categories">
-      <button class="category-btn active" type="button" data-filter="all" role="tab" aria-selected="true">All Technology</button>
-      <button class="category-btn" type="button" data-filter="apps" role="tab" aria-selected="false">Apps &amp; Software</button>
-      <button class="category-btn" type="button" data-filter="ai" role="tab" aria-selected="false">AI &amp; Intelligence</button>
-      <button class="category-btn" type="button" data-filter="vehicles" role="tab" aria-selected="false">Vehicles &amp; Mobility</button>
-      <button class="category-btn" type="button" data-filter="robotics" role="tab" aria-selected="false">Robotics &amp; Industrial</button>
-      <button class="category-btn" type="button" data-filter="physical" role="tab" aria-selected="false">Physical Products</button>
-      <button class="category-btn" type="button" data-filter="other" role="tab" aria-selected="false">Other Technology</button>
+    <div id="categories" class="category-intro">Choose a technology category below. Each category opens its own dedicated section with the relevant product cards. Existing photographs, product pages, descriptions and demonstrations are kept unchanged.</div>
+    <div class="category-bar" aria-label="Technology categories">
+      <button class="category-btn active" type="button" data-filter="all">All Technology<small>View the complete technology portfolio</small></button>
+      <button class="category-btn" type="button" data-filter="apps">Apps &amp; Software<small>Apps, platforms and working software</small></button>
+      <button class="category-btn" type="button" data-filter="ai">AI &amp; Intelligence<small>AI, decision and intelligence systems</small></button>
+      <button class="category-btn" type="button" data-filter="vehicles">Vehicles &amp; Mobility<small>SUVs, bakkies and mobility concepts</small></button>
+      <button class="category-btn" type="button" data-filter="robotics">Robotics &amp; Industrial<small>Robots, machinery and industrial systems</small></button>
+      <button class="category-btn" type="button" data-filter="physical">Physical Products<small>Consumer and physical inventions</small></button>
+      <button class="category-btn" type="button" data-filter="other">Other Technology<small>Technology outside the main categories</small></button>
     </div>
     <div class="category-status" id="categoryStatus" aria-live="polite">Showing all technology assets</div>
 
-    <div class="featured">
+    <div id="categorySections"></div>
+
+    <div class="featured" aria-hidden="true">
       <article class="card" id="sitepulse">
         <h3>SitePulse</h3>
         <p>Construction-site intelligence that turns photos, voice notes and site observations into structured events, connected impacts, downstream activity maps and traceable office actions for human review.</p>
@@ -673,13 +685,14 @@ document.getElementById('enquiryForm')?.addEventListener('submit',function(e){
 </script>
 
 <script>
-/* Category navigation: assigns categories from the existing card titles/descriptions only. No product media or copy is changed. */
+/* Category navigation: each category has its own dedicated section. Existing cards are cloned without changing their media or links. */
 (function(){
-  const grid=document.querySelector('.featured');
+  const source=document.querySelector('.featured');
+  const sectionHost=document.getElementById('categorySections');
   const buttons=[...document.querySelectorAll('.category-btn')];
   const status=document.getElementById('categoryStatus');
-  if(!grid||!buttons.length)return;
-  const cards=[...grid.querySelectorAll(':scope > .card')];
+  if(!source||!sectionHost||!buttons.length)return;
+
   const rules={
     vehicles:/suv|bakkie|vehicle|automotive|mobility|veyora|tarvion|vayrion/i,
     robotics:/robot|robotics|industrial|maintenance|recovery|machinery|fixture|physical automation/i,
@@ -687,32 +700,68 @@ document.getElementById('enquiryForm')?.addEventListener('submit',function(e){
     ai:/\bai\b|artificial intelligence|intelligence|decision|evidence|conflict resolver|nexora|assurance engine|reasoning/i,
     apps:/software|app|mvp|platform|simulator|visualizer|visualiser|sitepulse|stopsure|pazumo|sulia|meettrace|workready|fieldflow/i
   };
-  cards.forEach(card=>{
-    const text=card.innerText||'';
-    let category='other';
-    if(rules.vehicles.test(text)) category='vehicles';
-    else if(rules.robotics.test(text)) category='robotics';
-    else if(rules.physical.test(text)) category='physical';
-    else if(rules.ai.test(text)) category='ai';
-    else if(rules.apps.test(text)) category='apps';
-    card.dataset.category=category;
+  const info={
+    all:["All Technology","The complete technology portfolio."],
+    apps:["Apps & Software","Standalone apps, platforms and working software products."],
+    ai:["AI & Intelligence","AI, decision-support, evidence and enterprise intelligence technologies."],
+    vehicles:["Vehicles & Mobility","Automotive, mobility and work-vehicle concepts."],
+    robotics:["Robotics & Industrial","Robotics, machinery and industrial technology."],
+    physical:["Physical Products","Consumer products and physical invention packages."],
+    other:["Other Technology","Additional technology assets outside the main categories."]
+  };
+
+  const cards=[...source.querySelectorAll(':scope > .card')];
+  const categorized=cards.map(card=>{
+    const text=card.innerText||"";
+    let category="other";
+    if(rules.vehicles.test(text)) category="vehicles";
+    else if(rules.robotics.test(text)) category="robotics";
+    else if(rules.physical.test(text)) category="physical";
+    else if(rules.ai.test(text)) category="ai";
+    else if(rules.apps.test(text)) category="apps";
+    return {card,category};
   });
-  function apply(filter){
-    let shown=0;
-    cards.forEach(card=>{
-      const visible=filter==='all'||card.dataset.category===filter;
-      card.classList.toggle('category-hidden',!visible);
-      if(visible)shown++;
-    });
-    buttons.forEach(btn=>{
-      const active=btn.dataset.filter===filter;
-      btn.classList.toggle('active',active);
-      btn.setAttribute('aria-selected',active?'true':'false');
-    });
-    const label={all:'all technology assets',apps:'Apps & Software',ai:'AI & Intelligence',vehicles:'Vehicles & Mobility',robotics:'Robotics & Industrial',physical:'Physical Products',other:'other technology assets'}[filter]||filter;
-    status.textContent='Showing '+shown+' '+label;
+
+  const order=["all","apps","ai","vehicles","robotics","physical","other"];
+  const sections={};
+
+  order.forEach(key=>{
+    const section=document.createElement("section");
+    section.className="category-section";
+    section.id="category-"+key;
+    const head=document.createElement("div");
+    head.className="category-section-head";
+    const h=document.createElement("h3");
+    h.textContent=info[key][0];
+    const p=document.createElement("p");
+    p.textContent=info[key][1];
+    head.append(h,p);
+    const grid=document.createElement("div");
+    grid.className="category-grid";
+    section.append(head,grid);
+    sectionHost.appendChild(section);
+    sections[key]=grid;
+  });
+
+  categorized.forEach(({card,category})=>{
+    const clone=card.cloneNode(true);
+    clone.removeAttribute("id");
+    sections[category].appendChild(clone);
+    const allClone=card.cloneNode(true);
+    allClone.removeAttribute("id");
+    sections.all.appendChild(allClone);
+  });
+
+  source.style.display="none";
+
+  function select(key){
+    buttons.forEach(btn=>btn.classList.toggle("active",btn.dataset.filter===key));
+    const label=info[key][0];
+    status.textContent="Showing the dedicated "+label+" section";
+    const target=document.getElementById("category-"+key);
+    if(target) target.scrollIntoView({behavior:"smooth",block:"start"});
   }
-  buttons.forEach(btn=>btn.addEventListener('click',()=>apply(btn.dataset.filter)));
+  buttons.forEach(btn=>btn.addEventListener("click",()=>select(btn.dataset.filter)));
 })();
 </script>
 </body>
