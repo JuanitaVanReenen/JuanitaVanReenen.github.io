@@ -1,0 +1,42 @@
+name: Secure AQUASEAL card image
+
+on:
+  push:
+    paths:
+      - '.github/workflows/fix-aquaseal-card.yml'
+      - 'index.html'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  secure-card:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download approved AQUASEAL card image
+        run: |
+          mkdir -p assets/aquaseal
+          curl -L --fail --retry 3 "https://d2ol7oe51mr4n9.cloudfront.net/user_3JccjS9oSIhOaOB5TNzJnFtsjeP/d263c95e-cc01-48e6-ae5c-b74f774ab2fb.png" -o assets/aquaseal/aquaseal-card.png
+
+      - name: Point homepage card to permanent local image
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path("index.html")
+          s = p.read_text()
+          s = s.replace("assets/aquaseal/aquaseal-card.jpg", "assets/aquaseal/aquaseal-card.png")
+          s = s.replace("aquaseal/aquaseal-card.jpg", "assets/aquaseal/aquaseal-card.png")
+          s = s.replace("aquaseal/aquaseal-hero.jpg", "assets/aquaseal/aquaseal-card.png")
+          p.write_text(s)
+          PY
+
+      - name: Commit permanent image
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/aquaseal/aquaseal-card.png index.html
+          git diff --cached --quiet || git commit -m "Fix AQUASEAL card image and store locally"
+          git push
