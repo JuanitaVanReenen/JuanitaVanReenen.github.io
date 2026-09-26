@@ -1,6 +1,8 @@
 name: Fix AQUASEAL card image permanently
 on:
-  workflow_dispatch:
+  push:
+    paths:
+      - .github/workflows/fix-aquaseal-card.yml
 jobs:
   fix:
     runs-on: ubuntu-latest
