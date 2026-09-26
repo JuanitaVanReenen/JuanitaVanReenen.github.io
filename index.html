@@ -692,13 +692,22 @@ document.getElementById('enquiryForm')?.addEventListener('submit',function(e){
   const status=document.getElementById('categoryStatus');
   if(!source||!sectionHost||!buttons.length)return;
 
-  const rules={
-    vehicles:/suv|bakkie|vehicle|automotive|mobility|veyora|tarvion|vayrion/i,
-    robotics:/robot|robotics|industrial|maintenance|recovery|machinery|fixture|physical automation/i,
-    physical:/aquaseal|sneaker|footwear|physical product|consumer product/i,
-    ai:/\bai\b|artificial intelligence|intelligence|decision|evidence|conflict resolver|nexora|assurance engine|reasoning/i,
-    apps:/software|app|mvp|platform|simulator|visualizer|visualiser|sitepulse|stopsure|pazumo|sulia|meettrace|workready|fieldflow/i
+  /* Explicit portfolio classification keeps every existing product in the correct dedicated section. */
+  const categoryMap={
+    apps:[
+      "SitePulse","StopSure Safety","PAZUMO","LeakProof","WorkReady","FieldFlow Audit","ProductFit Studio","PromiseCheck","Robot Job Fit","Shileen","Orveli","PulzaFlow","Sulia","Usperiment","BuildCheck Reconcile","AI ActionProof","MoneyQuest Kids","Next Action","Configurable Maintenance Extraction Simulator","ChangeImpact — 4D Change-Propagation Visualizer"
+    ],
+    ai:[
+      "Water Infrastructure Decision Assurance","Enterprise Decision Conflict Resolver","Capital Decision Analyzer","Physical AI Deployment Underwriting Engine","Kaylics","Acquisition Revenue Protection","Enterprise Exitability Intelligence","Workflow Gap Capture Engine","HVAC Technical Building Services Acquisition Intelligence","Technical Evidence Sufficiency Engine","AI Reliance Calibration Engine","Intelligent Charging Environment Safety System","NEXORA"
+    ],
+    vehicles:["VAYRION","Autonomous Modular Work Vehicle","VEYORA","TARVION"],
+    robotics:["Flexible Line Recovery Robot","Adaptive Maintenance Capture & Positioning Fixture","Hydraulic Connection Management System"],
+    physical:["JVR Sneaker","AQUASEAL™"],
+    other:[]
   };
+  const categoryByTitle={};
+  Object.entries(categoryMap).forEach(([category,titles])=>titles.forEach(title=>categoryByTitle[title]=category));
+
   const info={
     all:["All Technology","The complete technology portfolio."],
     apps:["Apps & Software","Standalone apps, platforms and working software products."],
@@ -711,14 +720,8 @@ document.getElementById('enquiryForm')?.addEventListener('submit',function(e){
 
   const cards=[...source.querySelectorAll(':scope > .card')];
   const categorized=cards.map(card=>{
-    const text=card.innerText||"";
-    let category="other";
-    if(rules.vehicles.test(text)) category="vehicles";
-    else if(rules.robotics.test(text)) category="robotics";
-    else if(rules.physical.test(text)) category="physical";
-    else if(rules.ai.test(text)) category="ai";
-    else if(rules.apps.test(text)) category="apps";
-    return {card,category};
+    const title=(card.querySelector("h3")?.textContent||"").replace(/\s+/g," ").trim();
+    return {card,category:categoryByTitle[title]||"other"};
   });
 
   const order=["all","apps","ai","vehicles","robotics","physical","other"];
