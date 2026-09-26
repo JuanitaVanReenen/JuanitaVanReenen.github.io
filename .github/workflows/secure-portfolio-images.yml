@@ -38,7 +38,17 @@ jobs:
                   target.write_bytes(data)
               s = s.replace(url, str(target).replace("assets/","assets/"))
           p.write_text(s)
-          print(f"Secured {len(urls)} external image URLs.")
+          # Keep the approved AQUASEAL card image permanently inside the repository.
+          aquaseal_url = "https://d2ol7oe51mr4n9.cloudfront.net/user_3JccjS9oSIhOaOB5TNzJnFtsjeP/d263c95e-cc01-48e6-ae5c-b74f774ab2fb.png"
+          aquaseal_target = Path("assets/aquaseal/aquaseal-card.png")
+          aquaseal_target.parent.mkdir(parents=True, exist_ok=True)
+          req = urllib.request.Request(aquaseal_url, headers={"User-Agent":"Mozilla/5.0"})
+          with urllib.request.urlopen(req, timeout=60) as r:
+              aquaseal_target.write_bytes(r.read())
+          s = s.replace("assets/aquaseal/aquaseal-card.jpg", "assets/aquaseal/aquaseal-card.png")
+          s = s.replace("aquaseal/aquaseal-card.jpg", "assets/aquaseal/aquaseal-card.png")
+          s = s.replace("aquaseal/aquaseal-hero.jpg", "assets/aquaseal/aquaseal-card.png")
+          print(f"Secured {len(urls)} external image URLs and the AQUASEAL card image.")
           PY
 
       - name: Commit secured images
