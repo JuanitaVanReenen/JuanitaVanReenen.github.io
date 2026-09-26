@@ -201,6 +201,26 @@ footer{padding:36px 0;color:#8293aa;font-size:12px}
   .section-head{display:block}
 }
 #tarvion .project-cover img{filter:contrast(1.08) saturate(1.04) brightness(1.02);image-rendering:auto;}\n
+/* Professional portfolio polish */
+.hero-kicker{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.hero-kicker span{display:inline-flex;align-items:center;padding:7px 10px;border:1px solid rgba(142,197,255,.18);border-radius:999px;background:rgba(15,29,49,.55);color:#c9d8eb;font-size:11px;font-weight:750}
+.featured-tech{padding:58px 0 64px;border-top:1px solid rgba(142,197,255,.09)}
+.featured-tech-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:26px}
+.featured-tech-card{position:relative;padding:22px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(145deg,rgba(15,29,49,.96),rgba(19,36,60,.72));transition:.2s ease}
+.featured-tech-card:hover{transform:translateY(-3px);border-color:#53769d}
+.featured-tech-card .mini-label{color:var(--accent);font-size:10px;font-weight:850;letter-spacing:1.4px;text-transform:uppercase}
+.featured-tech-card h3{font-size:19px;line-height:1.2;margin:9px 0 7px}
+.featured-tech-card p{margin:0;color:var(--muted);font-size:13px}
+.featured-tech-card a{display:inline-block;margin-top:15px;color:var(--accent);font-size:12px;font-weight:850}
+.acquisition-strip{padding:42px 0}
+.acquisition-strip-inner{display:grid;grid-template-columns:1.15fr 1fr 1fr 1fr;gap:1px;border:1px solid var(--line);border-radius:20px;overflow:hidden;background:var(--line)}
+.acquisition-strip .acq-item{padding:21px;background:rgba(15,29,49,.94)}
+.acquisition-strip .acq-item:first-child{background:linear-gradient(135deg,#173453,#10243b)}
+.acq-num{color:var(--accent);font-size:10px;font-weight:900;letter-spacing:1.3px}
+.acq-item h3{font-size:15px;margin:7px 0 3px}.acq-item p{margin:0;color:var(--muted);font-size:12px}
+@media(max-width:900px){.featured-tech-grid{grid-template-columns:repeat(2,1fr)}.acquisition-strip-inner{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:720px){.featured-tech-grid,.acquisition-strip-inner{grid-template-columns:1fr}.featured-tech{padding-top:42px}}
+
 /* Portfolio category redesign — content and existing product media remain unchanged */
 .category-intro{margin:18px 0 24px;color:var(--muted);font-size:14px;max-width:820px}
 .category-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:0 0 34px}
@@ -244,6 +264,7 @@ footer{padding:36px 0;color:#8293aa;font-size:12px}
     <div class="eyebrow">Independent technology developer</div>
     <h1>Technology assets built for <em>strategic opportunity.</em></h1>
     <p>I develop focused software products, working MVPs, browser-based applications and proprietary intellectual property around specific business problems — with selected assets prepared for outright acquisition and strategic development.</p>
+    <div class="hero-kicker"><span>Software &amp; AI</span><span>Vehicles &amp; Mobility</span><span>Robotics &amp; Industrial</span><span>Physical Inventions</span></div>
     <div class="actions">
       <a class="btn primary" href="#technology">Explore Technology</a>
       <a class="btn secondary" href="#contact">Acquisition Enquiries →</a>
@@ -259,6 +280,25 @@ footer{padding:36px 0;color:#8293aa;font-size:12px}
   </div>
 </header>
 
+<section class="featured-tech" id="featured-technology">
+  <div class="wrap">
+    <div class="section-label">Featured technology</div>
+    <div class="section-head">
+      <div>
+        <h2>Selected assets for strategic review</h2>
+        <p class="lead">A concise starting point for organisations looking for technology, software, mobility, robotics or physical-product opportunities.</p>
+      </div>
+    </div>
+    <div class="featured-tech-grid">
+      <div class="featured-tech-card"><div class="mini-label">Vehicles &amp; Mobility</div><h3>VAYRION</h3><p>Adventure SUV concept built around a proposed physical load-path architecture.</p><a href="#category-vehicles">View in Vehicles &amp; Mobility →</a></div>
+      <div class="featured-tech-card"><div class="mini-label">Vehicles &amp; Mobility</div><h3>Autonomous Modular Work Vehicle</h3><p>Rugged industrial work-vehicle concept with configurable operating architecture.</p><a href="#category-vehicles">View in Vehicles &amp; Mobility →</a></div>
+      <div class="featured-tech-card"><div class="mini-label">Physical Product</div><h3>AQUASEAL™</h3><p>Advanced shower-cap system centred on water diversion and continuous sealing.</p><a href="#category-physical">View in Physical Products →</a></div>
+      <div class="featured-tech-card"><div class="mini-label">Robotics &amp; Industrial</div><h3>Flexible Line Recovery Robot</h3><p>Industrial robotics package for recovering disordered cables, cords, ropes and selected hoses.</p><a href="#category-robotics">View in Robotics &amp; Industrial →</a></div>
+      <div class="featured-tech-card"><div class="mini-label">Apps &amp; Software</div><h3>SitePulse</h3><p>Construction-site intelligence connecting observations, impacts and traceable actions.</p><a href="#category-apps">View in Apps &amp; Software →</a></div>
+      <div class="featured-tech-card"><div class="mini-label">AI &amp; Intelligence</div><h3>Water Infrastructure Decision Assurance</h3><p>Enterprise assurance software connecting evidence, verification, conflicts and gate decisions.</p><a href="#category-ai">View in AI &amp; Intelligence →</a></div>
+    </div>
+  </div>
+</section>
 <section id="technology">
   <div class="wrap">
     <div class="section-head">
@@ -896,6 +936,16 @@ footer{padding:36px 0;color:#8293aa;font-size:12px}
   </div>
 </section>
 
+<section class="acquisition-strip" aria-label="Acquisition process">
+  <div class="wrap">
+    <div class="acquisition-strip-inner">
+      <div class="acq-item"><div class="acq-num">ACQUISITION PATH</div><h3>From review to transfer</h3><p>A clear route for organisations interested in a defined technology asset.</p></div>
+      <div class="acq-item"><div class="acq-num">01 / REVIEW</div><h3>Identify the asset</h3><p>Review the public technology overview and request relevant information.</p></div>
+      <div class="acq-item"><div class="acq-num">02 / DEMONSTRATE</div><h3>See the technology</h3><p>Request a demonstration, technical overview or buyer materials.</p></div>
+      <div class="acq-item"><div class="acq-num">03 / TRANSFER</div><h3>Discuss acquisition</h3><p>Proceed to commercial and technical due diligence where appropriate.</p></div>
+    </div>
+  </div>
+</section>
 <section id="opportunities">
   <div class="wrap">
     <div class="section-label">What is available</div>
