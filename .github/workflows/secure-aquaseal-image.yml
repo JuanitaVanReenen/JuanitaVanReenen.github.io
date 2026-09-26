@@ -1,0 +1,48 @@
+name: Secure AQUASEAL image in repository
+
+on:
+  push:
+    paths:
+      - ".github/workflows/secure-aquaseal-image.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  secure-image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download AQUASEAL infographic into repository
+        run: |
+          mkdir -p aquaseal
+          curl -L --fail --retry 3 "https://d2ol7oe51mr4n9.cloudfront.net/user_3JccjS9oSIhOaOB5TNzJnFtsjeP/542e2885-3fd7-4a13-9c4e-4f80a10f15f7.png" -o aquaseal/aquaseal-engineering-overview.png
+          file aquaseal/aquaseal-engineering-overview.png
+
+      - name: Point AQUASEAL page to repository-owned image
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path("aquaseal/index.html")
+          s = p.read_text()
+          s = s.replace(
+              "https://d2ol7oe51mr4n9.cloudfront.net/user_3JccjS9oSIhOaOB5TNzJnFtsjeP/542e2885-3fd7-4a13-9c4e-4f80a10f15f7.png",
+              "aquaseal-engineering-overview.png"
+          )
+          p.write_text(s)
+          PY
+
+      - name: Commit secured image
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add aquaseal/aquaseal-engineering-overview.png aquaseal/index.html
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "Store AQUASEAL infographic in repository"
+            git push
+          fi
