@@ -200,7 +200,17 @@ footer{padding:36px 0;color:#8293aa;font-size:12px}
   .bookgrid{grid-template-columns:repeat(2,1fr)}
   .section-head{display:block}
 }
-#tarvion .project-cover img{filter:contrast(1.08) saturate(1.04) brightness(1.02);image-rendering:auto;}\n</style>
+#tarvion .project-cover img{filter:contrast(1.08) saturate(1.04) brightness(1.02);image-rendering:auto;}\n
+/* Portfolio category redesign — content and existing product media remain unchanged */
+.category-intro{margin:18px 0 24px;color:var(--muted);font-size:14px;max-width:820px}
+.category-bar{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 28px;padding:10px;border:1px solid var(--line);border-radius:16px;background:rgba(15,29,49,.62);position:sticky;top:82px;z-index:20;backdrop-filter:blur(14px)}
+.category-btn{appearance:none;border:1px solid var(--line);background:#0b1728;color:var(--muted);border-radius:999px;padding:10px 15px;font:inherit;font-size:12px;font-weight:850;letter-spacing:.15px;cursor:pointer;transition:.2s ease}
+.category-btn:hover{color:#fff;border-color:#53769d;transform:translateY(-1px)}
+.category-btn.active{background:var(--accent);border-color:var(--accent);color:#07111f}
+.portfolio-grid .card.category-hidden{display:none}
+.category-status{margin:-12px 0 22px;color:#8497b3;font-size:12px}
+@media(max-width:720px){.category-bar{top:70px;overflow-x:auto;flex-wrap:nowrap;padding:8px}.category-btn{white-space:nowrap}.category-status{margin-top:-8px}}
+</style>
 </head>
 
 <body>
@@ -208,8 +218,9 @@ footer{padding:36px 0;color:#8293aa;font-size:12px}
   <div class="wrap nav">
     <a class="brand" href="./">Juanita <span>Van Reenen</span></a>
     <div class="links">
-      <a href="#technology">Technology</a>
-      <a href="#opportunities">Opportunities</a>
+      <a href="#technology">Portfolio</a>
+      <a href="#categories">Categories</a>
+      <a href="#opportunities">Acquisition</a>
       <a href="#books">Books</a>
       <a href="#screen">TV / Screen</a>
       <a href="#about">About</a>
@@ -247,6 +258,18 @@ footer{padding:36px 0;color:#8293aa;font-size:12px}
         <p class="lead">A selection of the portfolio is shown here as a clear starting point for corporate and strategic buyers.</p>
       </div>
     </div>
+
+    <div id="categories" class="category-intro">Explore the portfolio by technology type. The existing product pages, descriptions, photographs and demonstrations remain unchanged — this redesign simply gives visitors a clearer way to navigate the collection.</div>
+    <div class="category-bar" role="tablist" aria-label="Technology categories">
+      <button class="category-btn active" type="button" data-filter="all" role="tab" aria-selected="true">All Technology</button>
+      <button class="category-btn" type="button" data-filter="apps" role="tab" aria-selected="false">Apps &amp; Software</button>
+      <button class="category-btn" type="button" data-filter="ai" role="tab" aria-selected="false">AI &amp; Intelligence</button>
+      <button class="category-btn" type="button" data-filter="vehicles" role="tab" aria-selected="false">Vehicles &amp; Mobility</button>
+      <button class="category-btn" type="button" data-filter="robotics" role="tab" aria-selected="false">Robotics &amp; Industrial</button>
+      <button class="category-btn" type="button" data-filter="physical" role="tab" aria-selected="false">Physical Products</button>
+      <button class="category-btn" type="button" data-filter="other" role="tab" aria-selected="false">Other Technology</button>
+    </div>
+    <div class="category-status" id="categoryStatus" aria-live="polite">Showing all technology assets</div>
 
     <div class="featured">
       <article class="card" id="sitepulse">
@@ -647,6 +670,50 @@ document.getElementById('enquiryForm')?.addEventListener('submit',function(e){
   );
   window.location.href='mailto:vanreenen.juanita@yahoo.com?subject='+subject+'&body='+body;
 });
+</script>
+
+<script>
+/* Category navigation: assigns categories from the existing card titles/descriptions only. No product media or copy is changed. */
+(function(){
+  const grid=document.querySelector('.featured');
+  const buttons=[...document.querySelectorAll('.category-btn')];
+  const status=document.getElementById('categoryStatus');
+  if(!grid||!buttons.length)return;
+  const cards=[...grid.querySelectorAll(':scope > .card')];
+  const rules={
+    vehicles:/suv|bakkie|vehicle|automotive|mobility|veyora|tarvion|vayrion/i,
+    robotics:/robot|robotics|industrial|maintenance|recovery|machinery|fixture|physical automation/i,
+    physical:/aquaseal|sneaker|footwear|physical product|consumer product/i,
+    ai:/\bai\b|artificial intelligence|intelligence|decision|evidence|conflict resolver|nexora|assurance engine|reasoning/i,
+    apps:/software|app|mvp|platform|simulator|visualizer|visualiser|sitepulse|stopsure|pazumo|sulia|meettrace|workready|fieldflow/i
+  };
+  cards.forEach(card=>{
+    const text=card.innerText||'';
+    let category='other';
+    if(rules.vehicles.test(text)) category='vehicles';
+    else if(rules.robotics.test(text)) category='robotics';
+    else if(rules.physical.test(text)) category='physical';
+    else if(rules.ai.test(text)) category='ai';
+    else if(rules.apps.test(text)) category='apps';
+    card.dataset.category=category;
+  });
+  function apply(filter){
+    let shown=0;
+    cards.forEach(card=>{
+      const visible=filter==='all'||card.dataset.category===filter;
+      card.classList.toggle('category-hidden',!visible);
+      if(visible)shown++;
+    });
+    buttons.forEach(btn=>{
+      const active=btn.dataset.filter===filter;
+      btn.classList.toggle('active',active);
+      btn.setAttribute('aria-selected',active?'true':'false');
+    });
+    const label={all:'all technology assets',apps:'Apps & Software',ai:'AI & Intelligence',vehicles:'Vehicles & Mobility',robotics:'Robotics & Industrial',physical:'Physical Products',other:'other technology assets'}[filter]||filter;
+    status.textContent='Showing '+shown+' '+label;
+  }
+  buttons.forEach(btn=>btn.addEventListener('click',()=>apply(btn.dataset.filter)));
+})();
 </script>
 </body>
 </html>
