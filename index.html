@@ -705,7 +705,8 @@ document.getElementById('enquiryForm')?.addEventListener('submit',function(e){
     vehicles:{
       label:"Vehicles & Mobility",
       description:"Automotive, mobility and work-vehicle concepts.",
-      products:["VAYRION","Autonomous Modular Work Vehicle","VEYORA","TARVION"]
+      products:["VAYRION","Autonomous Modular Work Vehicle","VEYORA","TARVION"],
+      ids:["vayrion","autonomous-modular-work-vehicle","veyora","tarvion"]
     },
     robotics:{
       label:"Robotics & Industrial",
@@ -726,6 +727,7 @@ document.getElementById('enquiryForm')?.addEventListener('submit',function(e){
     const title=normalize(card.querySelector("h3")?.textContent);
     byTitle.set(title,card);
   });
+  const byId=id=>source.querySelector("#"+id);
 
   /* Remove any previously generated sections before rebuilding them. */
   host.innerHTML="";
@@ -747,8 +749,8 @@ document.getElementById('enquiryForm')?.addEventListener('submit',function(e){
     const grid=section.querySelector(".category-grid");
     host.appendChild(section);
 
-    meta.products.forEach(title=>{
-      const card=byTitle.get(title);
+    meta.products.forEach((title,index)=>{
+      const card=(meta.ids&&meta.ids[index]) ? byId(meta.ids[index]) : byTitle.get(title);
       if(!card)return;
       const clone=card.cloneNode(true);
       clone.removeAttribute("id");
