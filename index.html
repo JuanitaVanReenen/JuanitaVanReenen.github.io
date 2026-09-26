@@ -276,7 +276,6 @@ footer{padding:36px 0;color:#8293aa;font-size:12px}
       <button class="category-btn" type="button" data-filter="vehicles">Vehicles &amp; Mobility<small>SUVs, bakkies and mobility concepts</small></button>
       <button class="category-btn" type="button" data-filter="robotics">Robotics &amp; Industrial<small>Robots, machinery and industrial systems</small></button>
       <button class="category-btn" type="button" data-filter="physical">Physical Products<small>Consumer and physical inventions</small></button>
-      <button class="category-btn" type="button" data-filter="other">Other Technology<small>Technology outside the main categories</small></button>
     </div>
     <div class="category-status" id="categoryStatus" aria-live="polite">Showing all technology assets</div>
 
@@ -724,7 +723,7 @@ document.getElementById('enquiryForm')?.addEventListener('submit',function(e){
     return {card,category:categoryByTitle[title]||"other"};
   });
 
-  const order=["all","apps","ai","vehicles","robotics","physical","other"];
+  const order=["all","apps","ai","vehicles","robotics","physical"];
   const sections={};
 
   order.forEach(key=>{
