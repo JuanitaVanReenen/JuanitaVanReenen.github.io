@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HEMAVIO — Single-Sample Multi-Analyte Platform</title>
+<meta name="description" content="HEMAVIO development-stage engineering platform: reusable reader and disposable multi-zone microfluidic cartridge targeting glucose, hemoglobin and total cholesterol.">
+<style>
+:root{--bg:#071018;--panel:#0d1a25;--line:#1d3444;--text:#edf5f8;--muted:#9db1bd;--accent:#67d7c4;--accent2:#7bb7ff}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#061019,#09131d);color:var(--text);font-family:Inter,Arial,sans-serif;line-height:1.6}
+.wrap{max-width:1120px;margin:auto;padding:0 24px}.hero{padding:80px 0 55px;border-bottom:1px solid var(--line)}
+.eyebrow{letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-size:12px;font-weight:700}.hero h1{font-size:56px;line-height:1;margin:12px 0}.hero p{max-width:780px;color:var(--muted);font-size:19px}.pill{display:inline-block;border:1px solid var(--line);padding:8px 12px;border-radius:999px;margin:5px 6px 0 0;color:#cfe0e7;font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin:35px 0}.card{background:rgba(13,26,37,.9);border:1px solid var(--line);border-radius:18px;padding:24px}.card h2{margin-top:0}.muted{color:var(--muted)}
+.diagram{margin:30px 0;background:#07141e;border:1px solid var(--line);border-radius:20px;padding:18px;overflow:hidden}.diagram svg{width:100%;height:auto;display:block}
+.sequence{font-weight:700;letter-spacing:.03em;color:#dff8f3;padding:18px;border-left:3px solid var(--accent);background:#0b1923;border-radius:8px}
+.status{display:grid;grid-template-columns:1fr 1fr;gap:8px}.status div{padding:10px 12px;border:1px solid var(--line);border-radius:10px}.ok{color:var(--accent)}.open{color:#ffcf77}
+footer{border-top:1px solid var(--line);margin-top:45px;padding:30px 0 50px;color:var(--muted);font-size:13px}
+a{color:#b8d8ff;text-decoration:none}a:hover{text-decoration:underline}
+@media(max-width:760px){.hero h1{font-size:42px}.grid,.status{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="hero"><div class="wrap">
+<div class="eyebrow">Strategic Development / Acquisition Opportunity</div>
+<h1>HEMAVIO</h1>
+<p>A compact reusable reader paired with a disposable multi-zone microfluidic cartridge, engineered around one capillary sample and an expandable assay architecture.</p>
+<div>
+<span class="pill">Glucose</span><span class="pill">Hemoglobin</span><span class="pill">Total cholesterol</span><span class="pill">Expandable cartridge</span>
+</div>
+</div></header>
+<main class="wrap">
+<section class="diagram" aria-label="HEMAVIO architecture diagram">
+<svg viewBox="0 0 1000 390" role="img">
+<rect x="30" y="40" width="420" height="300" rx="24" fill="#0c1c27" stroke="#294454"/>
+<text x="55" y="78" fill="#67d7c4" font-size="18" font-weight="700">DISPOSABLE CARTRIDGE</text>
+<rect x="65" y="105" width="350" height="48" rx="10" fill="#132b39" stroke="#315263"/><text x="240" y="135" text-anchor="middle" fill="#edf5f8">INLET / CAPTURE → QUALITY GATE</text>
+<rect x="65" y="170" width="165" height="48" rx="10" fill="#132b39" stroke="#315263"/><text x="147" y="200" text-anchor="middle" fill="#edf5f8">METER</text>
+<rect x="250" y="170" width="165" height="48" rx="10" fill="#132b39" stroke="#315263"/><text x="332" y="200" text-anchor="middle" fill="#edf5f8">MANIFOLD</text>
+<rect x="65" y="235" width="100" height="65" rx="10" fill="#12352f" stroke="#3b756b"/><text x="115" y="263" text-anchor="middle" fill="#edf5f8">GLUCOSE</text><text x="115" y="282" text-anchor="middle" fill="#9db1bd" font-size="11">ASSAY ZONE</text>
+<rect x="180" y="235" width="100" height="65" rx="10" fill="#12352f" stroke="#3b756b"/><text x="230" y="263" text-anchor="middle" fill="#edf5f8">Hb</text><text x="230" y="282" text-anchor="middle" fill="#9db1bd" font-size="11">ASSAY ZONE</text>
+<rect x="295" y="235" width="120" height="65" rx="10" fill="#12352f" stroke="#3b756b"/><text x="355" y="263" text-anchor="middle" fill="#edf5f8">CHOLESTEROL</text><text x="355" y="282" text-anchor="middle" fill="#9db1bd" font-size="11">ASSAY ZONE</text>
+<rect x="540" y="75" width="420" height="230" rx="24" fill="#101d2a" stroke="#294454"/>
+<text x="565" y="112" fill="#7bb7ff" font-size="18" font-weight="700">REUSABLE READER</text>
+<rect x="575" y="140" width="350" height="42" rx="10" fill="#172b3a" stroke="#315263"/><text x="750" y="167" text-anchor="middle" fill="#edf5f8">KEYED CARTRIDGE RECEIVER / DETECTION</text>
+<rect x="575" y="195" width="170" height="42" rx="10" fill="#172b3a" stroke="#315263"/><text x="660" y="222" text-anchor="middle" fill="#edf5f8">PROCESSOR + FAIL-CLOSED LOGIC</text>
+<rect x="755" y="195" width="170" height="42" rx="10" fill="#172b3a" stroke="#315263"/><text x="840" y="222" text-anchor="middle" fill="#edf5f8">TEMP / ID / CONTROLS</text>
+<rect x="575" y="250" width="350" height="35" rx="10" fill="#172b3a" stroke="#315263"/><text x="750" y="273" text-anchor="middle" fill="#edf5f8">DISPLAY • DATA • POWER</text>
+<path d="M450 190 C490 190 500 190 540 190" stroke="#67d7c4" stroke-width="5" fill="none"/>
+<text x="500" y="176" text-anchor="middle" fill="#9db1bd" font-size="12">CONTROLLED</text><text x="500" y="292" text-anchor="middle" fill="#9db1bd" font-size="12">SAMPLE → DETECTION</text>
+</svg>
+</section>
+<section class="grid">
+<article class="card"><h2>What it is</h2><p class="muted">An integrated reader-and-cartridge architecture. The disposable component is a controlled microfluidic cartridge with multiple isolated assay/sensing zones rather than three ordinary consumer test strips.</p></article>
+<article class="card"><h2>Initial targets</h2><p><b>Glucose</b><br><b>Hemoglobin</b><br><b>Total cholesterol</b></p><p class="muted">Additional analytes remain separate development targets until their own assay and verification evidence exists.</p></article>
+</section>
+<section class="card"><h2>How the system is intended to operate</h2><div class="sequence">INSERT → IDENTIFY → VERIFY CARTRIDGE → SAMPLE READY → SAMPLE VALIDATION → RUN → DETECT → VALIDATE → RESULT / INVALID</div><p class="muted">The design uses a sample-quality gate, defined-volume metering, controlled distribution, physical isolation between assay zones and fail-closed result logic. Invalid conditions are intended to block numerical-result display.</p></section>
+<section class="grid">
+<article class="card"><h2>Development status</h2><div class="status"><div>Architecture <span class="ok">COMPLETE</span></div><div>Prototype definition <span class="ok">COMPLETE</span></div><div>Physical prototype <span class="open">NOT BUILT</span></div><div>Bench verification <span class="open">NOT STARTED</span></div><div>Analytical validation <span class="open">NOT STARTED</span></div><div>Regulatory approval <span class="open">NONE</span></div></div></article>
+<article class="card"><h2>Strategic opportunity</h2><p class="muted">The controlled engineering package is available for a qualified company or development partner to take into physical prototyping, assay development, analytical verification, regulatory development and commercialization.</p></article>
+</section>
+<section class="card"><h2>Buyer disclosure</h2><p>This is a development-stage engineering platform. Measurement targets are not medically validated. Accuracy, clinical performance, manufacturing qualification and regulatory status have not been established.</p><p><b>Designed ≠ built.<br>Built ≠ verified.<br>Verified ≠ medically validated.<br>Medically validated ≠ regulatory approval.</b></p></section>
+<footer><div>HEMAVIO — strategic development / acquisition presentation</div><div>Public portfolio: <a href="https://juanitavanreenen.github.io/">juanitavanreenen.github.io</a></div></footer>
+</main>
+</body></html>
