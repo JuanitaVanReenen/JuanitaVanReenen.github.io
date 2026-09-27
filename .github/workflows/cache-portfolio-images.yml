@@ -1,0 +1,31 @@
+name: Cache Portfolio Card Images
+
+on:
+  push:
+    branches: ["main"]
+
+permissions:
+  contents: write
+
+jobs:
+  cache-images:
+    if: "!contains(github.event.head_commit.message, 'Cache portfolio images')"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download current portfolio images
+        run: |
+          mkdir -p assets/secured-portfolio
+          curl -L --fail --retry 3 -o assets/secured-portfolio/hemavio-current.png "https://d2ol7oe51mr4n9.cloudfront.net/user_3JccjS9oSIhOaOB5TNzJnFtsjeP/4d9d8023-0cc4-4b5b-954d-2c61fca5a642.png"
+          curl -L --fail --retry 3 -o assets/secured-portfolio/aquaseal-current.png "https://d2ol7oe51mr4n9.cloudfront.net/user_3JccjS9oSIhOaOB5TNzJnFtsjeP/d263c95e-cc01-48e6-ae5c-b74f774ab2fb.png"
+          file assets/secured-portfolio/hemavio-current.png assets/secured-portfolio/aquaseal-current.png
+
+      - name: Commit cached images
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/secured-portfolio/hemavio-current.png assets/secured-portfolio/aquaseal-current.png
+          git commit -m "Cache portfolio images"
+          git push
