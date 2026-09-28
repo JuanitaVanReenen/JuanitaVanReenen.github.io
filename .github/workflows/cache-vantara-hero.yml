@@ -18,7 +18,7 @@ jobs:
       - name: Download approved VANTARA hero image
         run: |
           mkdir -p assets/secured-portfolio
-          curl -L --fail --retry 3 -o assets/secured-portfolio/vantara-hero.png "https://d2ol7oe51mr4n9b0f6d5f3e9a4d2b7c8d.cloudfront.net/user_3JccjS9oSIhOaOB5TNzJnFtsjeP/27fa0882-da55-4c1b-8cef-1e9b7cdbbc36.png"
+          curl -L --fail --retry 3 -o assets/secured-portfolio/vantara-hero.png "https://d2ol7oe51mr4n9.cloudfront.net/user_3JccjS9oSIhOaOB5TNzJnFtsjeP/27fa0882-da55-4c1b-8cef-1e9b7cdbbc36.png"
           file assets/secured-portfolio/vantara-hero.png
 
       - name: Commit permanent VANTARA hero image
