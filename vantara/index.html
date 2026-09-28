@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VANTARA | Adaptive Vehicle Architecture</title>
+<meta name="description" content="VANTARA is an adaptive whole-vehicle architecture built around four independently engineered wheel modules for controlled ride-height, stance and terrain adaptation.">
+<style>
+:root{--bg:#07111f;--bg2:#0b1728;--surface:#0f1d31;--surface2:#13243c;--ink:#f7f9fc;--muted:#aebbd0;--line:#263b59;--accent:#8ec5ff;--accent2:#d9ecff;--max:1180px;--radius:20px}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:var(--ink);background:radial-gradient(circle at 80% 0%,rgba(89,151,220,.16),transparent 32rem),linear-gradient(180deg,var(--bg),var(--bg2) 55%,var(--bg));font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.65}
+a{color:inherit;text-decoration:none}.wrap{width:min(var(--max),92%);margin:auto}
+nav{position:sticky;top:0;z-index:10;background:rgba(7,17,31,.86);backdrop-filter:blur(18px);border-bottom:1px solid rgba(142,197,255,.13)}
+.nav{min-height:68px;display:flex;align-items:center;justify-content:space-between}.brand{font-weight:850}.brand span{color:var(--accent)}.back{color:var(--accent);font-size:13px;font-weight:800}
+.hero{padding:44px 0 70px}.eyebrow{text-transform:uppercase;letter-spacing:2.5px;color:var(--accent);font-size:11px;font-weight:850}
+h1{font-size:clamp(44px,7vw,78px);line-height:1;letter-spacing:-2.8px;margin:12px 0 18px}.intro{font-size:19px;color:var(--muted);max-width:850px}
+.hero-image{margin-top:34px;border:1px solid var(--line);border-radius:24px;overflow:hidden;background:#081019;box-shadow:0 25px 80px rgba(0,0,0,.28)}
+.hero-image img{display:block;width:100%;height:auto;aspect-ratio:2/1;object-fit:cover}
+.caption{padding:12px 16px;color:#8293aa;font-size:11px;border-top:1px solid var(--line)}
+section{padding:70px 0;border-top:1px solid rgba(142,197,255,.09)}h2{font-size:clamp(29px,4vw,42px);line-height:1.1;letter-spacing:-1px;margin:0 0 12px}.lead{color:var(--muted);max-width:850px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-top:28px}.box{padding:23px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(145deg,rgba(15,29,49,.96),rgba(19,36,60,.72))}.box h3{font-size:17px;margin:0 0 7px}.box p{margin:0;color:var(--muted);font-size:13px}
+.states{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:28px}.state{padding:20px;border:1px solid var(--line);border-radius:16px;background:rgba(15,29,49,.7)}.state strong{color:var(--accent);font-size:13px}.state h3{margin:7px 0 4px;font-size:16px}.state p{margin:0;color:var(--muted);font-size:12px}
+.systems{columns:2;column-gap:40px;margin-top:25px}.systems li{break-inside:avoid;color:var(--muted);margin:7px 0;font-size:14px}.systems li::marker{color:var(--accent)}
+.callout{margin-top:28px;padding:25px;border:1px solid #36506f;border-radius:18px;background:linear-gradient(110deg,rgba(31,59,88,.46),rgba(13,27,46,.7))}
+.callout strong{color:#fff}.callout p{margin:7px 0 0;color:var(--muted);font-size:14px}
+.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:25px}.btn{display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line);background:rgba(15,29,49,.82);border-radius:12px;padding:12px 17px;font-weight:800;font-size:13px}.btn.primary{background:var(--accent);color:#07111f;border-color:var(--accent)}
+footer{padding:35px 0;color:#8293aa;font-size:12px}
+@media(max-width:900px){.grid{grid-template-columns:repeat(2,1fr)}.states{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:650px){.grid,.states{grid-template-columns:1fr}.systems{columns:1}.hero{padding-top:35px}.hero-image img{aspect-ratio:16/10}}
+</style>
+</head>
+<body>
+<nav><div class="wrap nav"><a class="brand" href="../">Juanita <span>Van Reenen</span></a><a class="back" href="../#technology">← Back to portfolio</a></div></nav>
+
+<header class="hero">
+<div class="wrap">
+<div class="eyebrow">Adaptive vehicle architecture</div>
+<h1>VANTARA</h1>
+<p class="intro">A rugged five-door adaptive vehicle concept built around four independently engineered wheel modules. The architecture is designed to alter ride height, lateral stance and terrain compliance while keeping the main passenger cell and primary vehicle systems on the sprung structure.</p>
+<div class="hero-image"><img src="../assets/secured-portfolio/vantara-hero.png" alt="VANTARA rugged adaptive vehicle hero image" loading="eager" decoding="async"><div class="caption">Approved VANTARA vehicle image — used as the primary visual reference for the public presentation.</div></div>
+<div class="actions"><a class="btn primary" href="mailto:vanreenen.juanita@yahoo.com?subject=VANTARA%20Technology%20Acquisition%20Enquiry">Acquisition enquiry →</a><a class="btn" href="#engineering">View engineering overview ↓</a></div>
+</div>
+</header>
+
+<section id="engineering"><div class="wrap">
+<h2>What VANTARA is</h2>
+<p class="lead">VANTARA is defined as a complete vehicle architecture, not only a suspension mechanism. The adaptive invention is integrated into the vehicle's chassis, controls, safety, powertrain and normal passenger-vehicle systems.</p>
+<div class="grid">
+<div class="box"><h3>Four adaptive corners</h3><p>Each wheel corner uses a structural receiver, vertical lift system, lateral stance carrier, articulation joint, wheel/brake/steering interface, mechanical retention and independent position sensing.</p></div>
+<div class="box"><h3>Separated load paths</h3><p>Lift and stance actuators position the mechanisms. Structural guides, retention features and the chassis receiver carry defined road, braking, acceleration and lateral reactions.</p></div>
+<div class="box"><h3>Fault-safe control</h3><p>A configuration becomes valid only when commanded state, measured position, mechanical retention and vehicle health agree across the required corners.</p></div>
+</div>
+</div></section>
+
+<section><div class="wrap">
+<h2>Adaptive operating states</h2>
+<p class="lead">These are development states for the engineering architecture; they are not certification claims.</p>
+<div class="states">
+<div class="state"><strong>CITY</strong><h3>Low + narrow</h3><p>Lower ride height and narrower stance for urban operation.</p></div>
+<div class="state"><strong>TRAVEL</strong><h3>Nominal road state</h3><p>Reference ride height and nominal stance for normal travel.</p></div>
+<div class="state"><strong>OFF-ROAD</strong><h3>Raised + wide</h3><p>Increased ride height, wider stance and greater terrain compliance.</p></div>
+<div class="state"><strong>EXPEDITION</strong><h3>Maximum validated envelope</h3><p>Development state for loaded, low-speed terrain operation within validated limits.</p></div>
+</div>
+</div></section>
+
+<section><div class="wrap">
+<h2>The complete vehicle package</h2>
+<p class="lead">The vehicle definition includes the equipment and systems expected around the adaptive architecture.</p>
+<ul class="systems">
+<li>Body and passenger safety structure</li><li>Steering system and controls</li><li>Braking system and brake routing</li><li>Powertrain and driveline architecture</li><li>Hybrid/electric energy architecture provision</li><li>Thermal management and cooling</li><li>LV/HV electrical distribution and wiring</li><li>Vehicle networking and diagnostics</li><li>Forward, rear and side cameras</li><li>360-degree surround-view provision</li><li>Parking and proximity sensing</li><li>ADAS sensor provisions</li><li>Front/rear 360-degree safety beacon architecture</li><li>Exterior and interior lighting</li><li>Infotainment and digital instrument display</li><li>Sound system, microphones and speakers</li><li>HVAC, filtration and demist/defrost</li><li>Glazing, mirrors, wipers and washers</li><li>Seats, belts, pretensioners and restraint provisions</li><li>Airbag and occupant-protection integration</li><li>Doors, locks, windows and tailgate/access</li><li>Driver HMI and adaptive-state display</li><li>Emergency and recovery equipment</li><li>Cargo area, tie-downs and practical equipment</li><li>Vehicle-level sensors and fault memory</li><li>Cybersecurity and software-control provisions</li><li>Service isolation and maintenance access</li><li>Manufacturing, tolerance and validation requirements</li>
+</ul>
+<div class="callout"><strong>The 360° / horizontal safety architecture is part of the vehicle.</strong><p>Front and rear integrated safety modules are designed into the vehicle architecture, with directional visibility toward forward, rearward and lateral/oblique viewing zones. Final lighting performance must still be engineered and tested against the target-market regulations.</p></div>
+</div></section>
+
+<section><div class="wrap">
+<h2>Engineering status</h2>
+<p class="lead">The VANTARA package is complete at preliminary engineering and acquisition-package level. The next real-world stage is detailed CAD/CAE, supplier-grade component definition, prototype fabrication, physical testing and professional IP/legal review.</p>
+<div class="grid">
+<div class="box"><h3>Defined</h3><p>Architecture, kinematics, load paths, retention, control logic, vehicle systems, materials/tolerance strategy, FMEA and validation programme.</p></div>
+<div class="box"><h3>Not claimed</h3><p>No road-legal certification, crash certification, physical prototype validation or granted patent is claimed by this presentation.</p></div>
+<div class="box"><h3>Buyer handover</h3><p>The acquisition package includes the controlled engineering records, vehicle-level load model, FEA load-case definition, safety/control records, IP records and approved visual reference.</p></div>
+</div>
+</div></section>
+
+<footer><div class="wrap">© Juanita Van Reenen. VANTARA is presented as a development-stage vehicle architecture and acquisition opportunity.</div></footer>
+</body>
+</html>
