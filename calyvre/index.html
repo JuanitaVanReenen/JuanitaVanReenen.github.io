@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CALYVRE — Fine Fragrance House</title>
+<meta name="description" content="CALYVRE is a premium fragrance house built around three signature scent worlds and a complete product-format system.">
+<style>
+:root{--paper:#f5f0e9;--ink:#241f1b;--muted:#66584d;--line:#d8cec2;--card:#fffaf5;--dark:#211d1a;--gold:#a57a45}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font-family:Arial,sans-serif;line-height:1.6}
+header{padding:22px 7%;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);background:rgba(245,240,233,.96);position:sticky;top:0;z-index:10}
+.logo{font-family:Georgia,serif;font-size:22px;letter-spacing:.28em}.nav a{margin-left:22px;color:var(--ink);text-decoration:none;font-size:13px}
+.wrap{max-width:1240px;margin:auto;padding:0 7%}.hero{padding:70px 0 55px}.eyebrow{text-transform:uppercase;letter-spacing:.24em;font-size:11px;color:var(--muted)}
+h1,h2,h3{font-family:Georgia,serif;font-weight:400}h1{font-size:clamp(50px,8vw,86px);line-height:.95;margin:16px 0 18px}.lead{font-size:18px;color:#4c4139;max-width:760px}
+.hero-image,.system-image{width:100%;display:block;border:1px solid #d1c3b4;box-shadow:0 20px 55px rgba(55,40,28,.14);cursor:pointer}.hero-image{margin-top:38px}
+.section{padding:70px 0;border-top:1px solid var(--line)}.section h2{font-size:40px;margin:0 0 10px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:30px}.card{background:var(--card);border:1px solid #ded3c7;overflow:hidden;box-shadow:0 12px 32px rgba(55,40,28,.07)}.card img{width:100%;height:260px;object-fit:cover;display:block}.card-body{padding:25px}.card h3{font-size:28px;margin:0 0 8px}.card p{color:var(--muted);margin:0}
+.btn{display:inline-block;margin-top:15px;padding:12px 18px;background:var(--ink);color:white;text-decoration:none;border:0;cursor:pointer;font:inherit}.btn.light{background:transparent;color:var(--ink);border:1px solid #bcae9f;margin-left:8px}
+.formats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:25px}.format{padding:20px;background:#e8ded3;border:1px solid #d8cbbd;text-align:center}
+.note{padding:22px;border:1px solid #d4c5b5;background:#fbf7f1;color:#5c5047;margin-top:25px}.footer{background:var(--dark);color:#eee7df;padding:42px 7%;margin-top:40px;font-size:12px}
+.modal{display:none;position:fixed;inset:0;background:rgba(18,14,11,.9);z-index:50;padding:3vh 3vw;overflow:auto}.modal.open{display:flex;align-items:center;justify-content:center}.panel{background:#f8f2eb;max-width:1280px;width:100%;padding:16px;position:relative}.panel img{width:100%;display:block}.close{position:absolute;right:10px;top:10px;width:42px;height:42px;border:0;border-radius:50%;background:#211d1a;color:#fff;font-size:24px;cursor:pointer;z-index:2}.modal-title{font-family:Georgia,serif;font-size:28px;margin:3px 0 10px}.modal-copy{color:var(--muted);padding:10px 3px}
+@media(max-width:800px){.nav{display:none}.grid{grid-template-columns:1fr}.formats{grid-template-columns:1fr 1fr}.wrap{padding:0 6%}.hero{padding-top:55px}.btn.light{margin-left:0;margin-top:8px}}
+</style>
+</head>
+<body>
+<header><div class="logo">CALYVRE</div><nav class="nav"><a href="#collection">Collection</a><a href="#wardrobe">Scent Wardrobe</a><a href="../">Portfolio</a></nav></header>
+<main>
+<section class="hero"><div class="wrap"><div class="eyebrow">Fine Fragrance House</div><h1>One scent world.<br>Many ways to wear it.</h1><p class="lead">CALYVRE is a premium fragrance house built around original scent worlds that extend across perfume, body, hair and portable rituals.</p><img class="hero-image" src="assets/CALYVRE_collection.jpg" alt="CALYVRE realistic fragrance collection" onclick="openModal('collection')"><a class="btn" href="#collection">Explore the collection</a><a class="btn light" href="#wardrobe">View product system</a></div></section>
+<section class="section" id="collection"><div class="wrap"><div class="eyebrow">The first collection</div><h2>Three distinct fragrance worlds.</h2><p class="lead">Each scent is positioned as a complete identity rather than a single bottle.</p>
+<div class="grid">
+<article class="card"><img src="assets/CALYVRE_collection.jpg" alt="Serein No.01 CALYVRE fragrance collection"><div class="card-body"><h3>Serein No.01</h3><p>Clean mineral citrus, radiant floral air, transparent woods and a warm polished drydown.</p><button class="btn" onclick="openModal('collection','Serein No.01')">View the fragrance</button></div></article>
+<article class="card"><img src="assets/CALYVRE_collection.jpg" alt="Noctis No.02 CALYVRE fragrance collection"><div class="card-body"><h3>Noctis No.02</h3><p>Dark amber, textured woods, cool spice and resinous warmth for an evening expression.</p><button class="btn" onclick="openModal('collection','Noctis No.02')">View the fragrance</button></div></article>
+<article class="card"><img src="assets/CALYVRE_collection.jpg" alt="Solare No.03 CALYVRE fragrance collection"><div class="card-body"><h3>Solare No.03</h3><p>Bright citrus, neroli, soft floral air and sheer warm woods for a luminous expression.</p><button class="btn" onclick="openModal('collection','Solare No.03')">View the fragrance</button></div></article>
+</div></div></section>
+<section class="section" id="wardrobe"><div class="wrap"><div class="eyebrow">Complete product system</div><h2>The complete CALYVRE scent wardrobe.</h2><p class="lead">The same fragrance identity can move through multiple formats, creating a broader commercial system around each scent world.</p><img class="system-image" src="assets/CALYVRE_system.jpg" alt="CALYVRE realistic complete product system" onclick="openModal('system')">
+<div class="formats"><div class="format">Eau de Parfum</div><div class="format">Perfume Oil</div><div class="format">Hair Fragrance</div><div class="format">Body Mist</div><div class="format">Solid Fragrance</div><div class="format">Body Cream</div><div class="format">Body Oil</div><div class="format">Travel EDP</div></div></div></section>
+<section class="section"><div class="wrap"><div class="eyebrow">Strategic development</div><h2>Built as a complete business, not a single-product mock-up.</h2><p class="lead">The business package includes the brand architecture, three fragrance-development starting concentrates, product-format system, manufacturer handover brief, commercial model, website and buyer presentation. Detailed technical formulation files are kept separate for appropriate strategic disclosure.</p><div class="note"><strong>Development status:</strong> the fragrance concentrates are development starting compositions. Final manufacture requires qualified perfumer/manufacturer review, current IFRA assessment where applicable, material documentation, safety/stability work, packaging compatibility, finished-product specifications and market-specific compliance.</div><a class="btn" href="mailto:vanreenen.juanita@yahoo.com?subject=CALYVRE%20Strategic%20Acquisition%20Enquiry">Strategic acquisition enquiry</a></div></section>
+</main>
+<footer class="footer">CALYVRE — Fine Fragrance House • Confidential strategic-development presentation • <a href="../" style="color:#fff">Return to portfolio</a></footer>
+<div class="modal" id="modal" onclick="closeModal(event)"><div class="panel"><button class="close" onclick="closeModal()">×</button><div id="modalContent"></div></div></div>
+<script>
+const modal=document.getElementById('modal'),content=document.getElementById('modalContent');
+function openModal(type,name){const image=type==='system'?'assets/CALYVRE_system.jpg':'assets/CALYVRE_collection.jpg';const title=type==='system'?'CALYVRE — Complete Product System':(name||'CALYVRE — Complete Collection');const copy=type==='system'?'Eau de Parfum, perfume oil, hair fragrance, body mist, solid fragrance, body cream, body oil and travel EDP.':(name?name+' — realistic collection presentation.':'Serein, Noctis and Solare presented together as the first CALYVRE collection.');content.innerHTML='<div class="modal-title">'+title+'</div><img src="'+image+'" alt="'+title+'"><div class="modal-copy">'+copy+'</div>';modal.classList.add('open');document.body.style.overflow='hidden'}
+function closeModal(e){if(e&&e.target!==modal)return;modal.classList.remove('open');document.body.style.overflow=''}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+</script>
+</body></html>
