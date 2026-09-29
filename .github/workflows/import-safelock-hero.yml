@@ -1,0 +1,26 @@
+name: Import SAFELOCK hero image
+
+on:
+  push:
+    paths:
+      - ".github/workflows/import-safelock-hero.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download permanent SAFELOCK hero
+        run: |
+          curl -fL --retry 3 -o safelock/safelock-hero.jpg "https://d2ol7oe51mr4n9.cloudfront.net/user_3JccjS9oSIhOaOB5TNzJnFtsjeP/47e4d451-a542-45a2-9256-a6e430f97611.jpg"
+          file safelock/safelock-hero.jpg
+      - name: Commit permanent image
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add safelock/safelock-hero.jpg
+          git commit -m "Add permanent SAFELOCK hero image" || exit 0
+          git push
