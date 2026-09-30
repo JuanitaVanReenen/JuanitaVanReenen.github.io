@@ -45,6 +45,11 @@ export async function getFollowCounts(profileId) {
   return { data:{followers:followers.count||0,following:following.count||0}, error:followers.error||following.error };
 }
 
+export async function deleteAvatarFile(path) {
+  if (!path) return { data:null, error:null };
+  return supabase.storage.from('profile-avatars').remove([path]);
+}
+
 export async function pickAndUploadAvatar(userId) {
   const { data: ImagePicker } = await import('expo-image-picker');
   const { decode } = await import('base64-arraybuffer');
@@ -60,8 +65,10 @@ export async function pickAndUploadAvatar(userId) {
   const contentType=asset.mimeType||'image/jpeg';
   const upload=await supabase.storage.from('profile-avatars').upload(path,decode(asset.base64),{contentType,upsert:false});
   if(upload.error)return{data:null,error:upload.error};
+  const {data:current}=await supabase.from('profiles').select('avatar_url').eq('id',userId).maybeSingle();
   const {error}=await supabase.from('profiles').update({avatar_url:path}).eq('id',userId);
-  if(error)return{data:null,error};
+  if(error){await deleteAvatarFile(path);return{data:null,error};}
+  if(current?.avatar_url && current.avatar_url !== path) await deleteAvatarFile(current.avatar_url);
   return{data:{path},error:null};
 }
 
