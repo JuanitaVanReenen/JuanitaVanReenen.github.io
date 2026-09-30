@@ -121,9 +121,26 @@ create policy "profiles_read" on public.profiles for select using (true);
 create policy "profiles_insert_own" on public.profiles for insert with check (auth.uid() = id);
 create policy "profiles_update_own" on public.profiles for update using (auth.uid() = id);
 
+-- Current policy acceptance helper used by UGC write policies.
+create or replace function public.has_current_policy_acceptance()
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $
+  select exists (
+    select 1
+    from public.policy_acceptances pa
+    where pa.user_id = auth.uid()
+      and pa.terms_version = '1.0'
+      and pa.guidelines_version = '1.0'
+  );
+$;
+
 -- Public feed data, with ownership on writes.
 create policy "pulzas_read" on public.pulzas for select using (true);
-create policy "pulzas_insert_own" on public.pulzas for insert with check (auth.uid() = author_id);
+create policy "pulzas_insert_own" on public.pulzas for insert with check (auth.uid() = author_id and public.has_current_policy_acceptance());
 create policy "pulzas_update_own" on public.pulzas for update using (auth.uid() = author_id);
 create policy "pulzas_delete_own" on public.pulzas for delete using (auth.uid() = author_id);
 
@@ -133,27 +150,27 @@ using (exists (select 1 from public.pulzas p where p.id = pulza_id and p.author_
 with check (exists (select 1 from public.pulzas p where p.id = pulza_id and p.author_id = auth.uid()));
 
 create policy "votes_read" on public.votes for select using (true);
-create policy "votes_insert_own" on public.votes for insert with check (auth.uid() = user_id);
+create policy "votes_insert_own" on public.votes for insert with check (auth.uid() = user_id and public.has_current_policy_acceptance());
 create policy "votes_delete_own" on public.votes for delete using (auth.uid() = user_id);
 
 create policy "reactions_read" on public.reactions for select using (true);
-create policy "reactions_insert_own" on public.reactions for insert with check (auth.uid() = user_id);
+create policy "reactions_insert_own" on public.reactions for insert with check (auth.uid() = user_id and public.has_current_policy_acceptance());
 create policy "reactions_delete_own" on public.reactions for delete using (auth.uid() = user_id);
 
 create policy "comments_read" on public.comments for select using (true);
-create policy "comments_insert_own" on public.comments for insert with check (auth.uid() = author_id);
+create policy "comments_insert_own" on public.comments for insert with check (auth.uid() = author_id and public.has_current_policy_acceptance());
 create policy "comments_update_own" on public.comments for update using (auth.uid() = author_id);
 create policy "comments_delete_own" on public.comments for delete using (auth.uid() = author_id);
 
 create policy "follows_read" on public.follows for select using (true);
-create policy "follows_insert_own" on public.follows for insert with check (auth.uid() = follower_id);
+create policy "follows_insert_own" on public.follows for insert with check (auth.uid() = follower_id and public.has_current_policy_acceptance());
 create policy "follows_delete_own" on public.follows for delete using (auth.uid() = follower_id);
 
 create policy "blocks_read_own" on public.blocks for select using (auth.uid() = blocker_id);
-create policy "blocks_insert_own" on public.blocks for insert with check (auth.uid() = blocker_id);
+create policy "blocks_insert_own" on public.blocks for insert with check (auth.uid() = blocker_id and public.has_current_policy_acceptance());
 create policy "blocks_delete_own" on public.blocks for delete using (auth.uid() = blocker_id);
 
-create policy "reports_insert_own" on public.reports for insert with check (auth.uid() = reporter_id);
+create policy "reports_insert_own" on public.reports for insert with check (auth.uid() = reporter_id and public.has_current_policy_acceptance());
 create policy "reports_read_own" on public.reports for select using (auth.uid() = reporter_id);
 
 create policy "notifications_read_own" on public.notifications for select using (auth.uid() = user_id);
