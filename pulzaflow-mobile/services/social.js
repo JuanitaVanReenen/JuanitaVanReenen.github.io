@@ -14,6 +14,19 @@ export async function removeReaction(pulzaId, userId, reaction = 'like') {
     .eq('reaction', reaction);
 }
 
+export async function getReactionCount(pulzaId) {
+  return supabase.from('reactions').select('*',{count:'exact',head:true}).eq('pulza_id',pulzaId).eq('reaction','like');
+}
+
+export async function getUserReaction(pulzaId,userId) {
+  const {data,error}=await supabase.from('reactions').select('reaction').eq('pulza_id',pulzaId).eq('user_id',userId).eq('reaction','like').maybeSingle();
+  return {data:!!data,error};
+}
+
+export async function getCommentCount(pulzaId) {
+  return supabase.from('comments').select('*',{count:'exact',head:true}).eq('pulza_id',pulzaId);
+}
+
 export async function getComments(pulzaId) {
   return supabase.from('comments')
     .select('*, profiles(username,display_name,avatar_url)')
