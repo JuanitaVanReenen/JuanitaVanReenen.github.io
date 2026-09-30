@@ -187,9 +187,19 @@ create policy "votes_read" on public.votes
 for select
 to authenticated
 using (true);
-create policy "votes_insert_own" on public.votes for insert
+create policy "votes_insert_own" on public.votes
+for insert
 to authenticated
-with check (auth.uid() = user_id and public.has_current_policy_acceptance());
+with check (
+  auth.uid() = user_id
+  and public.has_current_policy_acceptance()
+  and exists (
+    select 1
+    from public.pulza_options o
+    where o.id = option_id
+      and o.pulza_id = votes.pulza_id
+  )
+);
 create policy "votes_delete_own" on public.votes for delete
 to authenticated
 using (auth.uid() = user_id);
