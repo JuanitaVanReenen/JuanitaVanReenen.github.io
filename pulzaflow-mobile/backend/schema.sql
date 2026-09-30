@@ -107,6 +107,44 @@ create table if not exists public.subscriptions (
 alter table public.profiles enable row level security;
 alter table public.pulzas enable row level security;
 alter table public.pulza_options enable row level security;
+alter table public.pulza_options enable row level security;
+
+create policy "pulza_options_read" on public.pulza_options
+for select
+to authenticated
+using (true);
+
+create policy "pulza_options_insert_own" on public.pulza_options
+for insert
+to authenticated
+with check (
+  public.has_current_policy_acceptance()
+  and exists (
+    select 1 from public.pulzas p
+    where p.id = pulza_id and p.author_id = auth.uid()
+  )
+);
+
+create policy "pulza_options_update_own" on public.pulza_options
+for update
+to authenticated
+using (exists (
+  select 1 from public.pulzas p
+  where p.id = pulza_id and p.author_id = auth.uid()
+))
+with check (exists (
+  select 1 from public.pulzas p
+  where p.id = pulza_id and p.author_id = auth.uid()
+));
+
+create policy "pulza_options_delete_own" on public.pulza_options
+for delete
+to authenticated
+using (exists (
+  select 1 from public.pulzas p
+  where p.id = pulza_id and p.author_id = auth.uid()
+));
+
 alter table public.votes enable row level security;
 alter table public.reactions enable row level security;
 alter table public.comments enable row level security;
