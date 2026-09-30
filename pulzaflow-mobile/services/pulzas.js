@@ -1,5 +1,5 @@
 import { supabase } from '../lib/supabase';
-import { pickAndUploadMedia } from './media';
+import { uploadMedia } from './media';
 
 export async function getFeed(limit = 30) {
   return supabase
@@ -29,7 +29,7 @@ export async function createPulza(authorId, body, options = [], mediaAsset = nul
   }
 
   if (mediaAsset) {
-    const upload = await pickAndUploadMedia(authorId);
+    const upload = await uploadMedia(authorId, mediaAsset);
     if (upload.error) return { data: pulza, error: upload.error };
 
     if (upload.data) {
