@@ -49,5 +49,5 @@ export function subscribeToPulza(pulzaId, callback) {
       { event: '*', schema: 'public', table: 'votes', filter: 'pulza_id=eq.' + pulzaId },
       callback
     )
-    .subscribe();
+    .subscribe((status) => callback({ type: 'subscription_status', status }));
 }
