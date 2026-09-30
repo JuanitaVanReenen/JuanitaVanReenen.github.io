@@ -117,7 +117,10 @@ alter table public.notifications enable row level security;
 alter table public.subscriptions enable row level security;
 
 -- Profiles: public read; users control their own profile.
-create policy "profiles_read" on public.profiles for select using (true);
+create policy "profiles_read" on public.profiles
+for select
+to authenticated
+using (true);
 create policy "profiles_insert_own" on public.profiles for insert with check (auth.uid() = id);
 create policy "profiles_update_own" on public.profiles for update using (auth.uid() = id);
 
@@ -145,7 +148,10 @@ create policy "comments_insert_own" on public.comments for insert with check (au
 create policy "comments_update_own" on public.comments for update using (auth.uid() = author_id);
 create policy "comments_delete_own" on public.comments for delete using (auth.uid() = author_id);
 
-create policy "follows_read" on public.follows for select using (true);
+create policy "follows_read" on public.follows
+for select
+to authenticated
+using (true);
 create policy "follows_insert_own" on public.follows for insert with check (auth.uid() = follower_id and public.has_current_policy_acceptance());
 create policy "follows_delete_own" on public.follows for delete using (auth.uid() = follower_id);
 
