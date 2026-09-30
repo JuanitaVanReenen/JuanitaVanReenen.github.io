@@ -9,10 +9,10 @@ export async function getFeed(limit = 30) {
     .limit(limit);
 }
 
-export async function createPulza(authorId, body, options = [], mediaAsset = null) {
+export async function createPulza(authorId, body, options = [], mediaAsset = null, kind = 'pulza') {
   const { data: pulza, error } = await supabase
     .from('pulzas')
-    .insert({ author_id: authorId, body, kind: 'pulza' })
+    .insert({ author_id: authorId, body, kind })
     .select()
     .single();
 
