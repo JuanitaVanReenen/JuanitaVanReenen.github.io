@@ -1,14 +1,15 @@
 import { supabase } from '../lib/supabase';
+import { pickAndUploadMedia } from './media';
 
 export async function getFeed(limit = 30) {
   return supabase
     .from('pulzas')
-    .select('*, profiles!pulzas_author_id_fkey(username,display_name,avatar_url), pulza_options(*)')
+    .select('*, profiles!pulzas_author_id_fkey(username,display_name,avatar_url), pulza_options(*), pulza_media(*)')
     .order('created_at', { ascending: false })
     .limit(limit);
 }
 
-export async function createPulza(authorId, body, options = []) {
+export async function createPulza(authorId, body, options = [], mediaAsset = null) {
   const { data: pulza, error } = await supabase
     .from('pulzas')
     .insert({ author_id: authorId, body, kind: 'pulza' })
@@ -25,6 +26,22 @@ export async function createPulza(authorId, body, options = []) {
     }));
     const result = await supabase.from('pulza_options').insert(rows);
     if (result.error) return { data: pulza, error: result.error };
+  }
+
+  if (mediaAsset) {
+    const upload = await pickAndUploadMedia(authorId);
+    if (upload.error) return { data: pulza, error: upload.error };
+
+    if (upload.data) {
+      const mediaResult = await supabase.from('pulza_media').insert({
+        pulza_id: pulza.id,
+        owner_id: authorId,
+        storage_path: upload.data.path,
+        media_type: upload.data.type === 'video' ? 'video' : 'image',
+        mime_type: upload.data.contentType,
+      });
+      if (mediaResult.error) return { data: pulza, error: mediaResult.error };
+    }
   }
 
   return { data: pulza, error: null };
