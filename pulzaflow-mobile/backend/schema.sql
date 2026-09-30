@@ -373,3 +373,13 @@ create policy "policy_acceptances_insert_own"
 on public.policy_acceptances for insert
 to authenticated
 with check (auth.uid() = user_id);
+
+-- Helpful indexes for production feed and interaction queries.
+create index if not exists pulzas_created_at_idx on public.pulzas(created_at desc);
+create index if not exists pulzas_author_id_idx on public.pulzas(author_id);
+create index if not exists pulza_options_pulza_id_idx on public.pulza_options(pulza_id);
+create index if not exists votes_pulza_id_idx on public.votes(pulza_id);
+create index if not exists reactions_pulza_id_idx on public.reactions(pulza_id);
+create index if not exists comments_pulza_id_created_at_idx on public.comments(pulza_id,created_at);
+create index if not exists notifications_user_id_created_at_idx on public.notifications(user_id,created_at desc);
+create index if not exists reports_status_created_at_idx on public.reports(status,created_at);
