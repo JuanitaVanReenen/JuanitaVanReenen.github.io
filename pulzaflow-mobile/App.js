@@ -19,7 +19,7 @@ function AuthScreen(){
   if(result.error)setError(result.error.message);
   else if(signup&&!result.data?.session)setError("Check your email to confirm your account, then sign in.");
  }
- return <SafeAreaView style={s.safe}><StatusBar style="light"/><ScrollView contentContainerStyle={s.auth}>
+ return <SafeAreaView style={s.safe}><StatusBar style="light"/><ScrollView contentContainerStyle={s.auth}><Text style={s.muted}>Sign up or sign in with your email and password. No government ID is required.</Text>
   <Text style={s.logo}>Pulza<Text style={s.accent}>Flow</Text></Text>
   <Text style={s.hero}>{signup?"Create your account.":"Welcome back."}</Text>
   <Text style={s.muted}>Social, with participation.</Text>
