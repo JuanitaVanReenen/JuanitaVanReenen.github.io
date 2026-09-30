@@ -8,9 +8,11 @@ create table if not exists public.profiles (
   id uuid primary key references auth.users(id) on delete cascade,
   username text unique not null,
   display_name text not null,
-  bio text default '',
+  bio text not null default '' check (char_length(bio) <= 160),
   avatar_url text,
-  created_at timestamptz not null default now()
+  created_at timestamptz not null default now(),
+  check (username ~ '^[a-z0-9_]{3,30}),
+  check (char_length(display_name) between 1 and 60)
 );
 
 create table if not exists public.pulzas (
