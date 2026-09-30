@@ -82,7 +82,7 @@ create table if not exists public.reports (
   reason text not null check (char_length(reason) between 1 and 500),
   status text not null default 'open' check (status in ('open','reviewing','resolved','dismissed')),
   created_at timestamptz not null default now(),
-  check (pulza_id is not null or reported_user_id is not null)
+  check ((pulza_id is not null) <> (reported_user_id is not null))
 );
 
 create table if not exists public.notifications (
@@ -155,7 +155,7 @@ alter table public.reports enable row level security;
 alter table public.notifications enable row level security;
 alter table public.subscriptions enable row level security;
 
--- Profiles: public read; users control their own profile.
+-- Profiles: authenticated read; users control their own profile.
 create policy "profiles_read" on public.profiles
 for select
 to authenticated
@@ -170,7 +170,7 @@ to authenticated
 using (auth.uid() = id)
 with check (auth.uid() = id);
 
--- Public feed data, with ownership on writes.
+-- Authenticated feed data, with ownership on writes.
 create policy "pulzas_read" on public.pulzas
 for select
 to authenticated
