@@ -2,7 +2,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { decode } from 'base64-arraybuffer';
 import { supabase } from '../lib/supabase';
 
-export async function pickAndUploadMedia(userId) {
+export async function pickMedia() {
   const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
   if (!permission.granted) {
     return { data: null, error: new Error('Media library permission is required.') };
@@ -20,6 +20,11 @@ export async function pickAndUploadMedia(userId) {
   }
 
   const asset = result.assets[0];
+  return { data: asset, error: null };
+}
+
+export async function uploadMedia(userId, asset) {
+  if (!asset) return { data: null, error: null };
   if (asset.fileSize && asset.fileSize > 50 * 1024 * 1024) {
     return { data: null, error: new Error('Please choose media smaller than 50 MB.') };
   }
@@ -39,8 +44,7 @@ export async function pickAndUploadMedia(userId) {
     });
 
   if (upload.error) return { data: null, error: upload.error };
-
-  return { data: { path, type: asset.type, contentType }, error: null };
+\n  return { data: { path, type: asset.type, contentType }, error: null };
 }
 
 export async function getMediaUrl(storagePath, expiresIn = 3600) {
