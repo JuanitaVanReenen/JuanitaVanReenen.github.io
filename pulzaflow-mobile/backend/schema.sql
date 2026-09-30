@@ -212,3 +212,29 @@ for delete using (auth.uid() = owner_id);
 -- Do not modify storage schema tables directly.
 -- Apply Storage RLS policies so authenticated users can upload only
 -- to the first folder matching their auth.uid().
+
+-- Enable Realtime for the interaction/notification tables used by the app.
+-- Supabase Realtime must also be enabled for these tables in the project.
+do $$
+begin
+  alter publication supabase_realtime add table public.reactions;
+exception when duplicate_object then null;
+end $$;
+
+do $$
+begin
+  alter publication supabase_realtime add table public.comments;
+exception when duplicate_object then null;
+end $$;
+
+do $$
+begin
+  alter publication supabase_realtime add table public.votes;
+exception when duplicate_object then null;
+end $$;
+
+do $$
+begin
+  alter publication supabase_realtime add table public.notifications;
+exception when duplicate_object then null;
+end $$;
