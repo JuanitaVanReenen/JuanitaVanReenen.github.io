@@ -8,7 +8,7 @@ import {signIn,signUp,signOut} from "./services/auth";
 import {requestAccountDeletion} from "./services/account";
 import {getFeed,createPulza} from "./services/pulzas";
 import {getMediaUrl,pickMedia} from "./services/media";
-import {reactToPulza,removeReaction,getComments,addComment,voteOnPulza,subscribeToPulza} from "./services/social";
+import {reactToPulza,removeReaction,getComments,addComment,voteOnPulza,subscribeToPulza,getReactionCount,getUserReaction,getCommentCount} from "./services/social";
 import {getNotifications,markNotificationRead,subscribeToNotifications} from "./services/notifications";
 import {reportPulza,blockUser,unblockUser,getBlockedUsers} from "./services/moderation";
 import {getSubscription,hasPlusAccess,subscriptionLabel,PLUS_PRODUCTS} from "./services/subscriptions";
@@ -76,7 +76,7 @@ function AppShell({user}){
  async function changeAvatar(){setProfileBusy(true);const r=await pickAndUploadAvatar(user.id);setProfileBusy(false);if(r.error){Alert.alert("Profile photo",r.error.message);return;}if(r.data){await loadProfile();}}
  async function loadFeed(){
   const {data,error}=await getFeed();
-  if(error){setFeedError(error.message);return;}setFeedError("");if(data) setPosts(data.map(p=>({id:p.id,authorId:p.author_id,name:p.profiles?.display_name||p.profiles?.username||"User",avatarUrl:p.profiles?.avatar_url||null,text:p.body,type:p.kind,likes:0,comments:0,options:p.pulza_options||[],media:p.pulza_media||[]})));
+  if(error){setFeedError(error.message);return;}setFeedError("");if(data){const rows=await Promise.all(data.map(async p=>{const [likeCount,commentCount,userLike]=await Promise.all([getReactionCount(p.id),getCommentCount(p.id),getUserReaction(p.id,user.id)]);return {id:p.id,authorId:p.author_id,name:p.profiles?.display_name||p.profiles?.username||"User",avatarUrl:p.profiles?.avatar_url||null,text:p.body,type:p.kind,likes:likeCount.count||0,comments:commentCount.count||0,options:p.pulza_options||[],media:p.pulza_media||[],userLiked:userLike.data};}));setPosts(rows);setLiked(Object.fromEntries(rows.map(p=>[p.id,p.userLiked])));}}
  }
  useEffect(()=>{loadFeed();loadDiscover();},[]);
  useEffect(()=>{
@@ -152,7 +152,7 @@ function AppShell({user}){
      {p.type==="pulza"&&<>{(p.options||[]).map(o=><Pressable key={o.id||o.option_text} onPress={()=>chooseVote(p,o)} style={[s.option,voted[p.id]===o.id&&s.optionOn]}><Text style={s.optionText}>{o.option_text}</Text><Text style={s.count}>{voted[p.id]===o.id?"✓":"Vote"}</Text></Pressable>)}</>}
      <View style={s.actionRow}><Pressable onPress={()=>toggleLike(p)} style={s.action}><Text style={s.actionText}>{liked[p.id]?"♥":"♡"} Like</Text></Pressable><Pressable onPress={()=>setCommentsOpen(commentsOpen===p.id?null:p.id)} style={s.action}><Text style={s.actionText}>💬 Comment</Text></Pressable></View>
      {commentsOpen===p.id&&<View style={s.comments}><Text style={s.commentTitle}>Comments</Text>{(commentRows[p.id]||[]).map(c=><View key={c.id} style={s.comment}><View style={s.row}><Avatar url={c.profiles?.avatar_url} name={c.profiles?.display_name||c.profiles?.username}/><View style={{flex:1,marginLeft:10}}><Text style={s.name}>{c.profiles?.display_name||c.profiles?.username||"User"}</Text><Text style={s.commentBody}>{c.body}</Text></View></View></View>)}<TextInput value={commentText} onChangeText={setCommentText} placeholder="Write a comment…" placeholderTextColor="#77839a" style={s.input}/><Pressable onPress={submitComment} style={s.primary}><Text style={s.primaryText}>Comment</Text></Pressable></View>}
-     <Text style={s.meta}>{liked[p.id]?"♥":"♡"}   💬 {(commentRows[p.id]||[]).length||p.comments||0}</Text></View>)}</>}
+     <Text style={s.meta}>{liked[p.id]?"♥":"♡"} {p.likes||0}   💬 {(commentRows[p.id]||[]).length||p.comments||0}</Text></View>)}</>}
    {tab==="Discover"&&<><Text style={s.kicker}>DISCOVER PEOPLE</Text><Text style={s.hero}>Find your people.</Text>{discoverProfiles.map(p=><View style={s.card} key={p.id}><View style={s.row}><Avatar url={p.avatar_url} name={p.display_name||p.username} size={54}/><View style={{flex:1,marginLeft:12}}><Text style={s.name}>{p.display_name||p.username}</Text><Text style={s.muted}>@{p.username}</Text>{p.bio?<Text style={s.muted}>{p.bio}</Text>:null}</View></View><Pressable onPress={()=>toggleFollow(p.id)} style={s.secondary}><Text style={s.secondaryText}>{p.following?"Following":"Follow"}</Text></Pressable></View>)}</>}
    {tab==="Create"&&<><Text style={s.kicker}>CREATE</Text><Text style={s.hero}>Make a post.{"
 "}Or make a Pulza.</Text><Text style={s.muted}>A normal post shares something. A Pulza gives people something to participate in.</Text></>}
