@@ -149,3 +149,93 @@ function AppShell({user}){
   <View style={s.nav}>{["Home","Discover","Create","Alerts","Profile"].map(x=><Pressable key={x} onPress={()=>setTab(x)} style={[s.navItem,tab===x&&s.navOn]}><Text style={[s.navText,tab===x&&s.navTextOn]}>{x}</Text></Pressable>)}</View>
  </SafeAreaView>
 };
+
+function RootApp(){
+ const [session,setSession]=useState(null);
+ const [loading,setLoading]=useState(true);
+ const [accepted,setAccepted]=useState(false);
+ const [policyLoading,setPolicyLoading]=useState(false);
+
+ useEffect(()=>{
+   let mounted=true;
+   supabase.auth.getSession().then(({data})=>{if(mounted){setSession(data.session);setLoading(false);}});
+   const {data:{subscription}}=supabase.auth.onAuthStateChange((_event,next)=>{if(mounted){setSession(next);setLoading(false);}});
+   return()=>{mounted=false;subscription.unsubscribe();};
+ },[]);
+
+ useEffect(()=>{
+   if(!session){setAccepted(false);return;}
+   setPolicyLoading(true);
+   supabase.from('policy_acceptances')
+     .select('user_id')
+     .eq('user_id',session.user.id)
+     .eq('terms_version',POLICY_TERMS_VERSION)
+     .eq('guidelines_version',POLICY_TERMS_VERSION)
+     .maybeSingle()
+     .then(({data,error})=>{
+       setAccepted(!error && !!data);
+       setPolicyLoading(false);
+     });
+ },[session?.user?.id]);
+
+ if(loading||policyLoading)return <SafeAreaView style={s.safe}><ActivityIndicator size="large"/></SafeAreaView>;
+ if(!session)return <AuthScreen/>;
+ if(!accepted)return <PolicyGate user={session.user} onAccepted={()=>setAccepted(true)}/>;
+ return <AppShell user={session.user}/>;
+}
+
+const s=StyleSheet.create({
+ safe:{flex:1,backgroundColor:"#08111f"},
+ auth:{flexGrow:1,justifyContent:"center",padding:24},
+ title:{fontSize:28,fontWeight:"800",color:"#fff",marginBottom:18},
+ logo:{fontSize:30,fontWeight:"900",color:"#fff"},
+ accent:{color:"#4da3ff"},
+ hero:{fontSize:30,fontWeight:"800",color:"#fff",marginTop:12,marginBottom:10},
+ muted:{color:"#9aa8bd",fontSize:15,lineHeight:22,marginBottom:14},
+ input:{backgroundColor:"#111d2d",borderWidth:1,borderColor:"#26364d",borderRadius:14,color:"#fff",padding:14,marginTop:10,minHeight:48},
+ error:{color:"#ff8f8f",marginTop:10,lineHeight:20},
+ primary:{backgroundColor:"#2f8cff",borderRadius:14,padding:14,alignItems:"center",marginTop:12},
+ primaryText:{color:"#fff",fontWeight:"800",fontSize:15},
+ secondary:{backgroundColor:"#142235",borderRadius:14,padding:13,alignItems:"center",marginTop:10},
+ secondaryText:{color:"#cbd7e8",fontWeight:"700"},
+ button:{backgroundColor:"#2f8cff",borderRadius:14,padding:15,alignItems:"center",marginTop:16},
+ buttonText:{color:"#fff",fontWeight:"800"},
+ switch:{padding:14,alignItems:"center"},
+ switchText:{color:"#72b5ff",fontWeight:"700"},
+ header:{paddingHorizontal:18,paddingTop:14,paddingBottom:10,borderBottomWidth:1,borderBottomColor:"#16243a"},
+ tag:{color:"#75849b",fontSize:12,marginTop:3},
+ content:{padding:18,paddingBottom:100},
+ kicker:{color:"#6e86a5",fontSize:11,fontWeight:"800",letterSpacing:1.5,marginBottom:8},
+ blue:{color:"#4da3ff"},
+ composer:{backgroundColor:"#0d1929",borderRadius:18,padding:14,marginTop:18,marginBottom:18},
+ row:{flexDirection:"row",alignItems:"center",gap:8},
+ type:{paddingVertical:8,paddingHorizontal:14,borderRadius:20,backgroundColor:"#142235"},
+ typeOn:{backgroundColor:"#2f8cff"},
+ typeText:{color:"#fff",fontWeight:"700"},
+ card:{backgroundColor:"#0d1929",borderRadius:18,padding:16,marginBottom:14},
+ pulza:{borderWidth:1,borderColor:"#285b91"},
+ name:{color:"#fff",fontWeight:"800",fontSize:15},
+ body:{color:"#d9e3f0",fontSize:16,lineHeight:24,marginTop:10},
+ actionRow:{flexDirection:"row",gap:10,marginTop:12,flexWrap:"wrap"},
+ action:{paddingVertical:7,paddingHorizontal:10,borderRadius:10,backgroundColor:"#142235"},
+ actionText:{color:"#8ec5ff",fontWeight:"700"},
+ option:{flexDirection:"row",justifyContent:"space-between",alignItems:"center",backgroundColor:"#142235",padding:13,borderRadius:12,marginTop:8},
+ optionOn:{borderWidth:1,borderColor:"#4da3ff"},
+ optionText:{color:"#fff",flex:1},
+ count:{color:"#8fb0d0",fontSize:12},
+ comments:{marginTop:12,borderTopWidth:1,borderTopColor:"#1d2b40",paddingTop:12},
+ commentTitle:{color:"#fff",fontWeight:"800",marginBottom:8},
+ comment:{paddingVertical:8},
+ commentBody:{color:"#cbd7e8",marginTop:2},
+ meta:{color:"#6f8199",fontSize:12,marginTop:12},
+ media:{width:"100%",height:220,borderRadius:14,marginTop:12},
+ videoPlaceholder:{height:180,borderRadius:14,marginTop:12,backgroundColor:"#111d2d",alignItems:"center",justifyContent:"center"},
+ videoText:{color:"#fff",fontWeight:"800"},
+ nav:{position:"absolute",left:0,right:0,bottom:0,flexDirection:"row",backgroundColor:"#0a1524",borderTopWidth:1,borderTopColor:"#1b2b42",paddingVertical:8},
+ navItem:{flex:1,alignItems:"center",paddingVertical:8},
+ navOn:{backgroundColor:"#12253d",borderRadius:10,marginHorizontal:3},
+ navText:{color:"#71839b",fontSize:11,fontWeight:"700"},
+ navTextOn:{color:"#fff"}
+});
+
+export default RootApp;
