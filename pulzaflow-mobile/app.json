@@ -1,12 +1,30 @@
 {
-  "expo":{
-    "name":"Pulza Flow",
-    "slug":"pulza-flow",
-    "version":"0.1.0",
-    "orientation":"portrait",
-    "userInterfaceStyle":"dark",
-    "scheme":"pulzaflow",
-    "ios":{"bundleIdentifier":"com.pulzaflow.app","supportsTablet":true},
-    "android":{"package":"com.pulzaflow.app"}
+  "expo": {
+    "name": "Pulza Flow",
+    "slug": "pulza-flow",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "scheme": "pulzaflow",
+    "ios": {
+      "bundleIdentifier": "com.pulzaflow.app",
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "PULZA FLOW uses your photo library so you can add images and videos to your Pulzas."
+      }
+    },
+    "android": {
+      "package": "com.pulzaflow.app",
+      "permissions": [
+        "READ_MEDIA_IMAGES",
+        "READ_MEDIA_VIDEO"
+      ]
+    },
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0B0B0F"
+    }
   }
 }
