@@ -391,6 +391,16 @@ on public.policy_acceptances for insert
 to authenticated
 with check (auth.uid() = user_id);
 
+create policy "policy_acceptances_update_own"
+on public.policy_acceptances for update
+to authenticated
+using (auth.uid() = user_id)
+with check (auth.uid() = user_id);
+
+create policy "policy_acceptances_delete_own"
+on public.policy_acceptances for delete
+to authenticated
+using (auth.uid() = user_id);
 -- Helpful indexes for production feed and interaction queries.
 create index if not exists pulzas_created_at_idx on public.pulzas(created_at desc);
 create index if not exists pulzas_author_id_idx on public.pulzas(author_id);
