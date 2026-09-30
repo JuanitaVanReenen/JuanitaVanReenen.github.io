@@ -39,3 +39,10 @@ export async function pickAndUploadMedia(userId) {
 
   return { data: { path, type: asset.type, contentType }, error: null };
 }
+
+export async function getMediaUrl(storagePath, expiresIn = 3600) {
+  const { data, error } = await supabase.storage
+    .from('pulza-media')
+    .createSignedUrl(storagePath, expiresIn);
+  return { data: data?.signedUrl || null, error };
+}
