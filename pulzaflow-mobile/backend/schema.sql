@@ -184,3 +184,31 @@ drop trigger if exists on_auth_user_created on auth.users;
 create trigger on_auth_user_created
 after insert on auth.users
 for each row execute procedure public.handle_new_user();
+
+-- Media metadata belongs in application tables; binary files live in Supabase Storage.
+create table if not exists public.pulza_media (
+  id uuid primary key default gen_random_uuid(),
+  pulza_id uuid not null references public.pulzas(id) on delete cascade,
+  owner_id uuid not null references public.profiles(id) on delete cascade,
+  storage_path text not null,
+  media_type text not null check (media_type in ('image','video')),
+  mime_type text,
+  created_at timestamptz not null default now()
+);
+
+alter table public.pulza_media enable row level security;
+
+create policy "pulza_media_read" on public.pulza_media
+for select using (true);
+
+create policy "pulza_media_insert_own" on public.pulza_media
+for insert with check (auth.uid() = owner_id);
+
+create policy "pulza_media_delete_own" on public.pulza_media
+for delete using (auth.uid() = owner_id);
+
+-- Storage setup:
+-- Create a bucket named "pulza-media" in Supabase Storage.
+-- Do not modify storage schema tables directly.
+-- Apply Storage RLS policies so authenticated users can upload only
+-- to the first folder matching their auth.uid().
