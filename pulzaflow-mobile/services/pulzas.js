@@ -4,7 +4,7 @@ import { pickAndUploadMedia } from './media';
 export async function getFeed(limit = 30) {
   return supabase
     .from('pulzas')
-    .select('*, profiles!pulzas_author_id_fkey(username,display_name,avatar_url), pulza_options(*), pulza_media(*)')
+    .select('*, profiles(username,display_name,avatar_url), pulza_options(*), pulza_media(*)')
     .order('created_at', { ascending: false })
     .limit(limit);
 }
