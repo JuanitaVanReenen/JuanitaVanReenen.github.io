@@ -52,7 +52,7 @@ function AuthScreen(){
  </ScrollView></SafeAreaView>
 }
 
-const seed=[{name:"Maya",text:"The sky looked unreal tonight. 🌅",type:"post",likes:42,comments:8},{name:"Daniel",text:"Finally finished the thing I kept putting off. ✨",type:"post",likes:71,comments:14},{name:"Leila",text:"I have Saturday free. What should we do?",type:"pulza",options:["Beach day","Brunch","Road trip"],likes:18,comments:23}];
+const seed=[];
 
 function MediaPreview({media}){
  const [url,setUrl]=useState(null);
@@ -91,7 +91,7 @@ function AppShell({user}){
   const v=text.trim();if(!v||saving)return;
   setSaving(true);
   const options=mode==="Pulza"?["I’m in","Maybe","Tell me more"]:[];
-  const {data,error}=await createPulza(user.id,v,options,attach);
+  const {data,error}=await createPulza(user.id,v,options,attach,mode==="Pulza"?"pulza":"post");
   setSaving(false);
   if(!error){setText("");setAttach(false);await loadFeed();setTab("Home");}
   else {setFeedError("Publish failed: "+error.message);}
