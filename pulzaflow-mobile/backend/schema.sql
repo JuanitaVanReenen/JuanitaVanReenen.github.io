@@ -205,13 +205,17 @@ create table if not exists public.pulza_media (
 alter table public.pulza_media enable row level security;
 
 create policy "pulza_media_read" on public.pulza_media
-for select using (true);
+for select
+to authenticated
+using (true);
 
 create policy "pulza_media_insert_own" on public.pulza_media
 for insert with check (auth.uid() = owner_id and public.has_current_policy_acceptance() and exists (select 1 from public.pulzas p where p.id = pulza_id and p.author_id = auth.uid()));
 
 create policy "pulza_media_delete_own" on public.pulza_media
-for delete using (auth.uid() = owner_id);
+for delete
+to authenticated
+using (auth.uid() = owner_id);
 
 -- Storage setup:
 -- Create a bucket named "pulza-media" in Supabase Storage.
