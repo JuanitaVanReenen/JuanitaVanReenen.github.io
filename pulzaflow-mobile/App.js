@@ -3,6 +3,7 @@ const POLICY_TERMS_VERSION = '1.0';
 import React,{useEffect,useState} from "react";
 import {SafeAreaView,View,Text,Pressable,ScrollView,StyleSheet,TextInput,ActivityIndicator,Image,Alert} from "react-native";
 import {StatusBar} from "expo-status-bar";
+import {VideoView,useVideoPlayer} from "expo-video";
 import {supabase} from "./lib/supabase";
 import {signIn,signUp,signOut} from "./services/auth";
 import {requestAccountDeletion} from "./services/account";
@@ -59,9 +60,11 @@ function Avatar({url,name,size=42}){return url?<Image source={{uri:url}} style={
 
 function MediaPreview({media}){
  const [url,setUrl]=useState(null);
- useEffect(()=>{if(media?.storage_path)getMediaUrl(media.storage_path).then(r=>setUrl(r.data));},[media?.storage_path]);
+ useEffect(()=>{let active=true;if(media?.storage_path)getMediaUrl(media.storage_path).then(r=>{if(active)setUrl(r.data);});return()=>{active=false;};},[media?.storage_path]);
+ const player=useVideoPlayer(media?.media_type==="video"&&url?url:null,p=>{p.loop=false;});
  if(!url)return null;
- return media.media_type==="image"?<Image source={{uri:url}} style={s.media}/> : <View style={s.videoPlaceholder}><Text style={s.videoText}>▶ Video</Text></View>;
+ if(media.media_type==="image")return <Image source={{uri:url}} style={s.media}/>;
+ return <VideoView player={player} style={s.media} nativeControls contentFit="contain"/>;
 }
 
 function AppShell({user}){
