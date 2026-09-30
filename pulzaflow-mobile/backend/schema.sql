@@ -383,3 +383,22 @@ create index if not exists reactions_pulza_id_idx on public.reactions(pulza_id);
 create index if not exists comments_pulza_id_created_at_idx on public.comments(pulza_id,created_at);
 create index if not exists notifications_user_id_created_at_idx on public.notifications(user_id,created_at desc);
 create index if not exists reports_status_created_at_idx on public.reports(status,created_at);
+
+-- Enforce valid poll ownership: an option must belong to the same Pulza as the vote.
+create or replace function public.vote_option_belongs_to_pulza()
+returns trigger
+language plpgsql
+security definer set search_path = public
+as $$
+begin
+  if not exists (select 1 from public.pulza_options o where o.id = new.option_id and o.pulza_id = new.pulza_id) then
+    raise exception 'Vote option does not belong to this Pulza';
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists votes_validate_option on public.votes;
+create trigger votes_validate_option
+before insert or update on public.votes
+for each row execute procedure public.vote_option_belongs_to_pulza();
