@@ -7,7 +7,7 @@ const cors = {
   "Content-Type": "application/json",
 };
 
-const ACTIVE = new Set(["INITIAL_PURCHASE","RENEWAL","PRODUCT_CHANGE","UNCANCELLATION","NON_RENEWING_PURCHASE","CANCELLATION","SUBSCRIPTION_PAUSED","SUBSCRIPTION_EXTENDED","REFUND_REVERSED"]);
+const ACTIVE = new Set(["INITIAL_PURCHASE","RENEWAL","PRODUCT_CHANGE","UNCANCELLATION","NON_RENEWING_PURCHASE"]);
 const ENDED = new Set(["EXPIRATION"]);
 const PAST_DUE = new Set(["BILLING_ISSUE"]);
 
@@ -34,10 +34,6 @@ Deno.serve(async (req) => {
   const store=String(event?.store||"").toLowerCase();
   const productId=event?.product_id||null;
   const expires=event?.expiration_at_ms?new Date(Number(event.expiration_at_ms)).toISOString():null;
-
-  if(!ACTIVE.has(type) && !PAST_DUE.has(type) && !ENDED.has(type)) {
-    return new Response(JSON.stringify({ok:true,ignored:true,type}),{status:200,headers:cors});
-  }
 
   let plan="free", status="inactive";
   if(ACTIVE.has(type)){plan="plus";status="active";}
