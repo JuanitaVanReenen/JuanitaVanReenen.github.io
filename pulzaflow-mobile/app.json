@@ -20,11 +20,6 @@
         "READ_MEDIA_VIDEO"
       ]
     },
-    "icon": "./assets/icon.png",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#0B0B0F"
-    }
+    "icon": "./assets/icon.png"
   }
 }
