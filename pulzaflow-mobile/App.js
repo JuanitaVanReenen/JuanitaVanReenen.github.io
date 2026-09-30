@@ -7,7 +7,7 @@ import {supabase} from "./lib/supabase";
 import {signIn,signUp,signOut} from "./services/auth";
 import {requestAccountDeletion} from "./services/account";
 import {getFeed,createPulza} from "./services/pulzas";
-import {getMediaUrl} from "./services/media";
+import {getMediaUrl,pickMedia} from "./services/media";
 import {reactToPulza,removeReaction,getComments,addComment,voteOnPulza,subscribeToPulza} from "./services/social";
 import {getNotifications,markNotificationRead,subscribeToNotifications} from "./services/notifications";
 import {reportPulza,blockUser,unblockUser,getBlockedUsers} from "./services/moderation";
@@ -62,7 +62,7 @@ function MediaPreview({media}){
 }
 
 function AppShell({user}){
- const [subscription,setSubscription]=useState(null),[plusLoading,setPlusLoading]=useState(false),[blocked,setBlocked]=useState([]),[safetyPost,setSafetyPost]=useState(null),[safetyBusy,setSafetyBusy]=useState(false),[feedError,setFeedError]=useState(""),[tab,setTab]=useState("Home"),[mode,setMode]=useState("Post"),[text,setText]=useState(""),[posts,setPosts]=useState(seed),[saving,setSaving]=useState(false),[attach,setAttach]=useState(false),[commentsOpen,setCommentsOpen]=useState(null),[commentText,setCommentText]=useState(""),[commentRows,setCommentRows]=useState({}),[liked,setLiked]=useState({}),[voted,setVoted]=useState({}),[notifications,setNotifications]=useState([]);
+ const [subscription,setSubscription]=useState(null),[selectedMedia,setSelectedMedia]=useState(null),[mediaBusy,setMediaBusy]=useState(false),[plusLoading,setPlusLoading]=useState(false),[blocked,setBlocked]=useState([]),[safetyPost,setSafetyPost]=useState(null),[safetyBusy,setSafetyBusy]=useState(false),[feedError,setFeedError]=useState(""),[tab,setTab]=useState("Home"),[mode,setMode]=useState("Post"),[text,setText]=useState(""),[posts,setPosts]=useState(seed),[saving,setSaving]=useState(false),[attach,setAttach]=useState(false),[commentsOpen,setCommentsOpen]=useState(null),[commentText,setCommentText]=useState(""),[commentRows,setCommentRows]=useState({}),[liked,setLiked]=useState({}),[voted,setVoted]=useState({}),[notifications,setNotifications]=useState([]);
 
  async function loadBlocks(){const {data,error}=await getBlockedUsers(user.id);if(!error)setBlocked((data||[]).map(b=>b.blocked_id));}
  useEffect(()=>{loadBlocks();getSubscription(user.id).then(({data})=>setSubscription(data));configureBilling(user.id);},[user.id]);
@@ -87,13 +87,13 @@ function AppShell({user}){
   return()=>channel?.unsubscribe?.();
  },[user.id]);
 
- async function publish(){
+ async function attachMedia(){const r=await pickMedia();if(r.error){setFeedError(r.error.message);return;}if(r.data){setSelectedMedia(r.data);setFeedError("");}}\n async function publish(){
   const v=text.trim();if(!v||saving)return;
   setSaving(true);
   const options=mode==="Pulza"?["I’m in","Maybe","Tell me more"]:[];
-  const {data,error}=await createPulza(user.id,v,options,attach,mode==="Pulza"?"pulza":"post");
+  const {data,error}=await createPulza(user.id,v,options,selectedMedia,mode==="Pulza"?"pulza":"post");
   setSaving(false);
-  if(!error){setText("");setAttach(false);await loadFeed();setTab("Home");}
+  if(!error){setText("");setSelectedMedia(null);setAttach(false);await loadFeed();setTab("Home");}
   else {setFeedError("Publish failed: "+error.message);}
  }
  async function submitReport(post){
@@ -135,7 +135,7 @@ function AppShell({user}){
    {tab==="Home"&&<><Text style={s.kicker}>YOUR SOCIAL WORLD</Text><Text style={s.hero}>Don’t just post.{"\n"}<Text style={s.blue}>Start something.</Text></Text><Text style={s.muted}>Pulza Flow keeps the familiar social feed, then gives people a new way to participate.</Text>
     <View style={s.composer}><View style={s.row}>{["Post","Pulza"].map(x=><Pressable key={x} onPress={()=>setMode(x)} style={[s.type,mode===x&&s.typeOn]}><Text style={s.typeText}>{x}</Text></Pressable>)}</View>
      <TextInput value={text} onChangeText={setText} placeholder={mode==="Pulza"?"Start something people can participate in…":"Say something to your people…"} placeholderTextColor="#77839a" multiline style={s.input}/>
-     <Pressable onPress={()=>setAttach(!attach)} style={s.secondary}><Text style={s.secondaryText}>{attach?"Media attached ✓":"Attach photo / video"}</Text></Pressable><Pressable onPress={publish} style={s.primary}><Text style={s.primaryText}>{saving?"Saving…":"Publish"}</Text></Pressable>
+     <Pressable disabled={mediaBusy} onPress={attachMedia} style={s.secondary}><Text style={s.secondaryText}>{selectedMedia?"Media selected ✓":"Attach photo / video"}</Text></Pressable>{selectedMedia?<Text style={s.meta}>{selectedMedia.fileName||selectedMedia.type||"Media selected"} · ready to upload</Text>:null}<Pressable onPress={publish} style={s.primary}><Text style={s.primaryText}>{saving?"Saving…":"Publish"}</Text></Pressable>
     </View>
     {feedError?<Text style={s.error}>{feedError}</Text>:null}
     {posts.filter(p=>!blocked.includes(p.authorId)).map((p,i)=><View style={[s.card,p.type==="pulza"&&s.pulza]} key={p.id||i}><View style={s.row}><Text style={[s.name,{flex:1}]}>{p.name}</Text>{p.id&&!String(p.id).startsWith("local-")?<Pressable disabled={safetyBusy} onPress={()=>setSafetyPost(safetyPost===p.id?null:p.id)}><Text style={s.actionText}>•••</Text></Pressable>:null}</View>{safetyPost===p.id?<View style={s.actionRow}><Pressable onPress={()=>{setSafetyPost(null);submitReport(p);}} style={s.action}><Text style={s.actionText}>Report Pulza</Text></Pressable>{p.authorId!==user.id?<Pressable onPress={()=>{setSafetyPost(null);confirmBlock(p);}} style={s.action}><Text style={s.actionText}>Block user</Text></Pressable>:null}</View>:null}<Text style={s.body}>{p.text}</Text>{p.media?.map((m,j)=><MediaPreview key={m.id||j} media={m}/>)}
