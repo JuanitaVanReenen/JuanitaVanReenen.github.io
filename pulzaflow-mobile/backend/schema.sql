@@ -238,3 +238,72 @@ begin
   alter publication supabase_realtime add table public.notifications;
 exception when duplicate_object then null;
 end $$;
+
+
+-- Create activity notifications for social interactions.
+create or replace function public.create_pulza_activity_notification()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  target_user uuid;
+  actor_user uuid;
+  target_pulza uuid;
+  activity_type text;
+begin
+  if tg_table_name = 'reactions' then
+    actor_user := new.user_id;
+    target_pulza := new.pulza_id;
+    activity_type := 'reaction';
+  elsif tg_table_name = 'comments' then
+    actor_user := new.author_id;
+    target_pulza := new.pulza_id;
+    activity_type := 'comment';
+  elsif tg_table_name = 'votes' then
+    actor_user := new.user_id;
+    target_pulza := new.pulza_id;
+    activity_type := 'vote';
+  elsif tg_table_name = 'follows' then
+    actor_user := new.follower_id;
+    target_user := new.following_id;
+    activity_type := 'follow';
+  else
+    return new;
+  end if;
+
+  if target_user is null then
+    select author_id into target_user
+    from public.pulzas
+    where id = target_pulza;
+  end if;
+
+  if target_user is not null and target_user <> actor_user then
+    insert into public.notifications (user_id, actor_id, type, pulza_id)
+    values (target_user, actor_user, activity_type, target_pulza);
+  end if;
+
+  return new;
+end;
+$$;
+
+drop trigger if exists reactions_activity_notification on public.reactions;
+create trigger reactions_activity_notification
+after insert on public.reactions
+for each row execute procedure public.create_pulza_activity_notification();
+
+drop trigger if exists comments_activity_notification on public.comments;
+create trigger comments_activity_notification
+after insert on public.comments
+for each row execute procedure public.create_pulza_activity_notification();
+
+drop trigger if exists votes_activity_notification on public.votes;
+create trigger votes_activity_notification
+after insert on public.votes
+for each row execute procedure public.create_pulza_activity_notification();
+
+drop trigger if exists follows_activity_notification on public.follows;
+create trigger follows_activity_notification
+after insert on public.follows
+for each row execute procedure public.create_pulza_activity_notification();
