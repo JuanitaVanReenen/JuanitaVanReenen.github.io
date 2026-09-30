@@ -1,0 +1,12 @@
+{
+  "expo":{
+    "name":"Pulza Flow",
+    "slug":"pulza-flow",
+    "version":"0.1.0",
+    "orientation":"portrait",
+    "userInterfaceStyle":"dark",
+    "scheme":"pulzaflow",
+    "ios":{"bundleIdentifier":"com.pulzaflow.app","supportsTablet":true},
+    "android":{"package":"com.pulzaflow.app"}
+  }
+}
