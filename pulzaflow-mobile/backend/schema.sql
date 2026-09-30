@@ -107,7 +107,6 @@ create table if not exists public.subscriptions (
 alter table public.profiles enable row level security;
 alter table public.pulzas enable row level security;
 alter table public.pulza_options enable row level security;
-alter table public.pulza_options enable row level security;
 
 create policy "pulza_options_read" on public.pulza_options
 for select
