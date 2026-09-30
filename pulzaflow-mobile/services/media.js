@@ -25,8 +25,9 @@ export async function pickMedia() {
 
 export async function uploadMedia(userId, asset) {
   if (!asset) return { data: null, error: null };
-  if (asset.fileSize && asset.fileSize > 50 * 1024 * 1024) {
-    return { data: null, error: new Error('Please choose media smaller than 50 MB.') };
+  const maxBytes = asset.type === 'video' ? 50 * 1024 * 1024 : 10 * 1024 * 1024;
+  if (asset.fileSize && asset.fileSize > maxBytes) {
+    return { data: null, error: new Error(asset.type === 'video' ? 'Please choose a video smaller than 50 MB.' : 'Please choose an image smaller than 10 MB.') };
   }
   if (!asset.base64) {
     return { data: null, error: new Error('The selected media could not be read.') };
