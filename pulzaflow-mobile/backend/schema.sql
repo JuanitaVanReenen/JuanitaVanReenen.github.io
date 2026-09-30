@@ -159,8 +159,15 @@ create policy "profiles_read" on public.profiles
 for select
 to authenticated
 using (true);
-create policy "profiles_insert_own" on public.profiles for insert with check (auth.uid() = id);
-create policy "profiles_update_own" on public.profiles for update using (auth.uid() = id);
+create policy "profiles_insert_own" on public.profiles
+for insert
+to authenticated
+with check (auth.uid() = id);
+create policy "profiles_update_own" on public.profiles
+for update
+to authenticated
+using (auth.uid() = id)
+with check (auth.uid() = id);
 
 -- Public feed data, with ownership on writes.
 create policy "pulzas_read" on public.pulzas
@@ -205,17 +212,33 @@ using (true);
 create policy "follows_insert_own" on public.follows for insert with check (auth.uid() = follower_id and public.has_current_policy_acceptance());
 create policy "follows_delete_own" on public.follows for delete using (auth.uid() = follower_id);
 
-create policy "blocks_read_own" on public.blocks for select using (auth.uid() = blocker_id);
-create policy "blocks_insert_own" on public.blocks for insert with check (auth.uid() = blocker_id and public.has_current_policy_acceptance());
-create policy "blocks_delete_own" on public.blocks for delete using (auth.uid() = blocker_id);
+create policy "blocks_read_own" on public.blocks for select
+to authenticated
+using (auth.uid() = blocker_id);
+create policy "blocks_insert_own" on public.blocks for insert
+to authenticated
+with check (auth.uid() = blocker_id and public.has_current_policy_acceptance());
+create policy "blocks_delete_own" on public.blocks for delete
+to authenticated
+using (auth.uid() = blocker_id);
 
-create policy "reports_insert_own" on public.reports for insert with check (auth.uid() = reporter_id and public.has_current_policy_acceptance());
-create policy "reports_read_own" on public.reports for select using (auth.uid() = reporter_id);
+create policy "reports_insert_own" on public.reports for insert
+to authenticated
+with check (auth.uid() = reporter_id and public.has_current_policy_acceptance());
+create policy "reports_read_own" on public.reports for select
+to authenticated
+using (auth.uid() = reporter_id);
 
-create policy "notifications_read_own" on public.notifications for select using (auth.uid() = user_id);
-create policy "notifications_update_own" on public.notifications for update using (auth.uid() = user_id);
+create policy "notifications_read_own" on public.notifications for select
+to authenticated
+using (auth.uid() = user_id);
+create policy "notifications_update_own" on public.notifications for update
+to authenticated
+using (auth.uid() = user_id);
 
-create policy "subscriptions_read_own" on public.subscriptions for select using (auth.uid() = user_id);
+create policy "subscriptions_read_own" on public.subscriptions for select
+to authenticated
+using (auth.uid() = user_id);
 
 -- Create a profile row when a new account is created.
 create or replace function public.handle_new_user()
