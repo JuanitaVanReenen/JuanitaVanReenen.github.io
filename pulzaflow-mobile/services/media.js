@@ -20,6 +20,9 @@ export async function pickAndUploadMedia(userId) {
   }
 
   const asset = result.assets[0];
+  if (asset.fileSize && asset.fileSize > 50 * 1024 * 1024) {
+    return { data: null, error: new Error('Please choose media smaller than 50 MB.') };
+  }
   if (!asset.base64) {
     return { data: null, error: new Error('The selected media could not be read.') };
   }
