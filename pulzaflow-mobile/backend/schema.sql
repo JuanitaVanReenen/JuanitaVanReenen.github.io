@@ -121,23 +121,6 @@ create policy "profiles_read" on public.profiles for select using (true);
 create policy "profiles_insert_own" on public.profiles for insert with check (auth.uid() = id);
 create policy "profiles_update_own" on public.profiles for update using (auth.uid() = id);
 
--- Current policy acceptance helper used by UGC write policies.
-create or replace function public.has_current_policy_acceptance()
-returns boolean
-language sql
-stable
-security definer
-set search_path = public
-as $
-  select exists (
-    select 1
-    from public.policy_acceptances pa
-    where pa.user_id = auth.uid()
-      and pa.terms_version = '1.0'
-      and pa.guidelines_version = '1.0'
-  );
-$;
-
 -- Public feed data, with ownership on writes.
 create policy "pulzas_read" on public.pulzas for select using (true);
 create policy "pulzas_insert_own" on public.pulzas for insert with check (auth.uid() = author_id and public.has_current_policy_acceptance());
@@ -219,7 +202,7 @@ create policy "pulza_media_read" on public.pulza_media
 for select using (true);
 
 create policy "pulza_media_insert_own" on public.pulza_media
-for insert with check (auth.uid() = owner_id);
+for insert with check (auth.uid() = owner_id and public.has_current_policy_acceptance() and exists (select 1 from public.pulzas p where p.id = pulza_id and p.author_id = auth.uid()));
 
 create policy "pulza_media_delete_own" on public.pulza_media
 for delete using (auth.uid() = owner_id);
@@ -368,6 +351,23 @@ on public.moderation_actions for select
 to authenticated
 using (auth.uid() = moderator_id);
 
+
+-- Current policy acceptance helper used by UGC write policies.
+create or replace function public.has_current_policy_acceptance()
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select exists (
+    select 1
+    from public.policy_acceptances pa
+    where pa.user_id = auth.uid()
+      and pa.terms_version = '1.0'
+      and pa.guidelines_version = '1.0'
+  );
+$$;
 
 -- Policy acceptance records. Version values are controlled by the released
 -- app/backend, not by the client.
