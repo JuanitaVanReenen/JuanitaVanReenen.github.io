@@ -350,3 +350,26 @@ create policy "moderation_actions_read_self"
 on public.moderation_actions for select
 to authenticated
 using (auth.uid() = moderator_id);
+
+
+-- Policy acceptance records. Version values are controlled by the released
+-- app/backend, not by the client.
+create table if not exists public.policy_acceptances (
+  user_id uuid not null references public.profiles(id) on delete cascade,
+  terms_version text not null,
+  guidelines_version text not null,
+  accepted_at timestamptz not null default now(),
+  primary key (user_id, terms_version, guidelines_version)
+);
+
+alter table public.policy_acceptances enable row level security;
+
+create policy "policy_acceptances_read_own"
+on public.policy_acceptances for select
+to authenticated
+using (auth.uid() = user_id);
+
+create policy "policy_acceptances_insert_own"
+on public.policy_acceptances for insert
+to authenticated
+with check (auth.uid() = user_id);
