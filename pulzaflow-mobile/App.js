@@ -1,5 +1,5 @@
 const POLICY_TERMS_VERSION = '1.0';
-const PUBLIC_WEB = "https://juanitavanreenen.github.io/pulzaflow";
+const PUBLIC_WEB = "https://juanitavanreenen.github.io/pulzaflow-public";
 const PUBLIC_PRIVACY = PUBLIC_WEB + "/privacy.html";
 const PUBLIC_TERMS = PUBLIC_WEB + "/terms.html";
 const PUBLIC_GUIDELINES = PUBLIC_WEB + "/community-guidelines.html";
