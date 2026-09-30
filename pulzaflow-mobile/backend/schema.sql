@@ -174,43 +174,62 @@ create policy "pulzas_read" on public.pulzas
 for select
 to authenticated
 using (true);
-create policy "pulzas_insert_own" on public.pulzas for insert with check (auth.uid() = author_id and public.has_current_policy_acceptance());
-create policy "pulzas_update_own" on public.pulzas for update using (auth.uid() = author_id);
-create policy "pulzas_delete_own" on public.pulzas for delete using (auth.uid() = author_id);
-
-create policy "options_read" on public.pulza_options for select using (true);
-create policy "options_manage_own" on public.pulza_options for all
-using (exists (select 1 from public.pulzas p where p.id = pulza_id and p.author_id = auth.uid()))
-with check (exists (select 1 from public.pulzas p where p.id = pulza_id and p.author_id = auth.uid()));
+create policy "pulzas_insert_own" on public.pulzas for insert
+to authenticated
+with check (auth.uid() = author_id and public.has_current_policy_acceptance());
+create policy "pulzas_update_own" on public.pulzas for update
+to authenticated
+using (auth.uid() = author_id);
+create policy "pulzas_delete_own" on public.pulzas for delete
+to authenticated
+using (auth.uid() = author_id);
 
 create policy "votes_read" on public.votes
 for select
 to authenticated
 using (true);
-create policy "votes_insert_own" on public.votes for insert with check (auth.uid() = user_id and public.has_current_policy_acceptance());
-create policy "votes_delete_own" on public.votes for delete using (auth.uid() = user_id);
+create policy "votes_insert_own" on public.votes for insert
+to authenticated
+with check (auth.uid() = user_id and public.has_current_policy_acceptance());
+create policy "votes_delete_own" on public.votes for delete
+to authenticated
+using (auth.uid() = user_id);
 
 create policy "reactions_read" on public.reactions
 for select
 to authenticated
 using (true);
-create policy "reactions_insert_own" on public.reactions for insert with check (auth.uid() = user_id and public.has_current_policy_acceptance());
-create policy "reactions_delete_own" on public.reactions for delete using (auth.uid() = user_id);
+create policy "reactions_insert_own" on public.reactions for insert
+to authenticated
+with check (auth.uid() = user_id and public.has_current_policy_acceptance());
+create policy "reactions_delete_own" on public.reactions for delete
+to authenticated
+using (auth.uid() = user_id);
 
 create policy "comments_read" on public.comments
 for select
 to authenticated
 using (true);
-create policy "comments_insert_own" on public.comments for insert with check (auth.uid() = author_id and public.has_current_policy_acceptance());
-create policy "comments_update_own" on public.comments for update using (auth.uid() = author_id);
-create policy "comments_delete_own" on public.comments for delete using (auth.uid() = author_id);
+create policy "comments_insert_own" on public.comments for insert
+to authenticated
+with check (auth.uid() = author_id and public.has_current_policy_acceptance());
+create policy "comments_update_own" on public.comments for update
+to authenticated
+using (auth.uid() = author_id);
+create policy "comments_delete_own" on public.comments for delete
+to authenticated
+using (auth.uid() = author_id);
 
 create policy "follows_read" on public.follows
 for select
 to authenticated
 using (true);
-create policy "follows_insert_own" on public.follows for insert with check (auth.uid() = follower_id and public.has_current_policy_acceptance());
-create policy "follows_delete_own" on public.follows for delete using (auth.uid() = follower_id);
+create policy "follows_insert_own" on public.follows for insert
+to authenticated
+with check (auth.uid() = follower_id and public.has_current_policy_acceptance());
+create policy "follows_delete_own" on public.follows for delete
+to authenticated
+using (auth.uid() = follower_id);
 
 create policy "blocks_read_own" on public.blocks for select
 to authenticated
