@@ -11,3 +11,10 @@ export async function requestAccountDeletion() {
     body: {},
   });
 }
+
+
+// Production deletion must be executed by a trusted server/Edge Function.
+// This client helper intentionally fails closed until that endpoint is deployed.
+export async function deleteMyAccount() {
+  throw new Error('Account deletion endpoint is not deployed yet.');
+}
