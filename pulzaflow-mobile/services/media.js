@@ -60,3 +60,8 @@ export async function getMediaUrl(storagePath, expiresIn = 3600) {
     .createSignedUrl(storagePath, expiresIn);
   return { data: data?.signedUrl || null, error };
 }
+
+export async function deleteMedia(storagePath) {
+  if (!storagePath) return { data: null, error: null };
+  return supabase.storage.from('pulza-media').remove([storagePath]);
+}
