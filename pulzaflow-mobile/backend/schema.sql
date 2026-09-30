@@ -352,6 +352,18 @@ to authenticated
 using (auth.uid() = moderator_id);
 
 
+-- Policy acceptance records. Version values are controlled by the released
+-- app/backend, not by the client.
+create table if not exists public.policy_acceptances (
+  user_id uuid not null references public.profiles(id) on delete cascade,
+  terms_version text not null,
+  guidelines_version text not null,
+  accepted_at timestamptz not null default now(),
+  primary key (user_id, terms_version, guidelines_version)
+);
+
+alter table public.policy_acceptances enable row level security;
+
 -- Current policy acceptance helper used by UGC write policies.
 create or replace function public.has_current_policy_acceptance()
 returns boolean
@@ -368,18 +380,6 @@ as $$
       and pa.guidelines_version = '1.0'
   );
 $$;
-
--- Policy acceptance records. Version values are controlled by the released
--- app/backend, not by the client.
-create table if not exists public.policy_acceptances (
-  user_id uuid not null references public.profiles(id) on delete cascade,
-  terms_version text not null,
-  guidelines_version text not null,
-  accepted_at timestamptz not null default now(),
-  primary key (user_id, terms_version, guidelines_version)
-);
-
-alter table public.policy_acceptances enable row level security;
 
 create policy "policy_acceptances_read_own"
 on public.policy_acceptances for select
