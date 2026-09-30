@@ -44,7 +44,7 @@ export async function uploadMedia(userId, asset) {
     });
 
   if (upload.error) return { data: null, error: upload.error };
-\n  return { data: { path, type: asset.type, contentType }, error: null };
+  return { data: { path, type: asset.type, contentType }, error: null };
 }
 
 export async function getMediaUrl(storagePath, expiresIn = 3600) {
