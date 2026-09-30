@@ -16,7 +16,7 @@ export async function removeReaction(pulzaId, userId, reaction = 'like') {
 
 export async function getComments(pulzaId) {
   return supabase.from('comments')
-    .select('*, profiles!comments_author_id_fkey(username,display_name,avatar_url)')
+    .select('*, profiles(username,display_name,avatar_url)')
     .eq('pulza_id', pulzaId)
     .order('created_at', { ascending: true });
 }
