@@ -1,5 +1,5 @@
 import { supabase } from '../lib/supabase';
-import { uploadMedia } from './media';
+import { uploadMedia, deleteMedia } from './media';
 
 export async function getFeed(limit = 30) {
   return supabase
@@ -25,12 +25,18 @@ export async function createPulza(authorId, body, options = [], mediaAsset = nul
       position: index,
     }));
     const result = await supabase.from('pulza_options').insert(rows);
-    if (result.error) return { data: pulza, error: result.error };
+    if (result.error) {
+      await supabase.from('pulzas').delete().eq('id', pulza.id).eq('author_id', authorId);
+      return { data: null, error: result.error };
+    }
   }
 
   if (mediaAsset) {
     const upload = await uploadMedia(authorId, mediaAsset);
-    if (upload.error) return { data: pulza, error: upload.error };
+    if (upload.error) {
+      await supabase.from('pulzas').delete().eq('id', pulza.id).eq('author_id', authorId);
+      return { data: null, error: upload.error };
+    }
 
     if (upload.data) {
       const mediaResult = await supabase.from('pulza_media').insert({
@@ -40,7 +46,11 @@ export async function createPulza(authorId, body, options = [], mediaAsset = nul
         media_type: upload.data.type === 'video' ? 'video' : 'image',
         mime_type: upload.data.contentType,
       });
-      if (mediaResult.error) return { data: pulza, error: mediaResult.error };
+      if (mediaResult.error) {
+        await deleteMedia(upload.data.path);
+        await supabase.from('pulzas').delete().eq('id', pulza.id).eq('author_id', authorId);
+        return { data: null, error: mediaResult.error };
+      }
     }
   }
 
