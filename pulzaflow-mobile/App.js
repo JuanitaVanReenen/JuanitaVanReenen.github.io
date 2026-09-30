@@ -1,3 +1,5 @@
+const POLICY_TERMS_VERSION = '1.0';
+
 import React,{useEffect,useState} from "react";
 import {SafeAreaView,View,Text,Pressable,ScrollView,StyleSheet,TextInput,ActivityIndicator,Image,Alert} from "react-native";
 import {StatusBar} from "expo-status-bar";
@@ -10,6 +12,22 @@ import {getNotifications,markNotificationRead,subscribeToNotifications} from "./
 import {reportPulza,blockUser,unblockUser,getBlockedUsers} from "./services/moderation";
 import {getSubscription,hasPlusAccess,subscriptionLabel,PLUS_PRODUCTS} from "./services/subscriptions";
 
+
+function PolicyGate({user,onAccepted}) {
+  const [busy,setBusy]=useState(false);
+  const accept=async()=>{
+    setBusy(true);
+    const {error}=await supabase.from('policy_acceptances').insert({user_id:user.id,terms_version:POLICY_TERMS_VERSION,guidelines_version:POLICY_TERMS_VERSION});
+    setBusy(false);
+    if(!error) onAccepted();
+  };
+  return <SafeAreaView style={s.safe}><ScrollView contentContainerStyle={s.auth}>
+    <Text style={s.title}>Welcome to PULZA FLOW</Text>
+    <Text style={s.muted}>Before you create or participate in Pulzas, please accept the Terms of Use and Community Guidelines.</Text>
+    <Text style={s.muted}>You do not need to provide a government ID to use PULZA FLOW.</Text>
+    <Pressable style={s.button} disabled={busy} onPress={accept}><Text style={s.buttonText}>{busy?'Saving...':'Accept & Continue'}</Text></Pressable>
+  </ScrollView></SafeAreaView>;
+}
 function AuthScreen(){
  const [signup,setSignup]=useState(false),[email,setEmail]=useState(""),[password,setPassword]=useState(""),[username,setUsername]=useState(""),[displayName,setDisplayName]=useState(""),[loading,setLoading]=useState(false),[error,setError]=useState("");
  async function submit(){
