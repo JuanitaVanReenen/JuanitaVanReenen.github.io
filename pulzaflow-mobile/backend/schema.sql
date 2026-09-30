@@ -307,3 +307,32 @@ drop trigger if exists follows_activity_notification on public.follows;
 create trigger follows_activity_notification
 after insert on public.follows
 for each row execute procedure public.create_pulza_activity_notification();
+
+
+-- Moderation roles and auditable moderation actions.
+create table if not exists public.moderator_roles (
+  user_id uuid primary key references public.profiles(id) on delete cascade,
+  role text not null default 'moderator' check (role in ('moderator','admin')),
+  created_at timestamptz not null default now()
+);
+
+create table if not exists public.moderation_actions (
+  id uuid primary key default gen_random_uuid(),
+  moderator_id uuid not null references public.profiles(id) on delete restrict,
+  report_id uuid references public.reports(id) on delete set null,
+  pulza_id uuid references public.pulzas(id) on delete set null,
+  target_user_id uuid references public.profiles(id) on delete set null,
+  action text not null check (action in ('reviewed','resolved','dismissed','content_removed','user_restricted','user_suspended')),
+  note text default '',
+  created_at timestamptz not null default now()
+);
+
+alter table public.moderator_roles enable row level security;
+alter table public.moderation_actions enable row level security;
+
+-- These tables are intentionally not readable/writable by ordinary app users.
+-- Admin/moderator policies must be added through a server-side role check or
+-- protected admin API; never grant moderation access based on a client flag.
+
+alter table public.profiles add column if not exists account_status text not null default 'active'
+  check (account_status in ('active','restricted','suspended'));
