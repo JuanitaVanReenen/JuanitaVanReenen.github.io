@@ -11,7 +11,7 @@ export async function getProfile(userId) {
 export async function updateProfile(userId, changes) {
   return supabase.from('profiles').update({
     display_name: changes.display_name?.trim(),
-    username: changes.username?.trim().toLowerCase(),
+    username: changes.username?.trim().toLowerCase().replace(/^@+/, ''),
     bio: changes.bio?.trim() || '',
   }).eq('id', userId).select('id,username,display_name,bio,avatar_url').single();
 }
