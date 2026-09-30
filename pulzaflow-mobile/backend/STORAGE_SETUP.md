@@ -8,7 +8,7 @@ In the Supabase Dashboard:
 
 1. Open Storage.
 2. Create a bucket named `pulza-media`.
-3. Configure the bucket according to the final launch policy and file-size limits.
+3. Configure the bucket as **private** initially. Keep feed media behind authenticated/signed delivery until launch policy and media access behavior are finalized.
 4. Do not edit the `storage` schema tables directly.
 
 ## 2. Storage security
