@@ -9,10 +9,16 @@ export async function getProfileByUsername(username) {
 }
 
 export async function updateProfile(userId, changes) {
+  const displayName = changes.display_name?.trim() || '';
+  const username = changes.username?.trim().toLowerCase().replace(/^@+/, '') || '';
+  const bio = changes.bio?.trim() || '';
+  if (!displayName) return { data:null, error:new Error('Display name is required.') };
+  if (!/^[a-z0-9_]{3,30}$/.test(username)) return { data:null, error:new Error('Username must be 3–30 characters using lowercase letters, numbers, or underscores.') };
+  if (bio.length > 160) return { data:null, error:new Error('Bio must be 160 characters or fewer.') };
   return supabase.from('profiles').update({
-    display_name: changes.display_name?.trim(),
-    username: changes.username?.trim().toLowerCase().replace(/^@+/, ''),
-    bio: changes.bio?.trim() || '',
+    display_name: displayName,
+    username,
+    bio,
   }).eq('id',userId).select('id,username,display_name,bio,avatar_url').single();
 }
 
