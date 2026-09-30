@@ -336,3 +336,17 @@ alter table public.moderation_actions enable row level security;
 
 alter table public.profiles add column if not exists account_status text not null default 'active'
   check (account_status in ('active','restricted','suspended'));
+
+
+-- Prevent ordinary authenticated clients from writing moderation administration data.
+-- The actual moderator/admin write API should use a server-side role check.
+-- These policies deliberately do not grant public access.
+create policy "moderator_roles_read_self"
+on public.moderator_roles for select
+to authenticated
+using (auth.uid() = user_id);
+
+create policy "moderation_actions_read_self"
+on public.moderation_actions for select
+to authenticated
+using (auth.uid() = moderator_id);
