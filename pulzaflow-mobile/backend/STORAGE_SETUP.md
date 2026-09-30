@@ -49,3 +49,39 @@ After a successful upload, create a `pulza_media` row containing:
 ## 4. Security rule
 
 Never place a Supabase service-role key inside the mobile app. The mobile app uses the publishable key and authenticated user session; privileged moderation/payment operations belong on trusted server-side infrastructure.
+
+## Recommended Storage RLS for PULZA FLOW
+
+Use a **private** `pulza-media` bucket initially. The app can use signed URLs for media delivery.
+
+For uploads, restrict authenticated users to a first-level folder matching their auth user ID. Also add a matching SELECT policy because Supabase Storage may perform a RETURNING operation after upload.
+
+Example policies:
+
+```sql
+create policy "Pulza media authenticated upload"
+on storage.objects for insert
+to authenticated
+with check (
+  bucket_id = 'pulza-media'
+  and (storage.foldername(name))[1] = (select auth.jwt()->>'sub')
+);
+
+create policy "Pulza media owner read metadata"
+on storage.objects for select
+to authenticated
+using (
+  bucket_id = 'pulza-media'
+  and owner_id = (select auth.uid()::text)
+);
+
+create policy "Pulza media owner delete"
+on storage.objects for delete
+to authenticated
+using (
+  bucket_id = 'pulza-media'
+  and owner_id = (select auth.uid()::text)
+);
+```
+
+Do not modify Supabase's `storage` schema tables directly; use the Storage API and RLS policies.
