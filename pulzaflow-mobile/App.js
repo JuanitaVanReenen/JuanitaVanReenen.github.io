@@ -1,9 +1,10 @@
 import React,{useEffect,useState} from "react";
-import {SafeAreaView,View,Text,Pressable,ScrollView,StyleSheet,TextInput,ActivityIndicator} from "react-native";
+import {SafeAreaView,View,Text,Pressable,ScrollView,StyleSheet,TextInput,ActivityIndicator,Image} from "react-native";
 import {StatusBar} from "expo-status-bar";
 import {supabase} from "./lib/supabase";
 import {signIn,signUp,signOut} from "./services/auth";
 import {getFeed,createPulza} from "./services/pulzas";
+import {getMediaUrl} from "./services/media";
 
 function AuthScreen(){
  const [signup,setSignup]=useState(false),[email,setEmail]=useState(""),[password,setPassword]=useState(""),[username,setUsername]=useState(""),[displayName,setDisplayName]=useState(""),[loading,setLoading]=useState(false),[error,setError]=useState("");
@@ -29,18 +30,18 @@ function AuthScreen(){
 
 const seed=[{name:"Maya",text:"The sky looked unreal tonight. 🌅",type:"post",likes:42,comments:8},{name:"Daniel",text:"Finally finished the thing I kept putting off. ✨",type:"post",likes:71,comments:14},{name:"Leila",text:"I have Saturday free. What should we do?",type:"pulza",options:["Beach day","Brunch","Road trip"],likes:18,comments:23}];
 
-function AppShell({user}){
- const [tab,setTab]=useState("Home"),[mode,setMode]=useState("Post"),[text,setText]=useState(""),[posts,setPosts]=useState(seed),[saving,setSaving]=useState(false);
- useEffect(()=>{getFeed().then(({data})=>{if(data?.length)setPosts(data.map(p=>({name:p.profiles?.display_name||p.profiles?.username||"User",text:p.body,type:p.kind,likes:0,comments:0,options:p.pulza_options?.map(o=>o.option_text)})))});},[]);
+function MediaPreview({media}){\n const [url,setUrl]=useState(null);\n useEffect(()=>{if(media?.storage_path)getMediaUrl(media.storage_path).then(r=>setUrl(r.data));},[media?.storage_path]);\n if(!url)return null;\n return media.media_type==="image"?<Image source={{uri:url}} style={s.media}/> : <View style={s.videoPlaceholder}><Text style={s.videoText}>▶ Video</Text></View>;\n}\n\nfunction AppShell({user}){
+ const [tab,setTab]=useState("Home"),[mode,setMode]=useState("Post"),[text,setText]=useState(""),[posts,setPosts]=useState(seed),[saving,setSaving]=useState(false),[attach,setAttach]=useState(false);
+ useEffect(()=>{getFeed().then(({data})=>{if(data?.length)setPosts(data.map(p=>({name:p.profiles?.display_name||p.profiles?.username||"User",text:p.body,type:p.kind,likes:0,comments:0,options:p.pulza_options?.map(o=>o.option_text),media:p.pulza_media||[]})))});},[]);
  async function publish(){
   const v=text.trim();if(!v||saving)return;
   setSaving(true);
   const options=mode==="Pulza"?["I’m in","Maybe","Tell me more"]:[];
-  const {data,error}=await createPulza(user.id,v,options);
+  const {data,error}=await createPulza(user.id,v,options,attach);
   setSaving(false);
   if(error){setPosts([{name:"You",text:v,type:mode==="Pulza"?"pulza":"post",likes:0,comments:0,options},...posts]);}
   else setPosts([{name:"You",text:data.body,type:data.kind,likes:0,comments:0,options},...posts]);
-  setText("");setTab("Home");
+  setText("");setAttach(false);setTab("Home");
  }
  return <SafeAreaView style={s.safe}><StatusBar style="light"/>
   <View style={s.header}><Text style={s.logo}>Pulza<Text style={s.accent}>Flow</Text></Text><Text style={s.tag}>Social, with participation.</Text></View>
@@ -48,9 +49,9 @@ function AppShell({user}){
    {tab==="Home"&&<><Text style={s.kicker}>YOUR SOCIAL WORLD</Text><Text style={s.hero}>Don’t just post.{"\n"}<Text style={s.blue}>Start something.</Text></Text><Text style={s.muted}>Pulza Flow keeps the familiar social feed, then gives people a new way to participate.</Text>
     <View style={s.composer}><View style={s.row}>{["Post","Pulza"].map(x=><Pressable key={x} onPress={()=>setMode(x)} style={[s.type,mode===x&&s.typeOn]}><Text style={s.typeText}>{x}</Text></Pressable>)}</View>
      <TextInput value={text} onChangeText={setText} placeholder={mode==="Pulza"?"Start something people can participate in…":"Say something to your people…"} placeholderTextColor="#77839a" multiline style={s.input}/>
-     <Pressable onPress={publish} style={s.primary}><Text style={s.primaryText}>{saving?"Saving…":"Publish"}</Text></Pressable>
+     <Pressable onPress={()=>setAttach(!attach)} style={s.secondary}><Text style={s.secondaryText}>{attach?"Media attached ✓":"Attach photo / video"}</Text></Pressable><Pressable onPress={publish} style={s.primary}><Text style={s.primaryText}>{saving?"Saving…":"Publish"}</Text></Pressable>
     </View>
-    {posts.map((p,i)=><View style={[s.card,p.type==="pulza"&&s.pulza]} key={i}><Text style={s.name}>{p.name}</Text><Text style={s.body}>{p.text}</Text>
+    {posts.map((p,i)=><View style={[s.card,p.type==="pulza"&&s.pulza]} key={i}><Text style={s.name}>{p.name}</Text><Text style={s.body}>{p.text}</Text>{p.media?.map((m,j)=><MediaPreview key={m.id||j} media={m}/>)}
      {p.type==="pulza"&&<>{(p.options||[]).map(o=><Pressable key={o} style={s.option}><Text style={s.optionText}>{o}</Text><Text style={s.count}>0</Text></Pressable>)}<Pressable style={s.primary}><Text style={s.primaryText}>Join this Pulza</Text></Pressable></>}
      <Text style={s.meta}>♡ {p.likes||0}   💬 {p.comments||0}</Text></View>)}</>}
    {tab==="Discover"&&<><Text style={s.kicker}>DISCOVER</Text><Text style={s.hero}>Find your people.</Text>{["#WeekendIdeas","#MadeIt","#TravelTalk"].map(x=><View style={s.card} key={x}><Text style={s.name}>{x}</Text><Text style={s.muted}>Explore conversations and Pulzas that are starting now.</Text></View>)}</>}
