@@ -8,8 +8,22 @@ export async function initializeAds() {
   initialized = true;
 }
 
+// Production ads stay OFF until the real AdMob account and ad unit IDs are configured.
+export const PRODUCTION_ADS_ENABLED = false;
+
 export const BANNER_AD_UNIT_ID = __DEV__
   ? TestIds.BANNER
-  : "ca-app-pub-REPLACE_WITH_YOUR_ADMOB_PUBLISHER_ID/REPLACE_WITH_YOUR_BANNER_UNIT_ID";
+  : null;
+
+export function AdBanner() {
+  if (!__DEV__ && !PRODUCTION_ADS_ENABLED) return null;
+  return (
+    <BannerAd
+      unitId={BANNER_AD_UNIT_ID || TestIds.BANNER}
+      size={BannerAdSize.BANNER}
+      requestOptions={{ requestNonPersonalizedAdsOnly: true }}
+    />
+  );
+}
 
 export { BannerAd, BannerAdSize, TestIds };
