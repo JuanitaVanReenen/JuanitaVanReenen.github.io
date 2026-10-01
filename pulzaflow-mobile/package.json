@@ -25,6 +25,7 @@
     "base64-arraybuffer": "^1.0.2",
     "expo-dev-client": "~57.0.19",
     "react-native-purchases": "^9.5.4",
-    "react-native-purchases-ui": "^9.5.4"
+    "react-native-purchases-ui": "^9.5.4",
+    "react-native-google-mobile-ads": "^17.2.0"
   }
 }
