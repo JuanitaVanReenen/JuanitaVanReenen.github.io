@@ -6,6 +6,12 @@
     "orientation": "portrait",
     "userInterfaceStyle": "dark",
     "scheme": "pulzaflow",
+    "owner": "pulzaflow",
+    "extra": {
+      "eas": {
+        "projectId": "10123b7f-aa23-4079-9069-4cd0198"
+      }
+    },
     "ios": {
       "bundleIdentifier": "com.pulzaflow.app",
       "supportsTablet": true,
