@@ -51,7 +51,7 @@ Data used by the service includes:
 
 Purpose: app functionality, authentication, social features, safety/moderation, notifications and support.
 
-Before submission, confirm the final declarations against the deployed Supabase schema, storage configuration, RevenueCat setup and actual production behavior.
+Before submission, confirm the final declarations against the deployed Supabase schema, storage configuration and actual production behavior.
 
 ## Screenshot plan
 Final store screenshots must be captured from the actual signed production/TestFlight/Play build. Do not use concept images as if they were production screenshots.
