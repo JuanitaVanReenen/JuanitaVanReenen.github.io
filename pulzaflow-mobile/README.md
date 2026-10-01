@@ -14,10 +14,7 @@ PULZA FLOW is a separate iOS + Android application codebase. It does not replace
 - Notifications and realtime foundation
 - Report/block moderation controls
 - Account deletion Edge Function
-- PULZA FLOW PLUS subscription architecture
-- RevenueCat purchase/restore integration
-- RevenueCat entitlement webhook
-- Production database indexes and vote-integrity checks
+- - Production database indexes and vote-integrity checks
 - Mobile CI checks
 
 ## Required production configuration
@@ -30,8 +27,6 @@ The source code is prepared for production, but these external resources still h
 4. Google AdMob account, production App IDs/ad units and consent configuration.
 4. RevenueCat project, entitlement and products.
 5. App Store Connect subscription products.
-6. Google Play subscription products.
-7. RevenueCat public API keys in the build environment.
 8. Real-device iOS/Android QA and release builds.
 9. Store listing, privacy/support URLs and final review materials.
 
