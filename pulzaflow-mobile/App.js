@@ -20,6 +20,7 @@ import {reportPulza,blockUser,unblockUser,getBlockedUsers} from "./services/mode
 import {getSubscription,hasPlusAccess,subscriptionLabel,PLUS_PRODUCTS} from "./services/subscriptions";
 import {configureBilling,purchasePlus,restorePurchases} from "./services/billing";
 import {getProfile,updateProfile,pickAndUploadAvatar,getAvatarUrl,getFollowStatus,followUser,unfollowUser,getFollowCounts} from "./services/profile";
+import {initializeAds,BannerAd,BannerAdSize,BANNER_AD_UNIT_ID} from "./services/ads";
 
 
 function PolicyGate({user,onAccepted}) {
@@ -266,7 +267,7 @@ const s=StyleSheet.create({
  comment:{paddingVertical:8},
  commentBody:{color:"#cbd7e8",marginTop:2},
  meta:{color:"#6f8199",fontSize:12,marginTop:12},
- media:{width:"100%",height:220,borderRadius:14,marginTop:12},
+ media:{width:"100%",height:220,borderRadius:14,marginTop:12},\n adSlot:{alignItems:"center",backgroundColor:"#0a1524",borderRadius:12,paddingVertical:8,marginBottom:14},\n adLabel:{color:"#62748d",fontSize:9,fontWeight:"700",letterSpacing:1,marginBottom:3},
  videoPlaceholder:{height:180,borderRadius:14,marginTop:12,backgroundColor:"#111d2d",alignItems:"center",justifyContent:"center"},
  videoText:{color:"#fff",fontWeight:"800"},
  nav:{position:"absolute",left:0,right:0,bottom:0,flexDirection:"row",backgroundColor:"#0a1524",borderTopWidth:1,borderTopColor:"#1b2b42",paddingVertical:8},
