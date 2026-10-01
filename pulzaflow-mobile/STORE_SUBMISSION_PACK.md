@@ -6,7 +6,7 @@
 - Version: 0.1.0
 - Category: Social Networking
 - Pricing: Free download
-- Optional in-app subscription: PULZA FLOW PLUS
+- Monetization: Free download with advertising only
 - Account creation: Email + password; no government ID required for ordinary signup.
 
 ## Short description
@@ -29,10 +29,9 @@ Core features:
 - Block accounts
 - Edit your profile and profile photo
 - Delete your account from inside the app
-- Optional PULZA FLOW PLUS subscription
 
-## Subscription copy
-PULZA FLOW PLUS is an optional subscription for users who want access to Plus features. Exact features, pricing, trial availability and renewal terms must match the products configured in Apple App Store and Google Play.
+## Monetization
+PULZA FLOW is free to download and uses advertising as its monetization model. There are no in-app purchases or subscriptions in the Google Play version.
 
 ## Required URLs
 - Privacy: https://juanitavanreenen.github.io/pulzaflow-public/privacy.html
@@ -49,9 +48,8 @@ Data used by the service includes:
 - Follows, blocks and reports.
 - Uploaded images/videos.
 - Notifications/activity records.
-- Subscription and entitlement information where Plus is purchased.
 
-Purpose: app functionality, authentication, social features, safety/moderation, notifications, subscription management and support.
+Purpose: app functionality, authentication, social features, safety/moderation, notifications and support.
 
 Before submission, confirm the final declarations against the deployed Supabase schema, storage configuration, RevenueCat setup and actual production behavior.
 
@@ -64,17 +62,13 @@ Capture at minimum:
 4. Participation/voting
 5. Discover/profile
 6. Notifications
-7. PULZA FLOW PLUS
 8. Profile/account deletion
 
 ## Final external gates
 - Production Supabase deployed and tested.
 - Storage bucket and RLS deployed and tested.
 - Delete-account Edge Function deployed and tested.
-- RevenueCat configured and webhook deployed/tested.
 - Moderator role created privately for the operator account.
-- Apple subscription products configured.
-- Google Play subscription products configured.
 - EAS production credentials configured.
 - Real-device QA completed.
 - App Store Connect and Google Play Console listings completed.
