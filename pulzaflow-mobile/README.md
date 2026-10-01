@@ -27,6 +27,7 @@ The source code is prepared for production, but these external resources still h
 1. Production Supabase project and environment values.
 2. `pulza-media` Storage bucket and Storage RLS policies.
 3. Supabase Edge Function deployment and secrets.
+4. Google AdMob account, production App IDs/ad units and consent configuration.
 4. RevenueCat project, entitlement and products.
 5. App Store Connect subscription products.
 6. Google Play subscription products.
