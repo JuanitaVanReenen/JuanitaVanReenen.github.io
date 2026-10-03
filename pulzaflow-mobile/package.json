@@ -23,7 +23,6 @@
     "expo-image-picker": "~57.0.20",
     "expo-video": "~57.0.5",
     "base64-arraybuffer": "^1.0.2",
-    "expo-dev-client": "~57.0.19",
-    "react-native-google-mobile-ads": "^17.2.0"
+    "expo-dev-client": "~57.0.19"
   }
 }
