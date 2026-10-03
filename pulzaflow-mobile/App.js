@@ -18,6 +18,7 @@ import {reactToPulza,removeReaction,getComments,addComment,voteOnPulza,subscribe
 import {getNotifications,markNotificationRead,subscribeToNotifications} from "./services/notifications";
 import {reportPulza,blockUser,unblockUser,getBlockedUsers} from "./services/moderation";
 import {getProfile,updateProfile,pickAndUploadAvatar,getAvatarUrl,getFollowStatus,followUser,unfollowUser,getFollowCounts} from "./services/profile";
+import {initializeAds,AdBanner} from "./services/ads";
 
 
 function PolicyGate({user,onAccepted}) {
@@ -171,6 +172,7 @@ async function openProfile(p){setSelectedProfile(p);const fc=await getFollowCoun
      <TextInput value={text} onChangeText={setText} placeholder={mode==="Pulza"?"Start something people can participate in…":"Say something to your people…"} placeholderTextColor="#77839a" multiline style={s.input}/>
      <Pressable disabled={mediaBusy} onPress={attachMedia} style={s.secondary}><Text style={s.secondaryText}>{selectedMedia?"Media selected ✓":"Attach photo / video"}</Text></Pressable>{selectedMedia?<Text style={s.meta}>{selectedMedia.fileName||selectedMedia.type||"Media selected"} · ready to upload</Text>:null}<Pressable onPress={publish} style={s.primary}><Text style={s.primaryText}>{saving?"Saving…":"Publish"}</Text></Pressable>
     </View>
+    <View style={s.adSlot}><Text style={s.adLabel}>ADVERTISEMENT</Text><AdBanner /></View>
     {feedError?<Text style={s.error}>{feedError}</Text>:null}
     {posts.filter(p=>!blocked.includes(p.authorId)).map((p,i)=><View style={[s.card,p.type==="pulza"&&s.pulza]} key={p.id||i}><View style={s.row}><Avatar url={p.avatarUrl} name={p.name}/><Text style={[s.name,{flex:1,marginLeft:10}]}>{p.name}</Text>{p.id&&!String(p.id).startsWith("local-")?<Pressable disabled={safetyBusy} onPress={()=>setSafetyPost(safetyPost===p.id?null:p.id)}><Text style={s.actionText}>•••</Text></Pressable>:null}</View>{safetyPost===p.id?<View style={s.actionRow}><Pressable onPress={()=>{setSafetyPost(null);submitReport(p);}} style={s.action}><Text style={s.actionText}>Report Pulza</Text></Pressable>{p.authorId!==user.id?<Pressable onPress={()=>{setSafetyPost(null);confirmBlock(p);}} style={s.action}><Text style={s.actionText}>Block user</Text></Pressable>:null}</View>:null}<Text style={s.body}>{p.text}</Text>{p.media?.map((m,j)=><MediaPreview key={m.id||j} media={m}/>)}
      {p.type==="pulza"&&<>{(p.options||[]).map(o=><Pressable key={o.id||o.option_text} onPress={()=>chooseVote(p,o)} style={[s.option,voted[p.id]===o.id&&s.optionOn]}><Text style={s.optionText}>{o.option_text}</Text><Text style={s.count}>{voted[p.id]===o.id?"✓":"Vote"}</Text></Pressable>)}</>}
@@ -191,6 +193,8 @@ function RootApp(){
  const [loading,setLoading]=useState(true);
  const [accepted,setAccepted]=useState(false);
  const [policyLoading,setPolicyLoading]=useState(false);
+
+ useEffect(()=>{ initializeAds().catch(()=>{}); },[]);
 
  useEffect(()=>{
    let mounted=true;
