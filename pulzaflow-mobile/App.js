@@ -102,7 +102,6 @@ async function openProfile(p){setSelectedProfile(p);const fc=await getFollowCoun
  async function loadFeed(){
   const {data,error}=await getFeed();
   if(error){setFeedError(error.message);return;}setFeedError("");if(data){const rows=await Promise.all(data.map(async p=>{const [likeCount,commentCount,userLike]=await Promise.all([getReactionCount(p.id),getCommentCount(p.id),getUserReaction(p.id,user.id)]);return {id:p.id,authorId:p.author_id,name:p.profiles?.display_name||p.profiles?.username||"User",avatarUrl:p.profiles?.avatar_url||null,text:p.body,type:p.kind,likes:likeCount.count||0,comments:commentCount.count||0,options:p.pulza_options||[],media:p.pulza_media||[],userLiked:userLike.data};}));setPosts(rows);setLiked(Object.fromEntries(rows.map(p=>[p.id,p.userLiked])));}}
- }
  useEffect(()=>{loadFeed();loadDiscover();},[]);
  useEffect(()=>{
   if(tab==="Alerts") getNotifications(user.id).then(({data})=>setNotifications(data||[]));
