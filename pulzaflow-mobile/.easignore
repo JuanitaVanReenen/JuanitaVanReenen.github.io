@@ -1,0 +1,7 @@
+# Keep generated/native and local build files out of EAS uploads
+node_modules/
+.expo/
+dist/
+android/
+ios/
+*.log
