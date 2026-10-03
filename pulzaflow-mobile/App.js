@@ -181,7 +181,83 @@ async function openProfile(p){setSelectedProfile(p);const fc=await getFollowCoun
    {tab==="Discover"&&<>{selectedProfile?<><Pressable onPress={()=>setSelectedProfile(null)} style={s.secondary}><Text style={s.secondaryText}>← Back to people</Text></Pressable><View style={s.profileHead}><Avatar url={selectedProfile.avatar_url} name={selectedProfile.display_name||selectedProfile.username} size={104}/><Text style={s.name}>{selectedProfile.display_name||selectedProfile.username}</Text><Text style={s.muted}>@{selectedProfile.username}</Text><View style={s.actionRow}><Text style={s.meta}>{selectedProfileCounts.followers} followers</Text><Text style={s.meta}>{selectedProfileCounts.following} following</Text></View>{selectedProfile.bio?<Text style={s.muted}>{selectedProfile.bio}</Text>:null}<Pressable onPress={()=>toggleFollow(selectedProfile.id)} style={s.primary}><Text style={s.primaryText}>{selectedProfile.following?"Following":"Follow"}</Text></Pressable></View></>:<><Text style={s.kicker}>DISCOVER PEOPLE</Text><Text style={s.hero}>Find your people.</Text><TextInput value={discoverQuery} onChangeText={setDiscoverQuery} onSubmitEditing={()=>loadDiscover(discoverQuery)} placeholder="Search by name or username…" placeholderTextColor="#77839a" style={s.input}/><Pressable onPress={()=>loadDiscover(discoverQuery)} style={s.secondary}><Text style={s.secondaryText}>Search people</Text></Pressable>{discoverProfiles.map(p=><Pressable style={s.card} key={p.id} onPress={()=>openProfile(p)}><View style={s.row}><Avatar url={p.avatar_url} name={p.display_name||p.username} size={54}/><View style={{flex:1,marginLeft:12}}><Text style={s.name}>{p.display_name||p.username}</Text><Text style={s.muted}>@{p.username}</Text>{p.bio?<Text style={s.muted}>{p.bio}</Text>:null}</View></View><View style={s.actionRow}><Pressable onPress={()=>toggleFollow(p.id)} style={s.secondary}><Text style={s.secondaryText}>{p.following?"Following":"Follow"}</Text></Pressable><Pressable onPress={()=>openProfile(p)} style={s.action}><Text style={s.actionText}>View profile</Text></Pressable></View></Pressable>)}</>}</>}
    {tab==="Create"&&<><Text style={s.kicker}>CREATE</Text><Text style={s.hero}>Make a post.{"\n"}Or make a Pulza.</Text><Text style={s.muted}>A normal post shares something. A Pulza gives people something to participate in.</Text></>}
    {tab==="Alerts"&&<><Text style={s.kicker}>NOTIFICATIONS</Text><View style={s.actionRow}><Text style={s.hero}>What’s happening?</Text>{notifications.some(n=>!n.read_at)&&<Pressable onPress={markAllNotificationsRead} style={s.action}><Text style={s.actionText}>Mark all read</Text></Pressable>}</View>{notifications.length?notifications.map(n=><Pressable key={n.id} onPress={()=>markNotificationRead(n.id,user.id)} style={s.card}><Text style={s.name}>{n.profiles?.display_name||n.profiles?.username||"Someone"}</Text><Text style={s.body}>{n.type||"Activity"} on your Pulza</Text><Text style={s.meta}>{n.read_at?"Read":"New"} · {new Date(n.created_at).toLocaleString()}</Text></Pressable>):<Text style={s.muted}>No notifications yet.</Text>}</>}
-   {tab==="Profile"&&<><Text style={s.kicker}>PROFILE</Text><View style={s.profileHead}>{avatarUrl?<Image source={{uri:avatarUrl}} style={s.avatar}/>:<View style={s.avatarEmpty}><Text style={s.avatarLetter}>{(profile?.display_name||user.user_metadata?.display_name||"P").charAt(0).toUpperCase()}</Text></View>}<Pressable disabled={profileBusy} onPress={changeAvatar} style={s.secondary}><Text style={s.secondaryText}>{profileBusy?"Saving…":"Change profile photo"}</Text></Pressable></View><View style={s.card}><Text style={s.name}>{profile?.display_name||user.user_metadata?.display_name||"Your PULZA FLOW profile"}</Text><Text style={s.muted}>@{profile?.username||user.user_metadata?.username||"user"}</Text><View style={s.actionRow}><Text style={s.meta}>{followCounts.followers} followers</Text><Text style={s.meta}>{followCounts.following} following</Text></View><Text style={s.muted}>{profile?.bio||"Add a short bio so people know you."}</Text><Text style={s.muted}>{user.email}</Text>{editingProfile?<><TextInput value={profileName} onChangeText={setProfileName} placeholder="Display name" placeholderTextColor="#77839a" style={s.input}/><TextInput value={profileUsername} onChangeText={setProfileUsername} autoCapitalize="none" placeholder="Username" placeholderTextColor="#77839a" style={s.input}/><TextInput value={profileBio} onChangeText={setProfileBio} placeholder="Bio" placeholderTextColor="#77839a" multiline style={s.input}/><Pressable disabled={profileBusy} onPress={saveProfile} style={s.primary}><Text style={s.primaryText}>{profileBusy?"Saving…":"Save profile"}</Text></Pressable><Pressable onPress={()=>setEditingProfile(false)} style={s.secondary}><Text style={s.secondaryText}>Cancel</Text></Pressable></>:<Pressable onPress={()=>setEditingProfile(true)} style={s.secondary}><Text style={s.secondaryText}>Edit profile</Text></Pressable>}</View><Text style={[s.name,{marginTop:18}]}>Blocked accounts</Text>{blocked.length?blocked.map(id=><View key={id} style={s.actionRow}><Text style={[s.muted,{flex:1}]}>{id.slice(0,8)}…</Text><Pressable onPress={()=>restoreUser(id)} style={s.action}><Text style={s.actionText}>Unblock</Text></Pressable></View>):<Text style={s.muted}>No blocked accounts.</Text>}<View style={{marginTop:18,marginBottom:8}}><Pressable onPress={()=>Linking.openURL(PUBLIC_PRIVACY)}><Text style={s.link}>Privacy Policy</Text></Pressable><Pressable onPress={()=>Linking.openURL(PUBLIC_SUPPORT)}><Text style={s.link}>Support</Text></Pressable><Pressable onPress={()=>Linking.openURL(PUBLIC_TERMS)}><Text style={s.link}>Terms of Use</Text></Pressable></View><Pressable onPress={signOut} style={s.secondary}><Text style={s.secondaryText}>Sign out</Text></Pressable><Pressable onPress={()=>Alert.alert("Delete account","This permanently deletes your PULZA FLOW account and associated data.",[{text:"Cancel",style:"cancel"},{text:"Delete account",style:"destructive",onPress:async()=>{const {error}=await requestAccountDeletion();if(error){Alert.alert("Deletion failed",error.message);return;}await signOut();Alert.alert("Account deleted","Your PULZA FLOW account has been deleted.");}}])} style={s.secondary}><Text style={[s.secondaryText,{color:"#ff9a9a"}]}>Delete account</Text></Pressable></View></>}
+    {tab==="Profile"&&<>
+      <Text style={s.kicker}>PROFILE</Text>
+      <View style={s.profileHead}>
+        {avatarUrl ? (
+          <Image source={{uri:avatarUrl}} style={s.avatar}/>
+        ) : (
+          <View style={s.avatarEmpty}>
+            <Text style={s.avatarLetter}>{(profile?.display_name||user.user_metadata?.display_name||"P").charAt(0).toUpperCase()}</Text>
+          </View>
+        )}
+        <Pressable disabled={profileBusy} onPress={changeAvatar} style={s.secondary}>
+          <Text style={s.secondaryText}>{profileBusy?"Saving…":"Change profile photo"}</Text>
+        </Pressable>
+      </View>
+      <View style={s.card}>
+        <Text style={s.name}>{profile?.display_name||user.user_metadata?.display_name||"Your PULZA FLOW profile"}</Text>
+        <Text style={s.muted}>@{profile?.username||user.user_metadata?.username||"user"}</Text>
+        <View style={s.actionRow}>
+          <Text style={s.meta}>{followCounts.followers} followers</Text>
+          <Text style={s.meta}>{followCounts.following} following</Text>
+        </View>
+        <Text style={s.muted}>{profile?.bio||"Add a short bio so people know you."}</Text>
+        <Text style={s.muted}>{user.email}</Text>
+        {editingProfile ? (
+          <>
+            <TextInput value={profileName} onChangeText={setProfileName} placeholder="Display name" placeholderTextColor="#77839a" style={s.input}/>
+            <TextInput value={profileUsername} onChangeText={setProfileUsername} autoCapitalize="none" placeholder="Username" placeholderTextColor="#77839a" style={s.input}/>
+            <TextInput value={profileBio} onChangeText={setProfileBio} placeholder="Bio" placeholderTextColor="#77839a" multiline style={s.input}/>
+            <Pressable disabled={profileBusy} onPress={saveProfile} style={s.primary}>
+              <Text style={s.primaryText}>{profileBusy?"Saving…":"Save profile"}</Text>
+            </Pressable>
+            <Pressable onPress={()=>setEditingProfile(false)} style={s.secondary}>
+              <Text style={s.secondaryText}>Cancel</Text>
+            </Pressable>
+          </>
+        ) : (
+          <Pressable onPress={()=>setEditingProfile(true)} style={s.secondary}>
+            <Text style={s.secondaryText}>Edit profile</Text>
+          </Pressable>
+        )}
+      </View>
+      <Text style={[s.name,{marginTop:18}]}>Blocked accounts</Text>
+      {blocked.length ? blocked.map(id=>(
+        <View key={id} style={s.actionRow}>
+          <Text style={[s.muted,{flex:1}]}>{id.slice(0,8)}…</Text>
+          <Pressable onPress={()=>restoreUser(id)} style={s.action}>
+            <Text style={s.actionText}>Unblock</Text>
+          </Pressable>
+        </View>
+      )) : <Text style={s.muted}>No blocked accounts.</Text>}
+      <View style={{marginTop:18,marginBottom:8}}>
+        <Pressable onPress={()=>Linking.openURL(PUBLIC_PRIVACY)}><Text style={s.link}>Privacy Policy</Text></Pressable>
+        <Pressable onPress={()=>Linking.openURL(PUBLIC_SUPPORT)}><Text style={s.link}>Support</Text></Pressable>
+        <Pressable onPress={()=>Linking.openURL(PUBLIC_TERMS)}><Text style={s.link}>Terms of Use</Text></Pressable>
+      </View>
+      <Pressable onPress={signOut} style={s.secondary}>
+        <Text style={s.secondaryText}>Sign out</Text>
+      </Pressable>
+      <Pressable
+        onPress={()=>Alert.alert(
+          "Delete account",
+          "This permanently deletes your PULZA FLOW account and associated data.",
+          [
+            {text:"Cancel",style:"cancel"},
+            {text:"Delete account",style:"destructive",onPress:async()=>{
+              const {error}=await requestAccountDeletion();
+              if(error){Alert.alert("Deletion failed",error.message);return;}
+              await signOut();
+              Alert.alert("Account deleted","Your PULZA FLOW account has been deleted.");
+            }}
+          ]
+        )}
+        style={s.secondary}
+      >
+        <Text style={[s.secondaryText,{color:"#ff9a9a"}]}>Delete account</Text>
+      </Pressable>
+    </>}
   </ScrollView>
   <View style={s.nav}>{["Home","Discover","Create","Alerts","Profile"].map(x=><Pressable key={x} onPress={()=>setTab(x)} style={[s.navItem,tab===x&&s.navOn]}><Text style={[s.navText,tab===x&&s.navTextOn]}>{x}</Text></Pressable>)}</View>
  </SafeAreaView>
