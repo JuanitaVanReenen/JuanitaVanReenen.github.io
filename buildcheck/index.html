@@ -1,14 +1,72 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>BuildCheck Reconcile | MVP Demo</title><meta name="buildcheck-demo-version" content="2026-09-21">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BuildCheck Reconcile | Data Migration Reconciliation Software MVP</title>
+<meta name="description" content="BuildCheck Reconcile is a working browser-based software MVP for source-to-destination data reconciliation and discrepancy detection during system and data migrations.">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://juanitavanreenen.github.io/buildcheck/">
+<meta property="og:title" content="BuildCheck Reconcile | Data Migration Reconciliation Software">
+<meta property="og:description" content="Working software MVP for source-to-destination reconciliation and discrepancy detection.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://juanitavanreenen.github.io/buildcheck/">
 <style>
-:root{--bg:#07111f;--panel:#0f1d31;--line:#263b59;--ink:#f7f9fc;--muted:#aebbd0;--accent:#8ec5ff}*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#07111f,#0b1728);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;line-height:1.6}.wrap{width:min(1050px,92%);margin:auto}nav{border-bottom:1px solid var(--line);padding:18px 0}.nav{display:flex;justify-content:space-between}.nav a{color:var(--accent);text-decoration:none;font-weight:800}.hero{padding:75px 0 45px}.eyebrow{color:var(--accent);text-transform:uppercase;letter-spacing:2px;font-size:12px;font-weight:800}.hero h1{font-size:clamp(42px,7vw,72px);line-height:1;margin:14px 0}.hero p{font-size:20px;color:var(--muted);max-width:820px}.pill{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:6px 10px;margin:5px 5px 0 0;color:#d9ecff;font-size:12px}.demo{margin:25px 0 65px;background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:18px}.demo video{width:100%;display:block;border-radius:14px;background:#000}.caption{color:var(--muted);padding:14px 5px 3px}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:30px 0}.card{background:var(--panel);border:1px solid var(--line);border-radius:17px;padding:20px}.num{color:var(--accent);font-size:11px;font-weight:900}.card h2{font-size:18px;margin:8px 0}.card p{margin:0;color:var(--muted);font-size:13px}.note{border:1px solid #36506f;border-radius:18px;padding:22px;background:#0d1b2e;color:var(--muted);margin:25px 0 70px}.note strong{color:#fff}footer{border-top:1px solid var(--line);padding:30px 0;color:#8293aa;font-size:12px}@media(max-width:800px){.grid{grid-template-columns:1fr 1fr}}@media(max-width:520px){.grid{grid-template-columns:1fr}}
-</style></head>
-<body><nav><div class="wrap nav"><a href="../">Juanita Van Reenen</a><a href="../">← Portfolio</a></div></nav>
-<header class="wrap hero"><div class="eyebrow">BuildCheck Reconcile · Standalone Software MVP</div><h1>Reconcile. Validate. Build with Confidence.</h1><p>BuildCheck provides an independent source-to-destination data-integrity check for construction and operational data migrations. It helps identify what is missing, extra, changed, duplicated or blank after data moves between systems.</p><div><span class="pill">Source → destination comparison</span><span class="pill">Exception detection</span><span class="pill">Reconciliation report</span></div></header>
-<section class="wrap demo"><video controls playsinline preload="metadata" src="demo.mp4"></video><div class="caption"><strong>BuildCheck product demonstration</strong> — a short walkthrough of the reconciliation logic and the exception results it produces.</div></section>
-<section class="wrap"><div class="grid"><div class="card"><div class="num">01 / INPUT</div><h2>Source & destination</h2><p>Bring the two datasets together for an independent comparison.</p></div><div class="card"><div class="num">02 / RECONCILE</div><h2>Match & normalize</h2><p>Match records by key and normalize comparable dates and numeric values.</p></div><div class="card"><div class="num">03 / DETECT</div><h2>Find exceptions</h2><p>Surface missing, extra, changed, duplicate and blank-key records.</p></div><div class="card"><div class="num">04 / REPORT</div><h2>Review the result</h2><p>Produce a structured exception/reconciliation view for operational review.</p></div></div>
-<div class="note"><strong>working software boundary:</strong> BuildCheck is an early-stage working browser working software. It demonstrates deterministic reconciliation and is not represented as a live production Trimble integration. The Trimble-connected workflow is a proposed integration path.</div></section>
-<footer><div class="wrap">© Juanita Van Reenen · BuildCheck Reconcile</div></footer></body></html>
+:root{--bg:#07111f;--panel:#0f1d31;--line:#263b59;--ink:#f7f9fc;--muted:#aebbd0;--accent:#8ec5ff}*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#07111f,#0b1728);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;line-height:1.6}.wrap{width:min(1050px,92%);margin:auto}nav{border-bottom:1px solid var(--line);padding:18px 0}.nav{display:flex;justify-content:space-between;gap:20px}.nav a{color:var(--accent);text-decoration:none;font-weight:800}.hero{padding:75px 0 45px}.eyebrow{color:var(--accent);text-transform:uppercase;letter-spacing:2px;font-size:12px;font-weight:800}.hero h1{font-size:clamp(42px,7vw,72px);line-height:1;margin:14px 0}.hero p{font-size:20px;color:var(--muted);max-width:820px}.actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px}.btn{display:inline-block;padding:12px 18px;border-radius:10px;text-decoration:none;font-weight:800;border:1px solid var(--line)}.primary{background:var(--accent);color:#07111f}.secondary{color:var(--ink);background:var(--panel)}.pill{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:6px 10px;margin:5px 5px 0 0;color:#d9ecff;font-size:12px}.demo{margin:25px 0 55px;background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:18px}.demo video{width:100%;display:block;border-radius:14px;background:#000}.caption{color:var(--muted);padding:14px 5px 3px}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:30px 0}.card{background:var(--panel);border:1px solid var(--line);border-radius:17px;padding:20px}.num{color:var(--accent);font-size:11px;font-weight:900}.card h2{font-size:18px;margin:8px 0}.card p{margin:0;color:var(--muted);font-size:13px}.section{margin:55px 0}.section h2{font-size:30px}.section p,.section li{color:var(--muted)}.faq{border-top:1px solid var(--line)}details{padding:18px 0;border-bottom:1px solid var(--line)}summary{cursor:pointer;font-weight:800}.note{border:1px solid #36506f;border-radius:18px;padding:22px;background:#0d1b2e;color:var(--muted);margin:25px 0 70px}.note strong{color:#fff}footer{border-top:1px solid var(--line);padding:30px 0;color:#8293aa;font-size:12px}@media(max-width:800px){.grid{grid-template-columns:1fr 1fr}}@media(max-width:520px){.grid{grid-template-columns:1fr}.nav{flex-direction:column}}
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"SoftwareApplication","name":"BuildCheck Reconcile","applicationCategory":"BusinessApplication","operatingSystem":"Web","description":"Working browser-based software MVP for source-to-destination data reconciliation and discrepancy detection during system and data migrations.","offers":{"@type":"Offer","price":"5000","priceCurrency":"USD","url":"https://vanreenen25.gumroad.com/l/kpzdk"},"author":{"@type":"Person","name":"Juanita Van Reenen"}}
+</script>
+</head>
+<body>
+<nav><div class="wrap nav"><a href="../">Juanita Van Reenen</a><a href="../">← Portfolio</a></div></nav>
+
+<header class="wrap hero">
+<div class="eyebrow">BuildCheck Reconcile · Standalone Software MVP</div>
+<h1>Reconcile. Validate. Build with Confidence.</h1>
+<p>BuildCheck Reconcile is a working browser-based software MVP for comparing source and destination datasets during migrations and transfers. It is designed to help identify missing, extra, changed, duplicated or blank-key records that require investigation.</p>
+<div><span class="pill">Source → destination comparison</span><span class="pill">Exception detection</span><span class="pill">Reconciliation report</span><span class="pill">Migration validation</span></div>
+<div class="actions">
+<a class="btn primary" href="https://vanreenen25.gumroad.com/l/kpzdk" rel="noopener">View acquisition listing — US$5,000</a>
+<a class="btn secondary" href="#demo">Watch the demonstration</a>
+</div>
+</header>
+
+<section id="demo" class="wrap demo">
+<video controls playsinline preload="metadata" src="demo.mp4"></video>
+<div class="caption"><strong>BuildCheck product demonstration</strong> — a walkthrough of the reconciliation workflow and exception results. Demonstration data is controlled synthetic data.</div>
+</section>
+
+<section class="wrap">
+<div class="grid">
+<div class="card"><div class="num">01 / INPUT</div><h2>Source & destination</h2><p>Bring the two datasets together for an independent comparison.</p></div>
+<div class="card"><div class="num">02 / RECONCILE</div><h2>Match & normalize</h2><p>Match records by key and normalize comparable values where supported.</p></div>
+<div class="card"><div class="num">03 / DETECT</div><h2>Find exceptions</h2><p>Surface missing, extra, changed, duplicate and blank-key records.</p></div>
+<div class="card"><div class="num">04 / REPORT</div><h2>Review the result</h2><p>Produce a structured reconciliation view for operational investigation.</p></div>
+</div>
+
+<div class="section">
+<h2>Where can reconciliation software be useful?</h2>
+<p>Data reconciliation can be useful when an organization moves information between systems or datasets and needs an independent way to investigate whether records changed during the transfer.</p>
+<ul>
+<li>ERP and business-system migrations</li>
+<li>System-to-system data transfers</li>
+<li>Construction and operational software migrations</li>
+<li>Migration validation and data-quality checks</li>
+<li>Pre-production or post-migration reconciliation workflows</li>
+</ul>
+</div>
+
+<div class="section faq">
+<h2>Frequently asked questions</h2>
+<details><summary>Is BuildCheck a production integration?</summary><p>No. It is a working browser-based software MVP. It is not represented as a live production integration with a third-party platform.</p></details>
+<details><summary>What does the demonstration use?</summary><p>The demonstration uses controlled synthetic data. It is not customer data and does not represent customer results.</p></details>
+<details><summary>What is included in the acquisition?</summary><p>The acquisition package includes the working MVP and the associated technical, demonstration, validation and handover materials described in the sales listing, subject to final transaction terms.</p></details>
+<details><summary>Can the software be extended?</summary><p>Yes. A buyer could evaluate integration, security, deployment and production qualification as part of subsequent development.</p></details>
+</div>
+
+<div class="note"><strong>Working-software boundary:</strong> BuildCheck demonstrates deterministic reconciliation in a browser. It does not certify production readiness, regulatory compliance, patentability, novelty, freedom to operate or commercial performance. Buyer-specific integration and production qualification remain separate steps.</div>
+</section>
+
+<footer><div class="wrap">© Juanita Van Reenen · BuildCheck Reconcile</div></footer>
+</body></html>
