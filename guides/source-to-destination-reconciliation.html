@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Source-to-Destination Data Reconciliation</title>
+<meta name="description" content="Learn how source-to-destination reconciliation compares datasets and identifies discrepancies after a data migration or system transfer.">
+<link rel="canonical" href="https://juanitavanreenen.github.io/guides/source-to-destination-reconciliation.html">
+<meta property="og:title" content="Source-to-Destination Data Reconciliation">
+<meta property="og:description" content="How to compare source and destination datasets after migration or transfer.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://juanitavanreenen.github.io/guides/source-to-destination-reconciliation.html">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Article","headline":"Source-to-Destination Data Reconciliation","description":"How to compare source and destination datasets after migration or transfer.","author":{"@type":"Person","name":"Juanita Van Reenen"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://juanitavanreenen.github.io/guides/source-to-destination-reconciliation.html"}}
+</script>
+<style>body{font-family:Arial,sans-serif;max-width:850px;margin:auto;padding:32px;line-height:1.65;color:#17202a}a{color:#1457d9}.box{padding:20px;border:1px solid #ddd;border-radius:12px;margin:24px 0}li{margin:8px 0}</style>
+</head>
+<body>
+<p><a href="../">← Portfolio</a></p>
+<h1>Source-to-Destination Data Reconciliation</h1>
+<p>Source-to-destination reconciliation is the process of comparing data before and after it moves between systems. The objective is to identify discrepancies that need investigation.</p>
+<h2>A practical reconciliation sequence</h2>
+<ol>
+<li>Define the source dataset and destination dataset.</li>
+<li>Choose the key used to match records.</li>
+<li>Normalize equivalent representations where appropriate, such as date formats.</li>
+<li>Identify missing and unexpected records.</li>
+<li>Check for duplicate or unusable keys.</li>
+<li>Compare relevant fields and report changed values.</li>
+<li>Preserve an auditable reconciliation result for review.</li>
+</ol>
+<h2>Where this can help</h2>
+<p>The approach can be useful during ERP migrations, operational-system transfers, integrations, database migrations and other situations where data moves from one dataset or system to another.</p>
+<div class="box">
+<h2>BuildCheck Reconcile</h2>
+<p>BuildCheck Reconcile is a working browser-based software MVP built around this source-to-destination reconciliation workflow. The public demonstration uses controlled synthetic data rather than customer data.</p>
+<p><a href="../buildcheck/">Explore BuildCheck Reconcile →</a></p>
+</div>
+<p><small>The public MVP is not represented as a live production integration with a third-party platform. Buyer-specific integration, security review and production qualification would be subsequent work.</small></p>
+</body>
+</html>
