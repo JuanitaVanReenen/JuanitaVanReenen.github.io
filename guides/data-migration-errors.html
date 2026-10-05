@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Common Data Migration Errors and How to Detect Them</title>
+<meta name="description" content="A practical guide to common data migration errors including missing, extra, changed and duplicate records, and how reconciliation can detect them.">
+<link rel="canonical" href="https://juanitavanreenen.github.io/guides/data-migration-errors.html">
+<meta property="og:title" content="Common Data Migration Errors and How to Detect Them">
+<meta property="og:description" content="Common source-to-destination data migration errors and practical reconciliation checks.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://juanitavanreenen.github.io/guides/data-migration-errors.html">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Article","headline":"Common Data Migration Errors and How to Detect Them","description":"A practical guide to common data migration errors and reconciliation checks.","author":{"@type":"Person","name":"Juanita Van Reenen"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://juanitavanreenen.github.io/guides/data-migration-errors.html"}}
+</script>
+<style>
+body{font-family:Arial,sans-serif;max-width:850px;margin:auto;padding:32px;line-height:1.65;color:#17202a}a{color:#1457d9}.box{padding:20px;border:1px solid #ddd;border-radius:12px;margin:24px 0}li{margin:8px 0}
+</style>
+</head>
+<body>
+<p><a href="../">← Portfolio</a></p>
+<h1>Common Data Migration Errors and How to Detect Them</h1>
+<p>Moving data between systems can look successful while individual records still contain discrepancies. Reconciliation provides a structured way to compare what was expected with what arrived.</p>
+<h2>Common errors</h2>
+<ul>
+<li><strong>Missing records:</strong> a source record has no corresponding destination record.</li>
+<li><strong>Unexpected records:</strong> the destination contains a record that was not present in the source set.</li>
+<li><strong>Changed values:</strong> a field differs between source and destination.</li>
+<li><strong>Duplicate keys:</strong> the destination contains more than one record for a key expected to be unique.</li>
+<li><strong>Blank or unusable keys:</strong> records cannot be reliably matched because their identifying key is empty or invalid.</li>
+<li><strong>Representation differences:</strong> dates or numbers may use different formats even when their underlying values are equivalent.</li>
+</ul>
+<h2>Why simple row counts are not enough</h2>
+<p>A source and destination can contain the same number of rows and still differ. A reliable reconciliation process therefore needs to check record identity and relevant values, not only totals.</p>
+<div class="box">
+<h2>BuildCheck Reconcile</h2>
+<p>BuildCheck Reconcile is a working browser-based software MVP for source-to-destination reconciliation and discrepancy detection. Its demonstration uses controlled synthetic data.</p>
+<p><a href="../buildcheck/">View the BuildCheck Reconcile software page →</a></p>
+</div>
+<p><small>This guide is educational. BuildCheck is not represented as a live production integration or as a certification, compliance, accounting or legal determination tool.</small></p>
+</body>
+</html>
