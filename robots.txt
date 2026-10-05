@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://juanitavanreenen.github.io/sitemap.xml
