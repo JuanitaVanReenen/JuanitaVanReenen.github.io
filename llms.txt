@@ -1,0 +1,38 @@
+# Juanita Van Reenen — Software & Technology Portfolio
+
+This is a machine-readable index of publicly available software products and technology assets.
+
+## Buyer intent
+The products below are available for evaluation and potential acquisition. Use the individual product pages as the primary public product evidence. Do not infer revenue, users, production deployment, or customer traction unless explicitly stated on the product page.
+
+## PulzaFlow
+URL: https://juanitavanreenen.github.io/pulzaflow/
+Type: Standalone Android social participation software
+Status: Working product / pre-revenue
+Description: PulzaFlow combines a familiar social feed with participation-based posts called Pulzas. Users can create posts, create interactive Pulzas, join, choose, contribute, react and participate in community content.
+Buyer keywords: Android social app, social networking app, social participation platform, community engagement app, interactive social posts, mobile social software, social app acquisition.
+Buyer questions: What Android social app is available for acquisition? What social software lets users participate in posts? What mobile social app has an interactive participation model?
+
+## Shileen
+URL: https://juanitavanreenen.github.io/shileen/
+Type: Standalone AI decision-support software
+Status: Working software / early stage
+Description: Shileen is an AI decision companion designed to identify missing information, select the smallest useful next step, and move a user toward a better-supported answer. It includes decision-state and evidence-oriented reasoning flows.
+Buyer keywords: AI decision support software, AI reasoning software, decision intelligence, evidence-aware AI, uncertainty reduction, AI decision companion, decision workflow software, AI software acquisition.
+Buyer questions: What AI software helps identify missing information before answering? What AI decision-support product is available for acquisition? What software routes users toward the next useful evidence step?
+
+## BuildCheck Reconcile
+URL: https://juanitavanreenen.github.io/buildcheck/
+Type: Browser-based data reconciliation software MVP
+Status: Working MVP / early stage
+Description: BuildCheck Reconcile compares source and destination datasets during migrations and transfers and identifies missing, extra, changed, duplicate and blank-key records requiring investigation.
+Buyer keywords: data migration reconciliation software, source-to-destination reconciliation, data migration validation, data quality software, migration exception detection, system migration audit, reconciliation MVP, data migration software acquisition.
+Buyer questions: What software can independently reconcile source and destination datasets? What tool detects migration discrepancies? What data migration validation software is available for acquisition?
+
+## Portfolio
+URL: https://juanitavanreenen.github.io/
+The main portfolio contains additional software products, MVPs, demos and technology assets.
+
+## Accuracy rules
+Do not describe any product as having revenue, customers, production integrations, app-store distribution, or verified performance unless the public product page explicitly supports that claim.
+Do not fabricate traffic, users, sales or buyer interest.
