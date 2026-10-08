@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MoneyMismatch — Find the money that doesn't match.</title>
+<meta name="description" content="MoneyMismatch compares financial records, finds payment discrepancies, duplicates and missing transactions, and shows what needs attention.">
+<style>
+:root{--bg:#07111f;--panel:#0d1a2b;--panel2:#11233a;--line:#243b58;--text:#f5f8fc;--muted:#9fb0c5;--accent:#8ec5ff;--good:#9ee2b8;--warn:#ffd58a;--bad:#ff9b9b;--max:1180px}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#06101d,#091827 55%,#06101d);color:var(--text);font:14px/1.55 Inter,system-ui,-apple-system,Segoe UI,sans-serif}
+a{color:inherit;text-decoration:none}.wrap{width:min(var(--max),92%);margin:auto}
+header{border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(6,16,29,.9);backdrop-filter:blur(16px);z-index:10}.nav{min-height:68px;display:flex;align-items:center;justify-content:space-between}.brand{font-weight:900;font-size:19px}.brand span{color:var(--accent)}.navright{display:flex;gap:9px;align-items:center}.pill{border:1px solid var(--line);border-radius:999px;padding:7px 11px;color:var(--muted);font-size:12px}
+.hero{padding:52px 0 34px}.eyebrow{color:var(--accent);font-size:11px;font-weight:900;letter-spacing:2px;text-transform:uppercase}.hero h1{font-size:clamp(38px,6vw,68px);line-height:1;letter-spacing:-2.4px;max-width:780px;margin:12px 0 17px}.hero h1 em{font-style:normal;color:var(--accent)}.hero p{max-width:760px;color:var(--muted);font-size:17px;margin:0}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:22px}.btn{border:1px solid var(--line);background:#102238;color:var(--text);border-radius:10px;padding:10px 15px;font-weight:800;cursor:pointer}.btn.primary{background:var(--accent);color:#06101d;border-color:var(--accent)}.btn.ghost{background:transparent}.btn.small{padding:7px 10px;font-size:12px}
+.app{display:grid;grid-template-columns:220px 1fr;gap:15px;margin:24px 0 60px}.side{border:1px solid var(--line);background:rgba(13,26,43,.8);border-radius:16px;padding:13px;height:max-content;position:sticky;top:83px}.side button{display:block;width:100%;text-align:left;background:none;border:0;color:var(--muted);padding:11px;border-radius:9px;cursor:pointer;font:inherit}.side button.active,.side button:hover{background:#142942;color:#fff}.side .trial{margin-top:14px;padding:12px;border:1px solid var(--line);border-radius:11px;color:var(--muted);font-size:11px}.side strong{color:#fff}.content{min-width:0}.view{display:none}.view.active{display:block}.topline{display:flex;justify-content:space-between;align-items:end;gap:15px;margin-bottom:15px}.topline h2{font-size:27px;margin:0 0 3px}.muted{color:var(--muted)}.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.stat{border:1px solid var(--line);background:rgba(13,26,43,.85);border-radius:13px;padding:16px}.stat b{display:block;font-size:25px}.stat span{color:var(--muted);font-size:11px}.stat.good b{color:var(--good)}.stat.warn b{color:var(--warn)}.stat.bad b{color:var(--bad)}
+.panel{border:1px solid var(--line);background:rgba(13,26,43,.86);border-radius:15px;padding:17px;margin-top:12px}.panel h3{margin:0 0 8px}.split{display:grid;grid-template-columns:1fr 1fr;gap:12px}.drop{border:1px dashed #41617f;border-radius:12px;padding:20px;text-align:center;background:#0a1727}.drop input{display:none}.drop label{display:inline-block}.filemeta{font-size:12px;color:var(--muted);margin-top:9px}.mapping{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.mapping label{font-size:11px;color:var(--muted);display:flex;flex-direction:column;gap:5px}.mapping select,.field input{background:#081522;border:1px solid var(--line);color:#fff;border-radius:8px;padding:9px}.tablewrap{overflow:auto;border:1px solid var(--line);border-radius:10px}.table{width:100%;border-collapse:collapse;min-width:650px}.table th,.table td{padding:9px 10px;border-bottom:1px solid #1b3048;text-align:left;font-size:12px}.table th{color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:1px}.badge{display:inline-block;border-radius:999px;padding:4px 7px;font-size:10px;font-weight:900}.badge.bad{background:#3c2027;color:#ffb0b0}.badge.warn{background:#3b301d;color:#ffd98f}.badge.good{background:#183428;color:#a9ebc2}.amount{font-weight:850}.empty{padding:35px;text-align:center;color:var(--muted)}
+.pricing{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.price{border:1px solid var(--line);background:#0d1a2b;border-radius:15px;padding:20px}.price.featured{border-color:#557da7}.price h3{margin:0}.price .num{font-size:30px;font-weight:900;margin:8px 0}.price ul{padding-left:17px;color:var(--muted);min-height:100px}.price li{margin:5px 0}
+.notice{border:1px solid #5b4d2d;background:#241f14;color:#dfc98f;padding:12px;border-radius:10px;font-size:12px;margin-top:12px}.success{border-color:#315e48;background:#12251d;color:#a9e4bf}
+footer{border-top:1px solid var(--line);padding:30px 0;color:var(--muted);font-size:12px}
+@media(max-width:850px){.app{grid-template-columns:1fr}.side{position:static;display:flex;gap:5px;overflow:auto}.side button{min-width:max-content}.side .trial{display:none}.grid4{grid-template-columns:repeat(2,1fr)}.split,.pricing{grid-template-columns:1fr}}
+@media(max-width:520px){.grid4{grid-template-columns:1fr}.mapping{grid-template-columns:1fr}.hero{padding-top:35px}}
+</style>
+</head>
+<body>
+<header><div class="wrap nav"><a class="brand" href="../">Money<span>Mismatch</span></a><div class="navright"><span class="pill" id="workspacePill">Demo workspace</span><button class="btn small" onclick="showView('billing')">Start trial</button></div></div></header>
+
+<main class="wrap">
+<section class="hero">
+<div class="eyebrow">Financial exception intelligence</div>
+<h1>Find the money that <em>doesn't match.</em></h1>
+<p>MoneyMismatch compares financial records and turns mismatches into clear, actionable exceptions — so a business can see what happened, how much is affected, and what to fix.</p>
+<div class="actions"><button class="btn primary" onclick="loadDemo()">Load working demo</button><button class="btn ghost" onclick="showView('compare')">Upload your CSV</button></div>
+</section>
+
+<section class="app">
+<aside class="side">
+<button id="nav-dashboard" class="active" onclick="showView('dashboard')">Dashboard</button>
+<button id="nav-compare" onclick="showView('compare')">Compare records</button>
+<button id="nav-exceptions" onclick="showView('exceptions')">Exceptions <span id="exceptionCount"></span></button>
+<button id="nav-billing" onclick="showView('billing')">Plans & trial</button>
+<div class="trial"><strong>5-day trial</strong><br>Full access during trial. Payment is required after the trial to continue.</div>
+</aside>
+
+<div class="content">
+<section id="dashboard" class="view active">
+<div class="topline"><div><h2>Money overview</h2><div class="muted">See where the records agree — and where the money doesn't.</div></div><button class="btn small" onclick="loadDemo()">Use demo data</button></div>
+<div class="grid4">
+<div class="stat"><b id="checked">0</b><span>Payments checked</span></div><div class="stat good"><b id="matched">0</b><span>Matched</span></div><div class="stat warn"><b id="attention">0</b><span>Needs attention</span></div><div class="stat bad"><b id="affected">N$0</b><span>Amount affected</span></div>
+</div>
+<div class="panel"><h3>What MoneyMismatch checks</h3><div class="split"><div><b>Payment discrepancies</b><div class="muted">Invoice/order amount versus actual payment or settlement.</div></div><div><b>Duplicates</b><div class="muted">Repeated transaction references or suspicious duplicate payments.</div></div><div><b>Missing transactions</b><div class="muted">A source record exists without a corresponding payment.</div></div><div><b>Unclear records</b><div class="muted">Rows that cannot be reliably matched and need review.</div></div></div></div>
+<div class="panel"><h3>Recent exceptions</h3><div id="recentExceptions" class="empty">Load the demo or upload records to begin.</div></div>
+</section>
+
+<section id="compare" class="view">
+<div class="topline"><div><h2>Compare records</h2><div class="muted">Start with a CSV export. No accounting-system integration is required for the MVP.</div></div></div>
+<div class="split">
+<div class="drop"><h3>Invoices / orders</h3><p class="muted">CSV columns: id, customer, amount</p><label class="btn small"><input type="file" accept=".csv,text/csv" onchange="handleFile(event,'source')">Choose CSV</label><div id="sourceMeta" class="filemeta">No file selected</div></div>
+<div class="drop"><h3>Payments / settlements</h3><p class="muted">CSV columns: id, invoice_id, paid_amount</p><label class="btn small"><input type="file" accept=".csv,text/csv" onchange="handleFile(event,'payments')">Choose CSV</label><div id="paymentsMeta" class="filemeta">No file selected</div></div>
+</div>
+<div class="panel"><h3>Field mapping</h3><div class="mapping"><label>Source ID<select id="mapSource"></select></label><label>Source amount<select id="mapAmount"></select></label><label>Payment reference<select id="mapPaymentRef"></select></label></div><div class="actions"><button class="btn primary" onclick="runComparison()">Compare records</button><button class="btn ghost" onclick="loadDemo()">Use sample records</button></div></div>
+<div class="panel"><h3>How the comparison works</h3><div class="muted">MoneyMismatch first matches payment references to source records, then checks amount equality, duplicates and missing payments. It does not alter the original records.</div></div>
+</section>
+
+<section id="exceptions" class="view">
+<div class="topline"><div><h2>Exceptions</h2><div class="muted">Every exception includes evidence, affected amount and a recommended action.</div></div></div>
+<div class="panel"><div id="exceptionTable" class="empty">No exceptions yet.</div></div>
+</section>
+
+<section id="billing" class="view">
+<div class="topline"><div><h2>Plans & 5-day trial</h2><div class="muted">Simple pricing designed for a focused B2B SaaS.</div></div></div>
+<div class="pricing">
+<div class="price"><h3>Starter</h3><div class="num">$79<span class="muted">/mo</span></div><ul><li>1 workspace</li><li>CSV comparison</li><li>Exception dashboard</li></ul><button class="btn primary" onclick="startTrial('Starter')">Start 5-day trial</button></div>
+<div class="price featured"><h3>Business</h3><div class="num">$149<span class="muted">/mo</span></div><ul><li>Multiple users</li><li>Higher data limits</li><li>Exportable exception reports</li></ul><button class="btn primary" onclick="startTrial('Business')">Start 5-day trial</button></div>
+<div class="price"><h3>Professional</h3><div class="num">$299<span class="muted">/mo</span></div><ul><li>Advanced controls</li><li>Priority support</li><li>Enterprise-ready workflows</li></ul><button class="btn primary" onclick="startTrial('Professional')">Start 5-day trial</button></div>
+</div>
+<div id="trialNotice" class="notice">This prototype demonstrates the product workflow. Live account authentication, secure server-side data storage and recurring billing still need to be connected before accepting real customer data or payments.</div>
+</section>
+</div>
+</section>
+</main>
+<footer><div class="wrap">MoneyMismatch — Find the money that doesn't match. Prototype build. No customer or revenue claims.</div></footer>
+
+<script>
+let sourceRows=[], paymentRows=[], exceptions=[];
+const demoSource=[
+{id:'INV-1001',customer:'Northstar Ltd',amount:12500},{id:'INV-1002',customer:'BluePeak',amount:8400},{id:'INV-1003',customer:'Kalahari Services',amount:15600},{id:'INV-1004',customer:'Harbor Works',amount:9200},{id:'INV-1005',customer:'Delta Retail',amount:4700},{id:'INV-1006',customer:'Sunline',amount:6100}
+];
+const demoPayments=[
+{id:'P-1',invoice_id:'INV-1001',paid_amount:12500},{id:'P-2',invoice_id:'INV-1002',paid_amount:8000},{id:'P-3',invoice_id:'INV-1003',paid_amount:15600},{id:'P-4',invoice_id:'INV-1003',paid_amount:15600},{id:'P-5',invoice_id:'INV-1005',paid_amount:4700},{id:'P-6',invoice_id:'INV-9999',paid_amount:3000}
+];
+function showView(id){document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.side button').forEach(x=>x.classList.remove('active'));document.getElementById('nav-'+id)?.classList.add('active');scrollTo({top:0,behavior:'smooth'})}
+function money(n){return 'N$'+Number(n||0).toLocaleString(undefined,{maximumFractionDigits:2})}
+function parseCSV(text){const lines=text.trim().split(/\r?\n/);if(!lines.length)return[];const headers=lines[0].split(',').map(x=>x.trim().replace(/^"|"$/g,''));return lines.slice(1).filter(Boolean).map(line=>{const vals=line.split(',').map(x=>x.trim().replace(/^"|"$/g,''));const o={};headers.forEach((h,i)=>o[h]=vals[i]??'');return o})}
+function handleFile(e,type){const file=e.target.files[0];if(!file)return;const r=new FileReader();r.onload=()=>{const rows=parseCSV(r.result);if(type==='source'){sourceRows=rows;document.getElementById('sourceMeta').textContent=rows.length+' rows loaded';fillMapping(rows)}else{paymentRows=rows;document.getElementById('paymentsMeta').textContent=rows.length+' rows loaded'} };r.readAsText(file)}
+function fillMapping(rows){const keys=Object.keys(rows[0]||{});['mapSource','mapAmount','mapPaymentRef'].forEach((id)=>{const s=document.getElementById(id);s.innerHTML=keys.map(k=>'<option>'+k+'</option>').join('')});}
+function loadDemo(){sourceRows=demoSource.map(x=>({...x}));paymentRows=demoPayments.map(x=>({...x}));document.getElementById('sourceMeta').textContent=sourceRows.length+' sample rows loaded';document.getElementById('paymentsMeta').textContent=paymentRows.length+' sample rows loaded';fillMapping(sourceRows);runComparison();showView('dashboard')}
+function runComparison(){if(!sourceRows.length||!paymentRows.length){alert('Please load both source and payment CSV files, or use the sample records.');return}
+const srcId=document.getElementById('mapSource').value||'id', amountKey=document.getElementById('mapAmount').value||'amount', payRef=document.getElementById('mapPaymentRef').value||'invoice_id';
+const src=new Map(sourceRows.map(r=>[String(r[srcId]),r]));const seen={};exceptions=[];
+paymentRows.forEach(p=>{const ref=String(p[payRef]||'').trim();const paid=Number(String(p.paid_amount??p.amount??0).replace(/[^0-9.-]/g,''));if(seen[ref]){exceptions.push({type:'Duplicate payment',id:ref,amount:paid,evidence:'Payment reference '+ref+' appears more than once.',action:'Review the duplicate payment and confirm which transaction is valid.'})}seen[ref]=(seen[ref]||0)+1;if(!src.has(ref)){exceptions.push({type:'Missing source transaction',id:ref,amount:paid,evidence:'Payment exists but no matching source record was found.',action:'Locate the source invoice/order or investigate an unlinked payment.'});return}const expected=Number(String(src.get(ref)[amountKey]||0).replace(/[^0-9.-]/g,''));if(Math.abs(expected-paid)>0.01)exceptions.push({type:'Payment discrepancy',id:ref,amount:Math.abs(expected-paid),evidence:'Expected '+money(expected)+'; actual payment '+money(paid)+'.',action:'Review the payment, fees, short-pay reason or source record.'})});
+sourceRows.forEach(s=>{const id=String(s[srcId]);const count=paymentRows.filter(p=>String(p[payRef]||'')===id).length;if(!count){const a=Number(String(s[amountKey]||0).replace(/[^0-9.-]/g,''));exceptions.push({type:'Missing payment',id,amount:a,evidence:'Source record exists but no payment reference was matched.',action:'Confirm whether payment is outstanding, misallocated or missing.'})}});
+updateDashboard();renderExceptions()}
+function updateDashboard(){const total=paymentRows.length, affected=exceptions.reduce((a,x)=>a+Number(x.amount||0),0);document.getElementById('checked').textContent=total;document.getElementById('attention').textContent=exceptions.length;document.getElementById('matched').textContent=Math.max(0,total-exceptions.filter(x=>x.type!=='Missing payment').length);document.getElementById('affected').textContent=money(affected);document.getElementById('exceptionCount').textContent=exceptions.length?'('+exceptions.length+')':'';document.getElementById('recentExceptions').innerHTML=exceptions.length?exceptions.slice(0,5).map(x=>'<div style="padding:9px 0;border-bottom:1px solid #1b3048"><span class="badge '+(x.type==='Payment discrepancy'||x.type==='Duplicate payment'?'bad':'warn')+'">'+x.type+'</span> <b>'+x.id+'</b> <span class="muted">— '+money(x.amount)+'</span></div>').join(''):'<div class="empty">No exceptions found.</div>'}
+function renderExceptions(){const el=document.getElementById('exceptionTable');if(!exceptions.length){el.innerHTML='<div class="empty">No exceptions yet.</div>';return}el.innerHTML='<table class="table"><thead><tr><th>Exception</th><th>Reference</th><th>Amount affected</th><th>Evidence</th><th>Recommended action</th></tr></thead><tbody>'+exceptions.map(x=>'<tr><td><span class="badge '+(x.type==='Payment discrepancy'||x.type==='Duplicate payment'?'bad':'warn')+'">'+x.type+'</span></td><td>'+x.id+'</td><td class="amount">'+money(x.amount)+'</td><td>'+x.evidence+'</td><td>'+x.action+'</td></tr>').join('')+'</tbody></table>'}
+function startTrial(plan){document.getElementById('trialNotice').className='notice success';document.getElementById('trialNotice').textContent='Trial selected: '+plan+'. In the production SaaS this step will create the customer account, start the 5-day trial and collect billing details for continuation after the trial.';showView('dashboard')}
+</script>
+</body></html>
