@@ -107,7 +107,7 @@ footer{border-top:1px solid var(--line);padding:30px 0;color:var(--muted);font-s
 <div class="price featured"><h3>Business</h3><div class="num">$149<span class="muted">/mo</span></div><ul><li>Multiple users</li><li>Higher data limits</li><li>Exportable exception reports</li></ul><button class="btn primary" onclick="startTrial('Business')">Start 5-day trial</button></div>
 <div class="price"><h3>Professional</h3><div class="num">$299<span class="muted">/mo</span></div><ul><li>Advanced controls</li><li>Priority support</li><li>Enterprise-ready workflows</li></ul><button class="btn primary" onclick="startTrial('Professional')">Start 5-day trial</button></div>
 </div>
-<div id="trialNotice" class="notice">This prototype demonstrates the product workflow. Live account authentication, secure server-side data storage and recurring billing still need to be connected before accepting real customer data or payments.</div>
+<div id="trialNotice" class="notice">5-day free trials are configured for all plans. Checkout and recurring billing are currently running in Paddle test mode; live billing will be enabled after the production Paddle account is connected.</div>
 </section>
 </div>
 </section>
@@ -346,9 +346,9 @@ async function saveComparison(){
 
 const PADDLE_TOKEN = "test_de50d010546285a29753e0114a7";
 const PADDLE_PRICES = {
-  Starter: "pri_01m4ed1syzkp4yghte7dt479mb",
-  Business: "pri_01m4ed97x4fpm4tfv32vqra07a",
-  Professional: "pri_01m4eddtgf97n87yk097bvz79p"
+  Starter: "pri_01m4egc70canhfm9grn4mzckzp",
+  Business: "pri_01m4egm4qhfn5d5th5j68bd23m",
+  Professional: "pri_01m4egrg2vdcs13vqcx6xqecb5"
 };
 
 Paddle.Environment.set("sandbox");
