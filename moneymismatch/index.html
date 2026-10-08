@@ -23,7 +23,7 @@ footer{border-top:1px solid var(--line);padding:30px 0;color:var(--muted);font-s
 <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
 </head>
 <body>
-<header><div class="wrap nav"><a class="brand" href="../">Money<span>Mismatch</span></a><div class="navright"><span class="pill" id="workspacePill">Demo workspace</span><button class="btn small" onclick="showView('billing')">Start trial</button></div></div></header>
+<header><div class="wrap nav"><a class="brand" href="../">Money<span>Mismatch</span></a><div class="navright"><span class="pill" id="workspacePill">Demo workspace</span><button class="btn small" onclick="showView('billing')">View plans</button></div></div></header>
 
 <main class="wrap">
 <section class="hero">
@@ -71,8 +71,8 @@ footer{border-top:1px solid var(--line);padding:30px 0;color:var(--muted);font-s
 <button id="nav-dashboard" class="active" onclick="showView('dashboard')">Dashboard</button>
 <button id="nav-compare" onclick="showView('compare')">Compare records</button>
 <button id="nav-exceptions" onclick="showView('exceptions')">Exceptions <span id="exceptionCount"></span></button>
-<button id="nav-billing" onclick="showView('billing')">Plans & trial</button>
-<div class="trial"><strong>5-day trial</strong><br>Full access during trial. Payment is required after the trial to continue.</div>
+<button id="nav-billing" onclick="showView('billing')">Plans & billing</button>
+<div class="trial"><strong>Monthly subscription</strong><br>Choose a plan and subscribe securely through Paddle.</div>
 </aside>
 
 <div class="content">
@@ -101,13 +101,13 @@ footer{border-top:1px solid var(--line);padding:30px 0;color:var(--muted);font-s
 </section>
 
 <section id="billing" class="view">
-<div class="topline"><div><h2>Plans & 5-day trial</h2><div class="muted">Simple pricing designed for a focused B2B SaaS.</div></div></div>
+<div class="topline"><div><h2>Plans & monthly billing</h2><div class="muted">Simple pricing designed for a focused B2B SaaS.</div></div></div>
 <div class="pricing">
-<div class="price"><h3>Starter</h3><div class="num">$79<span class="muted">/mo</span></div><ul><li>1 workspace</li><li>CSV comparison</li><li>Exception dashboard</li></ul><button class="btn primary" onclick="startTrial('Starter')">Start 5-day trial</button></div>
-<div class="price featured"><h3>Business</h3><div class="num">$149<span class="muted">/mo</span></div><ul><li>Multiple users</li><li>Higher data limits</li><li>Exportable exception reports</li></ul><button class="btn primary" onclick="startTrial('Business')">Start 5-day trial</button></div>
-<div class="price"><h3>Professional</h3><div class="num">$299<span class="muted">/mo</span></div><ul><li>Advanced controls</li><li>Priority support</li><li>Enterprise-ready workflows</li></ul><button class="btn primary" onclick="startTrial('Professional')">Start 5-day trial</button></div>
+<div class="price"><h3>Starter</h3><div class="num">$79<span class="muted">/mo</span></div><ul><li>1 workspace</li><li>CSV comparison</li><li>Exception dashboard</li></ul><button class="btn primary" onclick="startTrial('Starter')">Subscribe — $79/mo</button></div>
+<div class="price featured"><h3>Business</h3><div class="num">$149<span class="muted">/mo</span></div><ul><li>Multiple users</li><li>Higher data limits</li><li>Exportable exception reports</li></ul><button class="btn primary" onclick="startTrial('Business')">Subscribe — $149/mo</button></div>
+<div class="price"><h3>Professional</h3><div class="num">$299<span class="muted">/mo</span></div><ul><li>Advanced controls</li><li>Priority support</li><li>Enterprise-ready workflows</li></ul><button class="btn primary" onclick="startTrial('Professional')">Subscribe — $299/mo</button></div>
 </div>
-<div id="trialNotice" class="notice">5-day free trials are configured for all plans. Checkout and recurring billing are currently running in Paddle test mode; live billing will be enabled after the production Paddle account is connected.</div>
+<div id="trialNotice" class="notice">Monthly subscriptions are configured for all plans. Checkout and recurring billing are currently running in Paddle test mode; live billing will be enabled after the production Paddle account is connected.</div>
 </section>
 </div>
 </section>
@@ -346,9 +346,9 @@ async function saveComparison(){
 
 const PADDLE_TOKEN = "test_de50d010546285a29753e0114a7";
 const PADDLE_PRICES = {
-  Starter: "pri_01m4egc70canhfm9grm4mzqkzp",
-  Business: "pri_01m4egm4qhfn5d5th5j68bd23m",
-  Professional: "pri_01m4egrg2vdcs13vqcx6xqecb5"
+  Starter: "pri_01m4ed1syzkp4yghte7dt479mb",
+  Business: "pri_01m4ed97x4fpm4tfv32vqra07a",
+  Professional: "pri_01m4eddtgf97n87yk097bvz79p"
 };
 
 Paddle.Environment.set("sandbox");
