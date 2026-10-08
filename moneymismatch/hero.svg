@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" role="img" aria-labelledby="title desc">
+<title id="title">MoneyMismatch financial reconciliation</title>
+<desc id="desc">Invoices and payments flow through a reconciliation engine into matched and exception results.</desc>
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#07111f"/><stop offset="1" stop-color="#10233a"/></linearGradient>
+  <linearGradient id="blue" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#62a8ff"/><stop offset="1" stop-color="#8ec5ff"/></linearGradient>
+  <filter id="glow"><feGaussianBlur stdDeviation="7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<rect width="1200" height="700" rx="34" fill="url(#bg)"/>
+<g opacity=".16" stroke="#8ec5ff">
+  <path d="M60 610H1140M60 540H1140M60 470H1140M60 400H1140"/>
+  <path d="M160 360V630M330 360V630M500 360V630M670 360V630M840 360V630M1010 360V630"/>
+</g>
+<text x="70" y="80" fill="#8ec5ff" font-family="Arial,sans-serif" font-size="22" font-weight="700" letter-spacing="3">MONEYMISMATCH</text>
+<text x="70" y="118" fill="#f5f8fc" font-family="Arial,sans-serif" font-size="42" font-weight="800">See where the money doesn't match.</text>
+<text x="70" y="150" fill="#9fb0c5" font-family="Arial,sans-serif" font-size="18">Compare records • detect duplicates • surface missing payments • act on exceptions</text>
+
+<g transform="translate(70 205)">
+  <rect width="270" height="115" rx="18" fill="#0d1a2b" stroke="#315579"/>
+  <rect x="18" y="20" width="52" height="52" rx="12" fill="#102d4d" stroke="#62a8ff"/>
+  <path d="M31 34h26v25H31zM36 40h16M36 47h16M36 54h10" fill="none" stroke="#8ec5ff" stroke-width="3"/>
+  <text x="88" y="47" fill="#f5f8fc" font-family="Arial,sans-serif" font-size="18" font-weight="700">Invoices</text>
+  <text x="88" y="72" fill="#9fb0c5" font-family="Arial,sans-serif" font-size="14">Source records</text>
+  <path d="M270 58H395" stroke="#62a8ff" stroke-width="5" stroke-linecap="round" filter="url(#glow)"/>
+</g>
+<g transform="translate(70 340)">
+  <rect width="270" height="115" rx="18" fill="#0d1a2b" stroke="#315579"/>
+  <rect x="18" y="20" width="52" height="52" rx="12" fill="#102d4d" stroke="#62a8ff"/>
+  <circle cx="44" cy="46" r="15" fill="none" stroke="#8ec5ff" stroke-width="3"/><path d="M44 35v11l8 5" fill="none" stroke="#8ec5ff" stroke-width="3"/>
+  <text x="88" y="47" fill="#f5f8fc" font-family="Arial,sans-serif" font-size="18" font-weight="700">Payments</text>
+  <text x="88" y="72" fill="#9fb0c5" font-family="Arial,sans-serif" font-size="14">Settlement records</text>
+  <path d="M270 58H395" stroke="#62a8ff" stroke-width="5" stroke-linecap="round" filter="url(#glow)"/>
+</g>
+
+<g transform="translate(420 220)">
+  <rect width="270" height="220" rx="28" fill="#0b192a" stroke="#62a8ff" stroke-width="2" filter="url(#glow)"/>
+  <rect x="70" y="48" width="130" height="30" rx="8" fill="#173657"/>
+  <rect x="70" y="92" width="130" height="30" rx="8" fill="#173657"/>
+  <rect x="70" y="136" width="130" height="30" rx="8" fill="#173657"/>
+  <circle cx="135" cy="34" r="13" fill="#8ec5ff"/>
+  <path d="M128 34h14M135 27v14" stroke="#07111f" stroke-width="3"/>
+  <text x="135" y="194" text-anchor="middle" fill="#f5f8fc" font-family="Arial,sans-serif" font-size="17" font-weight="700">RECONCILIATION ENGINE</text>
+</g>
+
+<g transform="translate(760 190)">
+  <rect width="350" height="105" rx="18" fill="#0d1a2b" stroke="#4ea97a"/>
+  <circle cx="42" cy="52" r="25" fill="#173d2d"/><path d="M30 52l8 8 17-20" fill="none" stroke="#9ee2b8" stroke-width="5"/>
+  <text x="82" y="47" fill="#9ee2b8" font-family="Arial,sans-serif" font-size="18" font-weight="700">MATCHED</text>
+  <text x="82" y="73" fill="#9fb0c5" font-family="Arial,sans-serif" font-size="14">Records agree</text>
+  <path d="M0 52H-70" stroke="#4ea97a" stroke-width="5" filter="url(#glow)"/>
+</g>
+<g transform="translate(760 320)">
+  <rect width="350" height="105" rx="18" fill="#0d1a2b" stroke="#d65a61"/>
+  <circle cx="42" cy="52" r="25" fill="#47232b"/><path d="M31 40l22 24M53 40L31 64" stroke="#ff9b9b" stroke-width="5"/>
+  <text x="82" y="47" fill="#ff9b9b" font-family="Arial,sans-serif" font-size="18" font-weight="700">EXCEPTIONS</text>
+  <text x="82" y="73" fill="#9fb0c5" font-family="Arial,sans-serif" font-size="14">Discrepancies • duplicates • missing</text>
+  <path d="M0 52H-70" stroke="#d65a61" stroke-width="5" filter="url(#glow)"/>
+</g>
+<g transform="translate(70 515)">
+  <rect width="1040" height="115" rx="22" fill="#0d1a2b" stroke="#243b58"/>
+  <text x="28" y="37" fill="#9fb0c5" font-family="Arial,sans-serif" font-size="13" letter-spacing="2">EXCEPTION WORKSPACE</text>
+  <rect x="28" y="54" width="240" height="34" rx="8" fill="#102238"/><text x="44" y="77" fill="#f5f8fc" font-family="Arial,sans-serif" font-size="14">Payment discrepancy</text>
+  <rect x="290" y="54" width="210" height="34" rx="8" fill="#102238"/><text x="306" y="77" fill="#f5f8fc" font-family="Arial,sans-serif" font-size="14">Duplicate payment</text>
+  <rect x="522" y="54" width="210" height="34" rx="8" fill="#102238"/><text x="538" y="77" fill="#f5f8fc" font-family="Arial,sans-serif" font-size="14">Missing payment</text>
+  <rect x="754" y="54" width="258" height="34" rx="8" fill="#183428"/><text x="770" y="77" fill="#a9ebc2" font-family="Arial,sans-serif" font-size="14">Recommended action</text>
+</g>
+</svg>
