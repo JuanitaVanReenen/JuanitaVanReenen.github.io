@@ -352,7 +352,7 @@ const PADDLE_PRICES = {
 };
 
 Paddle.Environment.set("sandbox");
-Paddle.Initialize({ token: PADDLE_TOKEN });
+Paddle.Initialize({ token: PADDLE_TOKEN, eventCallback: function(data){ if(data && (data.name === "checkout.error" || data.name === "checkout.warning")){ const box=document.getElementById("trialNotice"); box.className="notice"; box.textContent="Paddle checkout reported: "+JSON.stringify(data); } } });
 
 function startTrial(plan){
   const priceId=PADDLE_PRICES[plan];
