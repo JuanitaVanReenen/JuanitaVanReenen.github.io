@@ -19,6 +19,7 @@ footer{border-top:1px solid var(--line);padding:30px 0;color:var(--muted);font-s
 @media(max-width:850px){.app{grid-template-columns:1fr}.side{position:static;display:flex;gap:5px;overflow:auto}.side button{min-width:max-content}.side .trial{display:none}.grid4{grid-template-columns:repeat(2,1fr)}.split,.pricing{grid-template-columns:1fr}}
 @media(max-width:520px){.grid4{grid-template-columns:1fr}.mapping{grid-template-columns:1fr}.hero{padding-top:35px}}
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 <header><div class="wrap nav"><a class="brand" href="../">Money<span>Mismatch</span></a><div class="navright"><span class="pill" id="workspacePill">Demo workspace</span><button class="btn small" onclick="showView('billing')">Start trial</button></div></div></header>
@@ -31,6 +32,33 @@ footer{border-top:1px solid var(--line);padding:30px 0;color:var(--muted);font-s
 <div class="actions"><button class="btn primary" onclick="loadDemo()">Load working demo</button><button class="btn ghost" onclick="showView('compare')">Upload your CSV</button></div>
 </section>
 
+
+<section id="authPanel" class="panel" style="margin-top:18px">
+  <div id="authLoggedOut">
+    <h3>Secure workspace access</h3>
+    <div class="muted" style="margin-bottom:12px">Sign in to save MoneyMismatch comparisons and exceptions securely in Supabase.</div>
+    <div class="split">
+      <div class="field"><input id="authEmail" type="email" placeholder="Email address" autocomplete="email"></div>
+      <div class="field"><input id="authPassword" type="password" placeholder="Password" autocomplete="current-password"></div>
+    </div>
+    <div class="actions">
+      <button class="btn primary" onclick="signIn()">Sign in</button>
+      <button class="btn ghost" onclick="signUp()">Create account</button>
+    </div>
+    <div id="authMessage" class="filemeta"></div>
+  </div>
+  <div id="authLoggedIn" style="display:none">
+    <div class="topline">
+      <div><h3>Connected workspace</h3><div id="userEmail" class="muted"></div></div>
+      <button class="btn small" onclick="signOut()">Sign out</button>
+    </div>
+    <div class="actions">
+      <input id="workspaceName" class="field" style="background:#081522;border:1px solid var(--line);color:#fff;border-radius:8px;padding:9px;flex:1;min-width:220px" placeholder="Workspace name">
+      <button class="btn primary" onclick="createWorkspace()">Create workspace</button>
+    </div>
+    <div id="workspaceMessage" class="filemeta"></div>
+  </div>
+</section>
 <section class="app">
 <aside class="side">
 <button id="nav-dashboard" class="active" onclick="showView('dashboard')">Dashboard</button>
@@ -80,27 +108,248 @@ footer{border-top:1px solid var(--line);padding:30px 0;color:var(--muted);font-s
 <footer><div class="wrap">MoneyMismatch — Find the money that doesn't match. Prototype build. No customer or revenue claims.</div></footer>
 
 <script>
-let sourceRows=[], paymentRows=[], exceptions=[];
+const SUPABASE_URL = "https://xnusuvpygptntidecsgf.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_QSzYRiMaT43OWc_Cc_Ugmw_WiOMu6X5";
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
+let sourceRows=[], paymentRows=[], exceptions=[], currentUser=null, currentWorkspace=null;
+
 const demoSource=[
-{id:'INV-1001',customer:'Northstar Ltd',amount:12500},{id:'INV-1002',customer:'BluePeak',amount:8400},{id:'INV-1003',customer:'Kalahari Services',amount:15600},{id:'INV-1004',customer:'Harbor Works',amount:9200},{id:'INV-1005',customer:'Delta Retail',amount:4700},{id:'INV-1006',customer:'Sunline',amount:6100}
+{id:'INV-1001',customer:'Northstar Ltd',amount:12500},
+{id:'INV-1002',customer:'BluePeak',amount:8400},
+{id:'INV-1003',customer:'Kalahari Services',amount:15600},
+{id:'INV-1004',customer:'Harbor Works',amount:9200},
+{id:'INV-1005',customer:'Delta Retail',amount:4700},
+{id:'INV-1006',customer:'Sunline',amount:6100}
 ];
+
 const demoPayments=[
-{id:'P-1',invoice_id:'INV-1001',paid_amount:12500},{id:'P-2',invoice_id:'INV-1002',paid_amount:8000},{id:'P-3',invoice_id:'INV-1003',paid_amount:15600},{id:'P-4',invoice_id:'INV-1003',paid_amount:15600},{id:'P-5',invoice_id:'INV-1005',paid_amount:4700},{id:'P-6',invoice_id:'INV-9999',paid_amount:3000}
+{id:'P-1',invoice_id:'INV-1001',paid_amount:12500},
+{id:'P-2',invoice_id:'INV-1002',paid_amount:8000},
+{id:'P-3',invoice_id:'INV-1003',paid_amount:15600},
+{id:'P-4',invoice_id:'INV-1003',paid_amount:15600},
+{id:'P-5',invoice_id:'INV-1005',paid_amount:4700},
+{id:'P-6',invoice_id:'INV-9999',paid_amount:3000}
 ];
-function showView(id){document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.side button').forEach(x=>x.classList.remove('active'));document.getElementById('nav-'+id)?.classList.add('active');scrollTo({top:0,behavior:'smooth'})}
+
+function showView(id){
+  document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.side button').forEach(x=>x.classList.remove('active'));
+  document.getElementById('nav-'+id)?.classList.add('active');
+  scrollTo({top:0,behavior:'smooth'});
+}
+
 function money(n){return 'N$'+Number(n||0).toLocaleString(undefined,{maximumFractionDigits:2})}
-function parseCSV(text){const lines=text.trim().split(/\r?\n/);if(!lines.length)return[];const headers=lines[0].split(',').map(x=>x.trim().replace(/^"|"$/g,''));return lines.slice(1).filter(Boolean).map(line=>{const vals=line.split(',').map(x=>x.trim().replace(/^"|"$/g,''));const o={};headers.forEach((h,i)=>o[h]=vals[i]??'');return o})}
-function handleFile(e,type){const file=e.target.files[0];if(!file)return;const r=new FileReader();r.onload=()=>{const rows=parseCSV(r.result);if(type==='source'){sourceRows=rows;document.getElementById('sourceMeta').textContent=rows.length+' rows loaded';fillMapping(rows)}else{paymentRows=rows;document.getElementById('paymentsMeta').textContent=rows.length+' rows loaded'} };r.readAsText(file)}
-function fillMapping(rows){const keys=Object.keys(rows[0]||{});['mapSource','mapAmount','mapPaymentRef'].forEach((id)=>{const s=document.getElementById(id);s.innerHTML=keys.map(k=>'<option>'+k+'</option>').join('')});}
-function loadDemo(){sourceRows=demoSource.map(x=>({...x}));paymentRows=demoPayments.map(x=>({...x}));document.getElementById('sourceMeta').textContent=sourceRows.length+' sample rows loaded';document.getElementById('paymentsMeta').textContent=paymentRows.length+' sample rows loaded';fillMapping(sourceRows);runComparison();showView('dashboard')}
-function runComparison(){if(!sourceRows.length||!paymentRows.length){alert('Please load both source and payment CSV files, or use the sample records.');return}
-const srcId=document.getElementById('mapSource').value||'id', amountKey=document.getElementById('mapAmount').value||'amount', payRef=document.getElementById('mapPaymentRef').value||'invoice_id';
-const src=new Map(sourceRows.map(r=>[String(r[srcId]),r]));const seen={};exceptions=[];
-paymentRows.forEach(p=>{const ref=String(p[payRef]||'').trim();const paid=Number(String(p.paid_amount??p.amount??0).replace(/[^0-9.-]/g,''));if(seen[ref]){exceptions.push({type:'Duplicate payment',id:ref,amount:paid,evidence:'Payment reference '+ref+' appears more than once.',action:'Review the duplicate payment and confirm which transaction is valid.'})}seen[ref]=(seen[ref]||0)+1;if(!src.has(ref)){exceptions.push({type:'Missing source transaction',id:ref,amount:paid,evidence:'Payment exists but no matching source record was found.',action:'Locate the source invoice/order or investigate an unlinked payment.'});return}const expected=Number(String(src.get(ref)[amountKey]||0).replace(/[^0-9.-]/g,''));if(Math.abs(expected-paid)>0.01)exceptions.push({type:'Payment discrepancy',id:ref,amount:Math.abs(expected-paid),evidence:'Expected '+money(expected)+'; actual payment '+money(paid)+'.',action:'Review the payment, fees, short-pay reason or source record.'})});
-sourceRows.forEach(s=>{const id=String(s[srcId]);const count=paymentRows.filter(p=>String(p[payRef]||'')===id).length;if(!count){const a=Number(String(s[amountKey]||0).replace(/[^0-9.-]/g,''));exceptions.push({type:'Missing payment',id,amount:a,evidence:'Source record exists but no payment reference was matched.',action:'Confirm whether payment is outstanding, misallocated or missing.'})}});
-updateDashboard();renderExceptions()}
-function updateDashboard(){const total=paymentRows.length, affected=exceptions.reduce((a,x)=>a+Number(x.amount||0),0);document.getElementById('checked').textContent=total;document.getElementById('attention').textContent=exceptions.length;document.getElementById('matched').textContent=Math.max(0,total-exceptions.filter(x=>x.type!=='Missing payment').length);document.getElementById('affected').textContent=money(affected);document.getElementById('exceptionCount').textContent=exceptions.length?'('+exceptions.length+')':'';document.getElementById('recentExceptions').innerHTML=exceptions.length?exceptions.slice(0,5).map(x=>'<div style="padding:9px 0;border-bottom:1px solid #1b3048"><span class="badge '+(x.type==='Payment discrepancy'||x.type==='Duplicate payment'?'bad':'warn')+'">'+x.type+'</span> <b>'+x.id+'</b> <span class="muted">— '+money(x.amount)+'</span></div>').join(''):'<div class="empty">No exceptions found.</div>'}
-function renderExceptions(){const el=document.getElementById('exceptionTable');if(!exceptions.length){el.innerHTML='<div class="empty">No exceptions yet.</div>';return}el.innerHTML='<table class="table"><thead><tr><th>Exception</th><th>Reference</th><th>Amount affected</th><th>Evidence</th><th>Recommended action</th></tr></thead><tbody>'+exceptions.map(x=>'<tr><td><span class="badge '+(x.type==='Payment discrepancy'||x.type==='Duplicate payment'?'bad':'warn')+'">'+x.type+'</span></td><td>'+x.id+'</td><td class="amount">'+money(x.amount)+'</td><td>'+x.evidence+'</td><td>'+x.action+'</td></tr>').join('')+'</tbody></table>'}
-function startTrial(plan){document.getElementById('trialNotice').className='notice success';document.getElementById('trialNotice').textContent='Trial selected: '+plan+'. In the production SaaS this step will create the customer account, start the 5-day trial and collect billing details for continuation after the trial.';showView('dashboard')}
+
+function parseCSV(text){
+  const lines=text.trim().split(/\r?\n/);
+  if(!lines.length)return[];
+  const headers=lines[0].split(',').map(x=>x.trim().replace(/^"|"$/g,''));
+  return lines.slice(1).filter(Boolean).map(line=>{
+    const vals=line.split(',').map(x=>x.trim().replace(/^"|"$/g,''));
+    const o={}; headers.forEach((h,i)=>o[h]=vals[i]??''); return o;
+  });
+}
+
+function handleFile(e,type){
+  const file=e.target.files[0]; if(!file)return;
+  const r=new FileReader();
+  r.onload=()=>{
+    const rows=parseCSV(r.result);
+    if(type==='source'){
+      sourceRows=rows;
+      document.getElementById('sourceMeta').textContent=rows.length+' rows loaded';
+      fillMapping(rows);
+    }else{
+      paymentRows=rows;
+      document.getElementById('paymentsMeta').textContent=rows.length+' rows loaded';
+    }
+  };
+  r.readAsText(file);
+}
+
+function fillMapping(rows){
+  const keys=Object.keys(rows[0]||{});
+  ['mapSource','mapAmount','mapPaymentRef'].forEach(id=>{
+    const s=document.getElementById(id);
+    s.innerHTML=keys.map(k=>'<option>'+k+'</option>').join('');
+  });
+}
+
+function loadDemo(){
+  sourceRows=demoSource.map(x=>({...x}));
+  paymentRows=demoPayments.map(x=>({...x}));
+  document.getElementById('sourceMeta').textContent=sourceRows.length+' sample rows loaded';
+  document.getElementById('paymentsMeta').textContent=paymentRows.length+' sample rows loaded';
+  fillMapping(sourceRows);
+  runComparison();
+  showView('dashboard');
+}
+
+function runComparison(){
+  if(!sourceRows.length||!paymentRows.length){
+    alert('Please load both source and payment CSV files, or use the sample records.');
+    return;
+  }
+  const srcId=document.getElementById('mapSource').value||'id';
+  const amountKey=document.getElementById('mapAmount').value||'amount';
+  const payRef=document.getElementById('mapPaymentRef').value||'invoice_id';
+  const src=new Map(sourceRows.map(r=>[String(r[srcId]),r]));
+  const seen={}; exceptions=[];
+
+  paymentRows.forEach(p=>{
+    const ref=String(p[payRef]||'').trim();
+    const paid=Number(String(p.paid_amount??p.amount??0).replace(/[^0-9.-]/g,''));
+    if(seen[ref]){
+      exceptions.push({type:'Duplicate payment',id:ref,amount:paid,evidence:'Payment reference '+ref+' appears more than once.',action:'Review the duplicate payment and confirm which transaction is valid.'});
+    }
+    seen[ref]=(seen[ref]||0)+1;
+    if(!src.has(ref)){
+      exceptions.push({type:'Missing source transaction',id:ref,amount:paid,evidence:'Payment exists but no matching source record was found.',action:'Locate the source invoice/order or investigate an unlinked payment.'});
+      return;
+    }
+    const expected=Number(String(src.get(ref)[amountKey]||0).replace(/[^0-9.-]/g,''));
+    if(Math.abs(expected-paid)>0.01){
+      exceptions.push({type:'Payment discrepancy',id:ref,amount:Math.abs(expected-paid),evidence:'Expected '+money(expected)+'; actual payment '+money(paid)+'.',action:'Review the payment, fees, short-pay reason or source record.'});
+    }
+  });
+
+  sourceRows.forEach(s=>{
+    const id=String(s[srcId]);
+    const count=paymentRows.filter(p=>String(p[payRef]||'')===id).length;
+    if(!count){
+      const a=Number(String(s[amountKey]||0).replace(/[^0-9.-]/g,''));
+      exceptions.push({type:'Missing payment',id,amount:a,evidence:'Source record exists but no payment reference was matched.',action:'Confirm whether payment is outstanding, misallocated or missing.'});
+    }
+  });
+
+  updateDashboard();
+  renderExceptions();
+  saveComparison();
+}
+
+function updateDashboard(){
+  const total=paymentRows.length;
+  const affected=exceptions.reduce((a,x)=>a+Number(x.amount||0),0);
+  document.getElementById('checked').textContent=total;
+  document.getElementById('attention').textContent=exceptions.length;
+  document.getElementById('matched').textContent=Math.max(0,total-exceptions.filter(x=>x.type!=='Missing payment').length);
+  document.getElementById('affected').textContent=money(affected);
+  document.getElementById('exceptionCount').textContent=exceptions.length?'('+exceptions.length+')':'';
+  document.getElementById('recentExceptions').innerHTML=exceptions.length
+    ?exceptions.slice(0,5).map(x=>'<div style="padding:9px 0;border-bottom:1px solid #1b3048"><span class="badge '+(x.type==='Payment discrepancy'||x.type==='Duplicate payment'?'bad':'warn')+'">'+x.type+'</span> <b>'+x.id+'</b> <span class="muted">— '+money(x.amount)+'</span></div>').join('')
+    :'<div class="empty">No exceptions found.</div>';
+}
+
+function renderExceptions(){
+  const el=document.getElementById('exceptionTable');
+  if(!exceptions.length){el.innerHTML='<div class="empty">No exceptions yet.</div>';return}
+  el.innerHTML='<table class="table"><thead><tr><th>Exception</th><th>Reference</th><th>Amount affected</th><th>Evidence</th><th>Recommended action</th></tr></thead><tbody>'+
+    exceptions.map(x=>'<tr><td><span class="badge '+(x.type==='Payment discrepancy'||x.type==='Duplicate payment'?'bad':'warn')+'">'+x.type+'</span></td><td>'+x.id+'</td><td class="amount">'+money(x.amount)+'</td><td>'+x.evidence+'</td><td>'+x.action+'</td></tr>').join('')+
+    '</tbody></table>';
+}
+
+async function signUp(){
+  const email=document.getElementById('authEmail').value.trim();
+  const password=document.getElementById('authPassword').value;
+  if(!email||password.length<6){setAuthMessage('Enter an email and a password of at least 6 characters.');return}
+  const {error}=await supabaseClient.auth.signUp({email,password,options:{emailRedirectTo:window.location.href}});
+  setAuthMessage(error?error.message:'Account created. Check your email if confirmation is required, then sign in.');
+}
+
+async function signIn(){
+  const email=document.getElementById('authEmail').value.trim();
+  const password=document.getElementById('authPassword').value;
+  const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});
+  if(error){setAuthMessage(error.message);return}
+  currentUser=data.user;
+  await refreshUser();
+}
+
+async function signOut(){
+  await supabaseClient.auth.signOut();
+  currentUser=null; currentWorkspace=null;
+  document.getElementById('authLoggedOut').style.display='block';
+  document.getElementById('authLoggedIn').style.display='none';
+  document.getElementById('workspacePill').textContent='Demo workspace';
+}
+
+function setAuthMessage(msg){document.getElementById('authMessage').textContent=msg}
+
+async function refreshUser(){
+  const {data}=await supabaseClient.auth.getUser();
+  currentUser=data.user;
+  if(!currentUser)return;
+  document.getElementById('authLoggedOut').style.display='none';
+  document.getElementById('authLoggedIn').style.display='block';
+  document.getElementById('userEmail').textContent=currentUser.email||'Signed in';
+  const {data:members,error}=await supabaseClient.from('workspace_members').select('workspace_id,role').eq('user_id',currentUser.id);
+  if(!error && members?.length){
+    const ids=members.map(x=>x.workspace_id);
+    const {data:ws}=await supabaseClient.from('workspaces').select('*').in('id',ids).order('created_at',{ascending:true}).limit(1);
+    if(ws?.length){currentWorkspace=ws[0];document.getElementById('workspacePill').textContent=currentWorkspace.name;}
+  }
+}
+
+async function createWorkspace(){
+  if(!currentUser){setAuthMessage('Please sign in first.');return}
+  const name=document.getElementById('workspaceName').value.trim()||'MoneyMismatch Workspace';
+  document.getElementById('workspaceMessage').textContent='Creating workspace...';
+  const {data,error}=await supabaseClient.rpc('create_workspace',{workspace_name:name});
+  if(error){
+    document.getElementById('workspaceMessage').textContent=error.message;
+    return;
+  }
+  currentWorkspace=Array.isArray(data)?data[0]:data;
+  document.getElementById('workspacePill').textContent=name;
+  document.getElementById('workspaceMessage').textContent='Workspace created successfully.';
+}
+
+async function saveComparison(){
+  if(!currentUser||!currentWorkspace)return;
+  const expected=sourceRows.reduce((a,r)=>a+Number(String(r.amount??0).replace(/[^0-9.-]/g,'')),0);
+  const actual=paymentRows.reduce((a,r)=>a+Number(String(r.paid_amount??r.amount??0).replace(/[^0-9.-]/g,'')),0);
+  const {data:comparison,error}=await supabaseClient.from('comparisons').insert({
+    workspace_id:currentWorkspace.id,
+    name:'CSV comparison '+new Date().toLocaleString(),
+    description:'MoneyMismatch record comparison',
+    expected_amount:expected,
+    actual_amount:actual,
+    status:exceptions.length?'reviewing':'resolved',
+    created_by:currentUser.id
+  }).select().single();
+
+  if(error)return;
+
+  if(exceptions.length){
+    const rows=exceptions.map(x=>({
+      workspace_id:currentWorkspace.id,
+      comparison_id:comparison.id,
+      title:x.type+' — '+x.id,
+      description:x.evidence,
+      expected_amount:0,
+      actual_amount:Number(x.amount||0),
+      status:'open',
+      created_by:currentUser.id
+    }));
+    await supabaseClient.from('exceptions').insert(rows);
+  }
+}
+
+async function startTrial(plan){
+  document.getElementById('trialNotice').className='notice success';
+  document.getElementById('trialNotice').textContent='Trial selected: '+plan+'. Live recurring billing still needs to be connected before accepting real payments.';
+  showView('dashboard');
+}
+
+supabaseClient.auth.onAuthStateChange((_event,session)=>{
+  if(session) refreshUser();
+});
+
+(async()=>{
+  const {data}=await supabaseClient.auth.getSession();
+  if(data.session) await refreshUser();
+})();
 </script>
 </body></html>
