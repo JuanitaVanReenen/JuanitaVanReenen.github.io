@@ -344,13 +344,14 @@ async function saveComparison(){
   }
 }
 
-const PADDLE_TOKEN = "live_c96e2c5da3bc04821c56d1f13bb";
+const PADDLE_TOKEN = "test_de50d010546285a29753e0114a7";
 const PADDLE_PRICES = {
-  Starter: "pri_01m4f1ys15t1cs9m94nex91jbx",
-  Business: "pri_01m4fk2e89m040g9dvz3668stj",
-  Professional: "pri_01m4fk4n6va7kkigj9fqd537ap"
+  Starter: "pri_01m4ed1syzkp4yghte7dt479mb",
+  Business: "pri_01m4ed97x4fpm4tfv32vqra07a",
+  Professional: "pri_01m4eddtgf97n87yk097bvz79p"
 };
 
+Paddle.Environment.set("sandbox");
 Paddle.Initialize({ token: PADDLE_TOKEN, eventCallback: function(data){ if(data && (data.name === "checkout.error" || data.name === "checkout.warning")){ const box=document.getElementById("trialNotice"); box.className="notice"; box.textContent="Paddle checkout reported: "+JSON.stringify(data); } } });
 
 function startTrial(plan){
