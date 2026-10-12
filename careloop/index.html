@@ -315,7 +315,7 @@ function careloopNumberPrompt(message,defaultValue=0){
   const save=document.createElement('button');save.type='button';save.className='careloop-dialog-save';save.textContent='Continue';
   const finish=value=>{overlay.remove();document.removeEventListener('keydown',onKey);resolve(value)};
   const onKey=e=>{if(e.key==='Escape'){e.preventDefault();finish(null)}else if(e.key==='Enter'){e.preventDefault();save.click()}};
-  cancel.addEventListener('click',()=>finish(null));save.addEventListener('click',()=>{const raw=input.value.trim();if(!/^\\d+$/.test(raw)){input.setCustomValidity('Enter a whole number of zero or more.');input.reportValidity();return;}const value=Number(raw);if(!Number.isSafeInteger(value)){input.setCustomValidity('Enter a valid whole number.');input.reportValidity();return;}finish(value)});
+  cancel.addEventListener('click',()=>finish(null));save.addEventListener('click',()=>{const raw=input.value.trim();if(!/^[0-9]+$/.test(raw)){input.setCustomValidity('Enter a whole number of zero or more.');input.reportValidity();return;}const value=Number(raw);if(!Number.isSafeInteger(value)){input.setCustomValidity('Enter a valid whole number.');input.reportValidity();return;}finish(value)});
   actions.append(cancel,save);panel.append(heading,copy,input,actions);overlay.append(panel);document.body.append(overlay);
   input.addEventListener('input',()=>input.setCustomValidity(''));document.addEventListener('keydown',onKey);input.focus();input.select();
  });
