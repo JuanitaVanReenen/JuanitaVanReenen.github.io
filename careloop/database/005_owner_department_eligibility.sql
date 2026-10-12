@@ -23,7 +23,7 @@ as $$
         or (
           target_department is not null
           and hm.department_id = target_department
-          and hm.role in ('department_manager', 'clinician', 'staff', 'viewer')
+          and hm.role in ('department_manager', 'clinician', 'staff')
         )
       )
   );
@@ -59,7 +59,7 @@ with check (
 -- A group administrator may create and oversee a workflow, but is not a
 -- selectable operational owner unless separately assigned a hospital role.
 -- Hospital administrators have hospital-wide owner eligibility.
--- Ordinary staff/clinicians/viewers are eligible only within their assigned
+-- Ordinary department managers, clinicians and staff are eligible only within their assigned
 -- department. A NULL department does not grant broad eligibility.
 -- Account activation/deactivation is not yet represented in the schema; add
 -- that check through the trusted identity/provisioning layer before production.
@@ -71,4 +71,4 @@ with check (
 -- 4. Hospital admin can be assigned work in any department of that hospital.
 -- 5. Group admin without hospital membership cannot be assigned operational work.
 -- 6. A user from another hospital or organisation cannot be assigned.
--- 7. Viewer cannot create/update work even if eligible to receive assignment.
+-- 7. Viewer cannot be assigned operational work and cannot create/update work.
