@@ -21,6 +21,7 @@ CARELOOP is intended to complement existing hospital systems, not replace an ele
 - `database/004_department_scope.sql` — department-scoped workflow editing and membership visibility.
 - `SECURITY_TEST_PLAN.md` — pre-production security and release checklist.
 - `BACKEND_ARCHITECTURE.md` — proposed backend, API, roles, workflow lifecycles and integration stages.
+- `BACKEND_PROVIDER_DECISION.md` — provider shortlist, cost guardrails and deployment decision gate.
 
 ## Database migration order
 
@@ -30,6 +31,7 @@ The SQL files are draft migrations and must be reviewed and applied in numerical
 2. `database/002_security_hardening.sql`
 3. `database/003_membership_policy_correction.sql`
 4. `database/004_department_scope.sql`
+5. `database/005_owner_department_eligibility.sql`
 
 **None of these migrations has been run against a live or disposable database in this project.** Their syntax and intended logic have received a limited source review only. That is not equivalent to execution, integration testing, penetration testing, or independent security approval. Do not connect live hospital systems or patient data.
 
