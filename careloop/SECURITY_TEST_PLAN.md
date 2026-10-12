@@ -52,3 +52,17 @@ Do not connect real patient data or describe this schema as production-ready unt
 
 ## Release gate
 No live integration or patient data until tests pass, failures are fixed and retested, and qualified security, privacy, legal and clinical reviewers approve the intended deployment.
+
+## Department-scope tests (migration 004)
+- [ ] Department A clinician can create and update records only in department A.
+- [ ] Department A clinician cannot update or delete records in department B.
+- [ ] Department A manager cannot view membership rows from department B.
+- [ ] Hospital administrators retain hospital-wide workflow and membership visibility.
+- [ ] Group administrators remain limited to hospitals in their own organization.
+- [ ] A non-admin with a NULL department assignment receives no implicit department-wide edit access.
+- [ ] Owner assignment accepts only an authorised member of the same hospital; test department eligibility separately before production.
+
+## Provisioning gate
+- [ ] No browser-side role or membership writes are enabled until a trusted provisioning flow exists.
+- [ ] Provisioning prevents self-promotion, cross-organization assignment and unauthorised role changes.
+- [ ] Invitation, deactivation, removal and recovery flows are tested and audited.
