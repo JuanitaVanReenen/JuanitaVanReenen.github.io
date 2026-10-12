@@ -58,6 +58,10 @@ Before paid infrastructure, live integrations or broad outreach, validate the wo
 
 The preferred commercial outcome is an outright software/IP sale where a credible strategic buyer exists. No company has endorsed, agreed to buy, or committed to pilot CARELOOP unless separately documented.
 
+## Local export accuracy correction
+
+The export action now builds a CSV-style report from workflow records saved in the current browser, rather than outputting fixed illustrative KPI values. The export labels itself as fictional local demo data, includes only locally created records and their basic lifecycle metadata, and states that it is not a clinical record or verified audit log. Static sample dashboard figures are excluded. No shared server-side export exists.
+
 ## Handover usability correction
 
 The new-record handover row now displays its acknowledgement action for the actual `Awaiting acknowledgement` state used when records are created. The handover status filter also includes that state. This corrects a mismatch that previously hid the acknowledgement control for newly created handovers. This is a front-end demo correction only.
