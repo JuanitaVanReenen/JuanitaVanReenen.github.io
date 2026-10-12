@@ -108,10 +108,7 @@ function go(p){pages.forEach(x=>document.getElementById(x).classList.toggle('hid
 document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.page)));document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.go)));document.getElementById('menu').onclick=()=>document.getElementById('sidebar').classList.toggle('open');
 document.querySelectorAll('.ack').forEach(b=>b.onclick=()=>{let row=b.closest('tr');row.cells[5].innerHTML='<span class="pill green">Acknowledged</span>';row.cells[6].innerHTML='<span class="sub">Received</span>';b.remove();toast('Handover acknowledgement recorded in this demo.')});
 document.querySelectorAll('.complete').forEach(b=>b.onclick=()=>{let row=b.closest('tr');row.cells[5].innerHTML='<span class="pill green">Completed</span>';row.cells[6].innerHTML='<span class="sub">Closed</span>';b.remove();toast('Follow-up marked complete in this demo.')});
-document.querySelectorAll('[data-filter]').forEach(inp=>inp.addEventListener('input',()=>{let table=document.getElementById(inp.dataset.filter),q=inp.value.toLowerCase();table.querySelectorAll('tbody tr').forEach(r=>r.classList.toggle('hidden',!r.innerText.toLowerCase().includes(q)))}));
-document.querySelectorAll('[data-status-filter]').forEach(sel=>sel.addEventListener('change',()=>{let table=document.getElementById(sel.dataset.statusFilter),q=sel.value.toLowerCase();table.querySelectorAll('tbody tr').forEach(r=>r.classList.toggle('hidden',q&&!r.innerText.toLowerCase().includes(q)))}));
-/* Workflow creation is handled by the interactive demo form below. */
-document.getElementById('hospitalSelect').onchange=e=>{let v=e.target.value;document.querySelectorAll('.hospital').forEach(r=>r.classList.toggle('hidden',v!=='all'&&r.dataset.hosp!==v));toast(v==='all'?'Showing the full hospital group.':'Showing '+e.target.options[e.target.selectedIndex].text+'.')};
+/* Unified search, status and facility filtering is initialized with the demo workspace below. */
 function exportText(){
  const rows=records.map(r=>({
   reference:r.ref||r.id,workflow:r.type,facility:r.facility,department:r.department,
@@ -295,11 +292,13 @@ function applyTableFilters(table){
  const hospital=$('hospitalSelect')?.value||'all';
  table.querySelectorAll('tbody tr').forEach(row=>{
   const text=row.innerText.toLowerCase();
+  const statusCell=row.cells[5];
+  const rowStatus=(statusCell?.innerText||'').trim().toLowerCase();
   let facility=row.dataset.hosp||null;
   if(!facility){facility=text.includes('central city')?'central':text.includes('coastal')?'coastal':text.includes('northview')?'north':null;}
   const matchesSearch=!search||text.includes(search);
-  const matchesStatus=!status||text.includes(status);
-  const matchesHospital=hospital==='all'||facility===hospital;
+  const matchesStatus=!status||rowStatus===status||rowStatus.startsWith(status+' ');
+  const matchesHospital=hospital==='all'||!facility||facility===hospital;
   row.classList.toggle('hidden',!(matchesSearch&&matchesStatus&&matchesHospital));
  });
 }
