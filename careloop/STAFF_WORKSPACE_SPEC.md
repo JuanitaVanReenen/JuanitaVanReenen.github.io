@@ -121,6 +121,46 @@ Rules:
 - A group administrator's organisation-wide permissions must be explicitly approved and tested.
 - Cross-organisation access is never implied.
 
+## Authorisation and data-scope model
+
+The six workspaces are presentation choices, not six independent security roles. Production access must be derived from a verified user identity plus explicit organisation, hospital, department and assignment memberships. A user may hold more than one approved role, but the server must apply the narrowest applicable scope to each request and record administrative changes.
+
+### Scope and capability matrix
+
+| Workspace role | Permitted data scope | Permitted operational capabilities | Explicit limits |
+|---|---|---|---|
+| Group executive | Aggregated summaries for explicitly linked hospitals in one organisation | View group trends; drill into a hospital only when separately authorised | No automatic access to individual clinical follow-ups, patient data, or another organisation |
+| Hospital administrator | Operational records across one assigned hospital | View hospital workload; manage operational ownership and escalations; administer membership only through a trusted audited service | No cross-hospital access by default; no clinical-record access |
+| Department manager | Records in explicitly assigned department(s) at one hospital | Review department queue; assign/reassign to eligible active members in the same permitted scope; intervene and escalate | Cannot browse or edit other departments by default |
+| Nurse / frontline staff | Items assigned to the authenticated staff member, plus handovers and records explicitly shared with them | Acknowledge, progress, flag blockers and complete permitted assigned actions | Cannot silently close another person's work, change membership, or browse the whole department |
+| Receiving nurse | Incoming handovers explicitly addressed to that authenticated recipient, plus accepted carried-forward items | Review and accept/acknowledge receipt; flag missing or unclear operational information; act on accepted assigned items | Cannot accept a handover addressed to another person; receipt is not clinical agreement |
+| Clinician | Operational follow-ups explicitly assigned or shared within the clinician's authorised hospital/department scope | Acknowledge, update operational status, record coordination outcome and route next operational action to an eligible colleague | No result interpretation, diagnosis, treatment recommendation, prescribing, or clinical authorisation |
+
+### Mandatory server-side checks
+
+1. Resolve the authenticated user and active organisation membership from trusted identity records; never trust a role, hospital ID, department ID or owner ID supplied by the browser alone.
+2. Check organisation membership first, then hospital membership, then department membership, then record assignment/sharing and action-specific capability.
+3. Enforce tenant isolation on every read, write, export, search, aggregate and realtime subscription. Deny by default when membership or scope is missing or ambiguous.
+4. Treat group-wide visibility as an explicit grant for a named organisation and approved hospitals, not as a consequence of a display label such as “group executive”.
+5. Validate reassignment eligibility server-side: recipient must be active, in the same authorised organisation/hospital, eligible for the workflow and permitted department scope. Preserve the prior owner and reason.
+6. Restrict receiving-nurse acceptance to the intended recipient or an explicitly authorised delegate; preserve outgoing ownership until acceptance succeeds.
+7. Restrict manager intervention, membership administration, exports and audit access to explicit capabilities; log actor, timestamp, target, scope and reason.
+8. Return only fields needed by the workspace. Do not expose sensitive clinical data in operational list endpoints or notification payloads.
+9. Re-check authorisation at the moment of every state transition. UI hiding and client-side role selectors are never security controls.
+10. Test both allowed and denied cases, including attempts to change IDs, query another hospital, enumerate departments, export cross-tenant data, accept another user's handover and invoke manager-only actions.
+
+### Acceptance tests to add before any backend release
+
+- Group executive linked to Hospital A and B cannot retrieve Hospital C or another organisation.
+- Hospital administrator for Hospital A cannot retrieve or mutate Hospital B records.
+- Department manager for Department X cannot list, export, reassign or intervene on Department Y records.
+- Frontline staff cannot view unassigned department-wide queues or complete another user's item unless explicitly shared and authorised.
+- Receiving nurse cannot acknowledge a handover addressed to a different recipient.
+- Clinician cannot access follow-ups outside their approved membership/assignment scope and cannot invoke clinical decision functions.
+- A removed or suspended member loses access immediately, including active sessions and subscriptions.
+- Forged role, hospital, department, owner or workflow identifiers are rejected server-side.
+- Cross-scope counts, search results, exports and error messages do not leak record existence or metadata.
+
 ## Common workflow lifecycle
 
 Use explicit, workflow-specific transitions rather than one generic status dropdown.
