@@ -78,3 +78,11 @@ The staff workspace specification now defines the intended scope and capability 
 - Minimise audit data and restrict audit-log modification.
 - Define retention, backups, encryption, incident response and data residency before any real deployment.
 - Require qualified security, privacy, legal and clinical review before handling patient information.
+
+## Dashboard figure accuracy
+
+The overview separates locally calculated browser-demo workload from fixed illustrative sample figures. The role-preview tiles and workflow-card counts are explicitly labelled as examples; they are not derived from saved records, are not assigned-user queues, and are not permission-filtered. The four original overview KPI cards and hospital-network sample rows are illustrative only. The local workload panel counts only locally saved demo records for the selected facility; it is not a live hospital or group-wide report.
+
+## Export spreadsheet safety
+
+CSV export quotes and escapes cell values and prefixes values beginning (after optional whitespace) with spreadsheet formula-trigger characters (`=`, `+`, `-`, `@`) to reduce formula-injection risk when opened in spreadsheet software. Exported task descriptions also fall back to the summary field when present. This is a defensive formatting measure, not a guarantee against every spreadsheet application's import behaviour.
