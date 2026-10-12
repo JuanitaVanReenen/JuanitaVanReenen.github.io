@@ -42,6 +42,7 @@ The SQL files are draft migrations and must be reviewed and applied in numerical
 - No production backend, shared database, staff authentication, or multi-user synchronisation is connected to the public demo.
 - Demo records are browser-local and are not encrypted clinical records.
 - There are no live notifications, server-side escalations, or real hospital integrations.
+- The demo includes a manager intervention note and resolution history for locally created actions; this is browser-local demonstration data, not a verified audit trail, authenticated manager approval, or notification to another staff member.
 - Membership provisioning and role administration require a separately designed trusted administrative service; browser-side role changes are intentionally not enabled in the draft.
 - The database drafts still require execution in an isolated environment, role-by-role RLS tests, specialist security review, privacy/legal review, clinical safety review, and hosting/data-residency decisions.
 - Department-aware owner eligibility has a draft migration, but requires execution and role-by-role testing before production. Only operational roles (department manager, clinician, staff) and hospital administrators are eligible owners; viewers are excluded.
