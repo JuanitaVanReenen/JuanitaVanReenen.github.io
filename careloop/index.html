@@ -215,6 +215,7 @@ function renderRolePreview(){
 document.getElementById('rolePreview')?.addEventListener('change',renderRolePreview);
 renderRolePreview();
 addSavedRows();
+renderAccountabilityDemo();
 const note=document.createElement('div');note.className='notice';note.innerHTML='<strong>Interactive demonstration only.</strong> All sample records are fictional. New records and their status changes are saved only in this browser; they are not shared between users or connected to a live clinical record. <span id="demoRecordCount"></span>';const first=$('overview').querySelector('.page-head');if(first)first.insertAdjacentElement('afterend',note);
 })();
 </script></body></html>
