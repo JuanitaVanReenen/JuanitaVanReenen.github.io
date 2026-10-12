@@ -66,3 +66,20 @@ No live integration or patient data until tests pass, failures are fixed and ret
 - [ ] No browser-side role or membership writes are enabled until a trusted provisioning flow exists.
 - [ ] Provisioning prevents self-promotion, cross-organization assignment and unauthorised role changes.
 - [ ] Invitation, deactivation, removal and recovery flows are tested and audited.
+
+## Department-aware owner assignment (migration 005)
+- [ ] A department A clinician can assign an active department A colleague.
+- [ ] A department A clinician cannot assign a department B colleague.
+- [ ] A department A clinician cannot assign a hospital member with no department.
+- [ ] A hospital administrator can be assigned operational work in any department of that hospital.
+- [ ] A group administrator without a hospital membership cannot be assigned operational work.
+- [ ] A viewer cannot create or update workflow items even if eligible to receive an assignment.
+- [ ] Account deactivation is enforced by the identity/provisioning layer before production.
+
+## Backend/API behaviour
+- [ ] Client-supplied creator, audit actor and authoritative timestamps are ignored or rejected.
+- [ ] Invalid lifecycle transitions are rejected server-side.
+- [ ] Concurrent updates use version checks and do not silently overwrite another user's change.
+- [ ] Create/acknowledge/complete retries are idempotent.
+- [ ] Background escalation jobs are idempotent and log delivery failures.
+- [ ] Notification content is minimised and contains no patient-identifiable information.
