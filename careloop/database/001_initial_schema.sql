@@ -57,7 +57,7 @@ create table if not exists public.hospital_memberships (
   constraint department_belongs_to_hospital
     foreign key (department_id, hospital_id)
     references public.departments(id, hospital_id)
-    on delete set null
+    on delete restrict
 );
 
 create table if not exists public.workflow_items (
@@ -133,6 +133,39 @@ as $$
       and om.user_id = auth.uid()
   );
 $$;
+
+create or replace function public.careloop_can_access_organization(target_organization uuid)
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $
+  select exists (
+    select 1 from public.organization_memberships om
+    where om.organization_id = target_organization and om.user_id = auth.uid()
+  )
+  or exists (
+    select 1 from public.hospitals h
+    join public.hospital_memberships hm on hm.hospital_id = h.id
+    where h.organization_id = target_organization and hm.user_id = auth.uid()
+  );
+$;
+
+create or replace function public.careloop_is_group_admin(target_organization uuid)
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $
+  select exists (
+    select 1 from public.organization_memberships om
+    where om.organization_id = target_organization
+      and om.user_id = auth.uid()
+      and om.role = 'group_admin'
+  );
+$;
 
 create or replace function public.careloop_can_manage_hospital(target_hospital uuid)
 returns boolean
@@ -229,17 +262,7 @@ alter table public.audit_events enable row level security;
 drop policy if exists organizations_read_member on public.organizations;
 create policy organizations_read_member on public.organizations
 for select to authenticated
-using (
-  exists (
-    select 1 from public.organization_memberships om
-    where om.organization_id = organizations.id and om.user_id = auth.uid()
-  )
-  or exists (
-    select 1 from public.hospitals h
-    join public.hospital_memberships hm on hm.hospital_id = h.id
-    where h.organization_id = organizations.id and hm.user_id = auth.uid()
-  )
-);
+using (public.careloop_can_access_organization(id));
 
 drop policy if exists hospitals_read_member on public.hospitals;
 create policy hospitals_read_member on public.hospitals
@@ -252,27 +275,16 @@ for select to authenticated
 using (public.careloop_can_access_hospital(hospital_id));
 
 drop policy if exists profiles_read_same_hospital on public.profiles;
-create policy profiles_read_same_hospital on public.profiles
+create policy profiles_read_self on public.profiles
 for select to authenticated
-using (
-  user_id = auth.uid()
-  or exists (
-    select 1 from public.hospital_memberships mine
-    join public.hospital_memberships theirs on theirs.hospital_id = mine.hospital_id
-    where mine.user_id = auth.uid() and theirs.user_id = profiles.user_id
-  )
-);
+using (user_id = auth.uid());
 
 drop policy if exists organization_memberships_read_scope on public.organization_memberships;
 create policy organization_memberships_read_scope on public.organization_memberships
 for select to authenticated
 using (
   user_id = auth.uid()
-  or exists (
-    select 1 from public.organization_memberships own
-    where own.organization_id = organization_memberships.organization_id
-      and own.user_id = auth.uid() and own.role = 'group_admin'
-  )
+  or public.careloop_is_group_admin(organization_id)
 );
 
 drop policy if exists hospital_memberships_read_scope on public.hospital_memberships;
