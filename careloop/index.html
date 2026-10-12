@@ -97,10 +97,10 @@ document.querySelectorAll('.ack').forEach(b=>b.onclick=()=>{let row=b.closest('t
 document.querySelectorAll('.complete').forEach(b=>b.onclick=()=>{let row=b.closest('tr');row.cells[5].innerHTML='<span class="pill green">Completed</span>';row.cells[6].innerHTML='<span class="sub">Closed</span>';b.remove();toast('Follow-up marked complete in this demo.')});
 document.querySelectorAll('[data-filter]').forEach(inp=>inp.addEventListener('input',()=>{let table=document.getElementById(inp.dataset.filter),q=inp.value.toLowerCase();table.querySelectorAll('tbody tr').forEach(r=>r.classList.toggle('hidden',!r.innerText.toLowerCase().includes(q)))}));
 document.querySelectorAll('[data-status-filter]').forEach(sel=>sel.addEventListener('change',()=>{let table=document.getElementById(sel.dataset.statusFilter),q=sel.value.toLowerCase();table.querySelectorAll('tbody tr').forEach(r=>r.classList.toggle('hidden',q&&!r.innerText.toLowerCase().includes(q)))}));
-document.querySelectorAll('[data-add]').forEach(b=>b.onclick=()=>toast('Demo action: '+b.dataset.add+' creation would open a validated entry form.'));
+/* Workflow creation is handled by the interactive demo form below. */
 document.getElementById('hospitalSelect').onchange=e=>{let v=e.target.value;document.querySelectorAll('.hospital').forEach(r=>r.classList.toggle('hidden',v!=='all'&&r.dataset.hosp!==v));toast(v==='all'?'Showing the full hospital group.':'Showing '+e.target.options[e.target.selectedIndex].text+'.')};
 function exportText(){let data='CARELOOP — WORKFLOW SUMMARY\nDemo data only\n\nOpen actions: 48\nOverdue actions: 7\nHandover completion: 94%\nTransitions in progress: 16\n\nThis is an illustrative prototype, not a live clinical system.';let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type:'text/plain'}));a.download='careloop-demo-summary.txt';a.click();URL.revokeObjectURL(a.href);toast('Demo summary exported.')}
-document.getElementById('exportBtn').onclick=exportText;document.getElementById('auditExport').onclick=exportText;document.getElementById('newTask').onclick=()=>toast('Demo action: choose a workflow module to create an assigned action.');
+document.getElementById('exportBtn').onclick=exportText;document.getElementById('auditExport').onclick=exportText;/* Create action opens the interactive demo form below. */
 </script>
 <script>
 (()=>{
@@ -132,17 +132,26 @@ function makeRow(r){
 }
 function persist(){try{localStorage.setItem(KEY,JSON.stringify(records))}catch(e){toast('This browser could not save demo data. Please check storage settings.')}}
 function addSavedRows(){records.forEach(r=>{const id=r.type==='handover'?'handoverTable':r.type==='followup'?'followupTable':'transitionTable';const table=$(id);if(table)table.tBodies[0].appendChild(makeRow(r))});refreshCounts()}
-function refreshCounts(){const open=records.filter(r=>r.status!=='Completed'&&r.status!=='Acknowledged'&&r.status!=='Coordinated').length;const el=$('openCount');if(el)el.textContent=48+open}
+function refreshCounts(){const open=records.filter(r=>r.status!=='Completed'&&r.status!=='Acknowledged'&&r.status!=='Coordinated').length;const note=$('demoRecordCount');if(note)note.textContent=records.length+' locally saved demo records · '+open+' still open';}
 $('demoForm').addEventListener('submit',e=>{
  e.preventDefault();const t=type.value;const id='d'+Date.now();const due=$('demoDue').value;const record={id,type:t,facility:$('demoFacility').value,department:$('demoDepartment').value.trim(),owner:$('demoOwner').value.trim(),task:$('demoTask').value.trim(),due,priority:$('demoPriority').value,status:t==='handover'?'Awaiting':t==='transition'?'In progress':(due<new Date().toISOString().slice(0,10)?'Overdue':'Due today'),ref:(t==='followup'?'FU-D':t==='transition'?'TR-D':'HO-D')+String(records.length+1).padStart(3,'0'),shift:$('demoShift').value,transition:$('demoTransition').value,steps:Number($('demoSteps').value||0)};
  records.unshift(record);persist();const tid=t==='handover'?'handoverTable':t==='followup'?'followupTable':'transitionTable';$(tid).tBodies[0].prepend(makeRow(record));closeModal();$('demoForm').reset();refreshCounts();toast('Demo record saved on this device.');applyHospitalFilter();
 });
 document.addEventListener('click',e=>{const b=e.target.closest('[data-demo-action]');if(!b)return;const tr=b.closest('tr[data-demo-id]');if(!tr)return;const r=records.find(x=>x.id===tr.dataset.demoId);if(!r)return;const action=b.dataset.demoAction;if(action==='delete'){records=records.filter(x=>x.id!==r.id);tr.remove();toast('Demo record removed.')}else if(action==='ack'){r.status='Acknowledged';tr.cells[5].innerHTML=statusPill(r.status);tr.cells[6].innerHTML='<span class="sub">Received</span> <button data-demo-action="delete">Remove</button>';toast('Handover acknowledged in this browser.')}else if(action==='complete'){r.status=r.type==='transition'?'Coordinated':'Completed';tr.cells[tr.cells.length-2].innerHTML=statusPill(r.status);tr.cells[tr.cells.length-1].innerHTML='<span class="sub">Updated</span> <button data-demo-action="delete">Remove</button>';toast('Demo record updated.')}persist();refreshCounts()});
-function applyHospitalFilter(){const v=$('hospitalSelect').value;document.querySelectorAll('tr[data-demo-id]').forEach(r=>r.classList.toggle('hidden',v!=='all'&&r.dataset.hosp!==v))}
+function applyHospitalFilter(){
+ const v=$('hospitalSelect').value;
+ document.querySelectorAll('.hospital').forEach(r=>r.classList.toggle('hidden',v!=='all'&&r.dataset.hosp!==v));
+ document.querySelectorAll('table.data-table tbody tr').forEach(r=>{
+  if(r.dataset.demoId){r.classList.toggle('hidden',v!=='all'&&r.dataset.hosp!==v);return}
+  const txt=r.innerText.toLowerCase();
+  const key=txt.includes('central city')?'central':txt.includes('coastal')?'coastal':txt.includes('northview')?'north':null;
+  r.classList.toggle('hidden',v!=='all'&&key!==v);
+ });
+}
 $('hospitalSelect').addEventListener('change',applyHospitalFilter);
 document.querySelectorAll('[data-filter]').forEach(inp=>inp.addEventListener('input',()=>{const table=$(inp.dataset.filter);if(!table)return;const q=inp.value.toLowerCase();table.querySelectorAll('tbody tr').forEach(r=>r.classList.toggle('hidden',!r.innerText.toLowerCase().includes(q)))}));
 document.querySelectorAll('[data-status-filter]').forEach(sel=>sel.addEventListener('change',()=>{const table=$(sel.dataset.statusFilter);if(!table)return;const q=sel.value.toLowerCase();table.querySelectorAll('tbody tr').forEach(r=>r.classList.toggle('hidden',!!q&&!r.innerText.toLowerCase().includes(q)))}));
 addSavedRows();
-const note=document.createElement('div');note.className='notice';note.textContent='Interactive demonstration only. New records and status changes are saved locally in this browser; they are not shared between users and are not part of a live clinical record.';const first=$('overview').querySelector('.page-head');if(first)first.insertAdjacentElement('afterend',note);
+const note=document.createElement('div');note.className='notice';note.innerHTML='<strong>Interactive demonstration only.</strong> All sample records are fictional. New records and their status changes are saved only in this browser; they are not shared between users or connected to a live clinical record. <span id="demoRecordCount"></span>';const first=$('overview').querySelector('.page-head');if(first)first.insertAdjacentElement('afterend',note);
 })();
 </script></body></html>
