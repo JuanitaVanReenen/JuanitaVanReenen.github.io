@@ -324,5 +324,16 @@ create policy audit_events_read_member on public.audit_events
 for select to authenticated
 using (public.careloop_can_access_hospital(hospital_id));
 
+-- Explicit API privileges: row-level security policies still constrain each row.
+grant usage on schema public to authenticated;
+grant select on public.organizations, public.hospitals, public.departments,
+  public.profiles, public.organization_memberships, public.hospital_memberships,
+  public.workflow_items, public.audit_events to authenticated;
+grant insert, update, delete on public.workflow_items to authenticated;
+grant execute on function public.careloop_can_access_hospital(uuid) to authenticated;
+grant execute on function public.careloop_can_access_organization(uuid) to authenticated;
+grant execute on function public.careloop_is_group_admin(uuid) to authenticated;
+grant execute on function public.careloop_can_manage_hospital(uuid) to authenticated;
+
 -- No direct INSERT/UPDATE/DELETE policy is intentionally granted on audit_events.
 -- The trigger writes audit rows so application users cannot rewrite history.
