@@ -99,7 +99,21 @@ document.querySelectorAll('[data-filter]').forEach(inp=>inp.addEventListener('in
 document.querySelectorAll('[data-status-filter]').forEach(sel=>sel.addEventListener('change',()=>{let table=document.getElementById(sel.dataset.statusFilter),q=sel.value.toLowerCase();table.querySelectorAll('tbody tr').forEach(r=>r.classList.toggle('hidden',q&&!r.innerText.toLowerCase().includes(q)))}));
 /* Workflow creation is handled by the interactive demo form below. */
 document.getElementById('hospitalSelect').onchange=e=>{let v=e.target.value;document.querySelectorAll('.hospital').forEach(r=>r.classList.toggle('hidden',v!=='all'&&r.dataset.hosp!==v));toast(v==='all'?'Showing the full hospital group.':'Showing '+e.target.options[e.target.selectedIndex].text+'.')};
-function exportText(){let data='CARELOOP — WORKFLOW SUMMARY\nDemo data only\n\nOpen actions: 48\nOverdue actions: 7\nHandover completion: 94%\nTransitions in progress: 16\n\nThis is an illustrative prototype, not a live clinical system.';let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type:'text/plain'}));a.download='careloop-demo-summary.txt';a.click();URL.revokeObjectURL(a.href);toast('Demo summary exported.')}
+function exportText(){
+ const rows=records.map(r=>({
+  reference:r.ref||r.id,workflow:r.type,facility:r.facility,department:r.department,
+  task:r.task||r.shift||r.transition||'',owner:r.owner||'Unassigned',status:r.status,
+  priority:r.priority||'',due:r.due||'',blocker:r.blocker||'',
+  createdAt:(r.lifecycleHistory||[])[0]?.at||'',
+  lastUpdated:(r.lifecycleHistory||[]).slice(-1)[0]?.at||'',
+  lifecycleEvents:(r.lifecycleHistory||[]).length
+ }));
+ const fields=['reference','workflow','facility','department','task','owner','status','priority','due','blocker','createdAt','lastUpdated','lifecycleEvents'];
+ const csvCell=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
+ const csv=[fields.join(','),...rows.map(row=>fields.map(k=>csvCell(row[k])).join(','))].join('\\r\\n');
+ const summary='CARELOOP — LOCAL DEMONSTRATION EXPORT\\nFICTIONAL DEMO DATA ONLY — NOT A CLINICAL RECORD OR VERIFIED AUDIT LOG\\n\\nRecords exported: '+rows.length+'\\nOpen records: '+records.filter(r=>!['Completed','Acknowledged','Coordinated'].includes(r.status)).length+'\\nOverdue / urgent: '+records.filter(r=>{const a=attentionFor(r);return a.label.includes('Overdue')||a.label.includes('Urgent')}).length+'\\nBlocked: '+records.filter(r=>r.status==='Blocked').length+'\\n\\nThe CSV contains only records saved in this browser. Static sample dashboard figures are excluded. No server, shared hospital data, or secure audit service is connected.\\n\\n'+(rows.length?csv:'No locally created records were available when this export was made.');
+ const a=document.createElement('a');const url=URL.createObjectURL(new Blob([summary],{type:'text/csv;charset=utf-8'}));a.href=url;a.download='careloop-local-demo-export.csv';a.click();URL.revokeObjectURL(url);toast('Local demo records exported; static sample figures were excluded.');
+}
 document.getElementById('exportBtn').onclick=exportText;document.getElementById('auditExport').onclick=exportText;/* Create action opens the interactive demo form below. */
 </script>
 <script>
