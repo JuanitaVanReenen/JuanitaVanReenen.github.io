@@ -58,6 +58,10 @@ Before paid infrastructure, live integrations or broad outreach, validate the wo
 
 The preferred commercial outcome is an outright software/IP sale where a credible strategic buyer exists. No company has endorsed, agreed to buy, or committed to pilot CARELOOP unless separately documented.
 
+## Handover usability correction
+
+The new-record handover row now displays its acknowledgement action for the actual `Awaiting acknowledgement` state used when records are created. The handover status filter also includes that state. This corrects a mismatch that previously hid the acknowledgement control for newly created handovers. This is a front-end demo correction only.
+
 ## Access-control design milestone
 
 The staff workspace specification now defines the intended scope and capability boundaries for all six roles, mandatory server-side authorisation checks, and negative acceptance tests for cross-organisation, cross-hospital, cross-department and cross-user access. The public role selector remains a visual preview only: it does not filter records or enforce access. No backend permissions are active.
