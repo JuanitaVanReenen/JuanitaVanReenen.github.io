@@ -23,6 +23,7 @@ CARELOOP is intended to complement existing hospital systems, not replace an ele
 - `SECURITY_TEST_PLAN.md` — pre-production security and release checklist.
 - `BACKEND_ARCHITECTURE.md` — proposed backend, API, roles, workflow lifecycles and integration stages.
 - `BACKEND_PROVIDER_DECISION.md` — provider shortlist, cost guardrails and deployment decision gate.
+- `STAFF_WORKSPACE_SPEC.md` — six role-specific views over the same integrated workflows and shared accountability model.
 
 ## Database migration order
 
@@ -43,7 +44,7 @@ The SQL files are draft migrations and must be reviewed and applied in numerical
 - There are no live notifications, server-side escalations, or real hospital integrations.
 - Membership provisioning and role administration require a separately designed trusted administrative service; browser-side role changes are intentionally not enabled in the draft.
 - The database drafts still require execution in an isolated environment, role-by-role RLS tests, specialist security review, privacy/legal review, clinical safety review, and hosting/data-residency decisions.
-- Department-aware owner eligibility has a draft migration, but requires execution and role-by-role testing before production.
+- Department-aware owner eligibility has a draft migration, but requires execution and role-by-role testing before production. Only operational roles (department manager, clinician, staff) and hospital administrators are eligible owners; viewers are excluded.
 - The public demonstration must not be represented as a certified clinical system or production-ready hospital platform.
 
 ## Validation and commercial direction
