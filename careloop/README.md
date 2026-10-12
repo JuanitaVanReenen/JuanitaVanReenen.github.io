@@ -20,6 +20,7 @@ CARELOOP is intended to complement existing hospital systems, not replace an ele
 - `database/003_membership_policy_correction.sql` — membership checks used by workflow owner validation.
 - `database/004_department_scope.sql` — department-scoped workflow editing and membership visibility.
 - `SECURITY_TEST_PLAN.md` — pre-production security and release checklist.
+- `BACKEND_ARCHITECTURE.md` — proposed backend, API, roles, workflow lifecycles and integration stages.
 
 ## Database migration order
 
