@@ -19,6 +19,7 @@ CARELOOP is intended to complement existing hospital systems, not replace an ele
 - `database/002_security_hardening.sql` — immutable workflow identity fields and reduced audit payloads.
 - `database/003_membership_policy_correction.sql` — membership checks used by workflow owner validation.
 - `database/004_department_scope.sql` — department-scoped workflow editing and membership visibility.
+- `database/005_owner_department_eligibility.sql` — department-aware owner assignment.
 - `SECURITY_TEST_PLAN.md` — pre-production security and release checklist.
 - `BACKEND_ARCHITECTURE.md` — proposed backend, API, roles, workflow lifecycles and integration stages.
 - `BACKEND_PROVIDER_DECISION.md` — provider shortlist, cost guardrails and deployment decision gate.
@@ -42,7 +43,7 @@ The SQL files are draft migrations and must be reviewed and applied in numerical
 - There are no live notifications, server-side escalations, or real hospital integrations.
 - Membership provisioning and role administration require a separately designed trusted administrative service; browser-side role changes are intentionally not enabled in the draft.
 - The database drafts still require execution in an isolated environment, role-by-role RLS tests, specialist security review, privacy/legal review, clinical safety review, and hosting/data-residency decisions.
-- Department-level owner eligibility needs a further explicit rule and tests before production.
+- Department-aware owner eligibility has a draft migration, but requires execution and role-by-role testing before production.
 - The public demonstration must not be represented as a certified clinical system or production-ready hospital platform.
 
 ## Validation and commercial direction
