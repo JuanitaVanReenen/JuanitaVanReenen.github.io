@@ -106,30 +106,6 @@ const pages=['overview','handovers','followups','transitions','accountability','
 function toast(s){let t=document.getElementById('toast');t.textContent=s;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500)}
 function go(p){pages.forEach(x=>document.getElementById(x).classList.toggle('hidden',x!==p));document.querySelectorAll('[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===p));document.getElementById('crumb').textContent=names[p];document.getElementById('sidebar').classList.remove('open');window.scrollTo({top:0,behavior:'smooth'})}
 document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.page)));document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.go)));document.getElementById('menu').onclick=()=>document.getElementById('sidebar').classList.toggle('open');
-const STATIC_HANDOVER_KEY='careloop-static-handover-history-v1';
-let staticHandoverHistory=[];
-try{staticHandoverHistory=JSON.parse(localStorage.getItem(STATIC_HANDOVER_KEY)||'[]');if(!Array.isArray(staticHandoverHistory))staticHandoverHistory=[]}catch(e){staticHandoverHistory=[]}
-function handoverRowKey(row){return [row.cells[0]?.innerText.trim(),row.cells[1]?.innerText.trim(),row.cells[2]?.innerText.trim()].join('|')}
-function renderStaticHandoverHistory(){
- const host=$('staticHandoverHistory');if(!host)return;
- host.innerHTML=staticHandoverHistory.length?staticHandoverHistory.slice().reverse().map(x=>'<div class="event"><div class="event-icon">✓</div><div><strong>Handover receipt acknowledged</strong><p>'+safe(x.department)+' · '+safe(x.facility)+' · '+safe(x.shift)+'</p><time>Received by '+safe(x.receivingOwner)+' · '+safe(new Date(x.at).toLocaleString())+'</time></div></div>').join(''):'<div class="sub">No acknowledgements have been recorded in this browser yet.</div>';
-}
-function applyStaticHandoverHistory(){
- document.querySelectorAll('#handoverTable tbody tr:not([data-demo-id])').forEach(row=>{
-  const saved=staticHandoverHistory.find(x=>x.key===handoverRowKey(row));
-  if(saved){row.cells[5].innerHTML='<span class="pill green">Acknowledged</span>';row.cells[6].innerHTML='<span class="sub">Received</span>';}
- });
- renderStaticHandoverHistory();
-}
-applyStaticHandoverHistory();
-document.querySelectorAll('.ack').forEach(b=>b.onclick=()=>{
- const row=b.closest('tr');if(!row)return;
- const entry={key:handoverRowKey(row),department:row.cells[0]?.innerText.trim()||'',facility:row.cells[1]?.innerText.trim()||'',shift:row.cells[2]?.innerText.trim()||'',receivingOwner:row.cells[4]?.innerText.trim()||'Receiving owner not specified',at:new Date().toISOString()};
- staticHandoverHistory=staticHandoverHistory.filter(x=>x.key!==entry.key);staticHandoverHistory.push(entry);
- try{localStorage.setItem(STATIC_HANDOVER_KEY,JSON.stringify(staticHandoverHistory));}catch(e){toast('Could not save the handover history in this browser.');return;}
- row.cells[5].innerHTML='<span class="pill green">Acknowledged</span>';row.cells[6].innerHTML='<span class="sub">Received</span>';
- b.remove();renderStaticHandoverHistory();toast('Handover receipt and timestamp saved in this browser demo.');
-});
 const STATIC_FOLLOWUP_KEY='careloop-static-followup-status-v1';
 let staticFollowupStatuses={};
 try{staticFollowupStatuses=JSON.parse(localStorage.getItem(STATIC_FOLLOWUP_KEY)||'{}');if(!staticFollowupStatuses||typeof staticFollowupStatuses!=='object')staticFollowupStatuses={}}catch(e){staticFollowupStatuses={}}
@@ -173,6 +149,31 @@ document.getElementById('exportBtn').onclick=exportText;document.getElementById(
 const KEY='careloop-demo-records-v2';
 const $=id=>document.getElementById(id);
 const safe=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const STATIC_HANDOVER_KEY='careloop-static-handover-history-v1';
+let staticHandoverHistory=[];
+try{staticHandoverHistory=JSON.parse(localStorage.getItem(STATIC_HANDOVER_KEY)||'[]');if(!Array.isArray(staticHandoverHistory))staticHandoverHistory=[]}catch(e){staticHandoverHistory=[]}
+function handoverRowKey(row){return [row.cells[0]?.innerText.trim(),row.cells[1]?.innerText.trim(),row.cells[2]?.innerText.trim()].join('|')}
+function renderStaticHandoverHistory(){
+ const host=$('staticHandoverHistory');if(!host)return;
+ host.innerHTML=staticHandoverHistory.length?staticHandoverHistory.slice().reverse().map(x=>'<div class="event"><div class="event-icon">✓</div><div><strong>Handover receipt acknowledged</strong><p>'+safe(x.department)+' · '+safe(x.facility)+' · '+safe(x.shift)+'</p><time>Received by '+safe(x.receivingOwner)+' · '+safe(new Date(x.at).toLocaleString())+'</time></div></div>').join(''):'<div class="sub">No acknowledgements have been recorded in this browser yet.</div>';
+}
+function applyStaticHandoverHistory(){
+ document.querySelectorAll('#handoverTable tbody tr:not([data-demo-id])').forEach(row=>{
+  const saved=staticHandoverHistory.find(x=>x.key===handoverRowKey(row));
+  if(saved){row.cells[5].innerHTML='<span class="pill green">Acknowledged</span>';row.cells[6].innerHTML='<span class="sub">Received</span>';}
+ });
+ renderStaticHandoverHistory();
+}
+applyStaticHandoverHistory();
+document.querySelectorAll('.ack').forEach(b=>b.onclick=()=>{
+ const row=b.closest('tr');if(!row)return;
+ const entry={key:handoverRowKey(row),department:row.cells[0]?.innerText.trim()||'',facility:row.cells[1]?.innerText.trim()||'',shift:row.cells[2]?.innerText.trim()||'',receivingOwner:row.cells[4]?.innerText.trim()||'Receiving owner not specified',at:new Date().toISOString()};
+ staticHandoverHistory=staticHandoverHistory.filter(x=>x.key!==entry.key);staticHandoverHistory.push(entry);
+ try{localStorage.setItem(STATIC_HANDOVER_KEY,JSON.stringify(staticHandoverHistory));}catch(e){toast('Could not save the handover history in this browser.');return;}
+ row.cells[5].innerHTML='<span class="pill green">Acknowledged</span>';row.cells[6].innerHTML='<span class="sub">Received</span>';
+ b.remove();renderStaticHandoverHistory();toast('Handover receipt and timestamp saved in this browser demo.');
+});
+
 let records=[];
 try{records=JSON.parse(localStorage.getItem(KEY)||'[]');if(!Array.isArray(records))records=[]}catch(e){records=[]}
 const modal=document.createElement('div');
