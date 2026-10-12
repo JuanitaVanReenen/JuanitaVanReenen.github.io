@@ -148,6 +148,28 @@ function logLifecycle(r,stage,note,actor){r.lifecycleHistory=Array.isArray(r.lif
 function persist(){try{localStorage.setItem(KEY,JSON.stringify(records))}catch(e){toast('This browser could not save demo data. Please check storage settings.')}}
 function addSavedRows(){records.forEach(r=>{const id=r.type==='handover'?'handoverTable':r.type==='followup'?'followupTable':'transitionTable';const table=$(id);if(table)table.tBodies[0].appendChild(makeRow(r))});refreshCounts()}
 function refreshCounts(){const open=records.filter(r=>r.status!=='Completed'&&r.status!=='Acknowledged'&&r.status!=='Coordinated').length;const note=$('demoRecordCount');if(note)note.textContent=records.length+' locally saved demo records · '+open+' still open';}
+function exportLocalDemoRecords(){
+ const fields=['reference','workflow','facility','department','task','owner','status','priority','due','blocker','createdAt','lastUpdated','lifecycleEvents','data_notice'];
+ const cell=v=>{let value=String(v??'');if(/^\\s*[=+\\-@]/.test(value))value="'"+value;return '"'+value.replace(/"/g,'""')+'"';};
+ const rows=records.map(r=>({
+  reference:r.ref||r.id,workflow:r.type,facility:r.facility,department:r.department,
+  task:r.task||r.summary||r.shift||r.transition||'',owner:r.owner||'Unassigned',
+  status:r.status,priority:r.priority||'',due:r.due||'',blocker:r.blocker||'',
+  createdAt:(r.lifecycleHistory||[])[0]?.at||'',
+  lastUpdated:(r.lifecycleHistory||[]).slice(-1)[0]?.at||'',
+  lifecycleEvents:(r.lifecycleHistory||[]).length,
+  data_notice:'FICTIONAL LOCAL DEMO DATA ONLY — NOT A CLINICAL RECORD OR VERIFIED AUDIT LOG'
+ }));
+ const csv=[fields.join(','),...rows.map(row=>fields.map(k=>cell(row[k])).join(','))].join('\\r\\n');
+ const blob=new Blob(['\\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
+ const url=URL.createObjectURL(blob),a=document.createElement('a');
+ a.href=url;a.download='careloop-local-demo-export.csv';
+ document.body.appendChild(a);a.click();a.remove();
+ setTimeout(()=>URL.revokeObjectURL(url),1000);
+ toast('CSV exported: '+rows.length+' locally saved demo records. Static sample figures are excluded.');
+}
+$('exportBtn').onclick=exportLocalDemoRecords;
+$('auditExport').onclick=exportLocalDemoRecords;
 function attentionFor(r){
  if(['Completed','Coordinated'].includes(r.status)||(r.type==='handover'&&r.status==='Acknowledged'))return {label:'Closed',manager:'No review needed',next:'No further action'};
  const today=new Date();today.setHours(0,0,0,0);
