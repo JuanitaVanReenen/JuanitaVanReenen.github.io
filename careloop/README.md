@@ -86,3 +86,7 @@ The overview separates locally calculated browser-demo workload from fixed illus
 ## Export spreadsheet safety
 
 CSV export quotes and escapes cell values and prefixes values beginning (after optional whitespace) with spreadsheet formula-trigger characters (`=`, `+`, `-`, `@`) to reduce formula-injection risk when opened in spreadsheet software. Exported task descriptions also fall back to the summary field when present. This is a defensive formatting measure, not a guarantee against every spreadsheet application's import behaviour.
+
+## Workflow lifecycle and filter consistency correction
+
+The local demo now prevents a follow-up or admission/discharge action from being acknowledged while it has no assigned owner; the interface directs the user to assign an eligible fictional owner in the Accountability centre first. Search, status and hospital filters are also combined so applying one does not overwrite the visibility decision made by another. These are browser-side demonstration safeguards. Source-level checks passed; full browser interaction testing remains outstanding.
