@@ -79,7 +79,7 @@
 <div class="workflow-step"><div class="step-no">02</div><div class="step-text"><strong>Receiving department notified</strong><small>Ward coordinator · acknowledgement</small></div><span class="pill green">Done</span></div>
 <div class="workflow-step"><div class="step-no">03</div><div class="step-text"><strong>Transfer handover prepared</strong><small>Sending team · outstanding actions</small></div><span class="pill amber">Pending</span></div>
 <div class="workflow-step"><div class="step-no">04</div><div class="step-text"><strong>Arrival confirmation</strong><small>Receiving team · awaiting update</small></div><span class="pill blue">In progress</span></div>
-</div></div><div class="panel"><div class="panel-head"><div><h3>Transition register</h3><p>Workflow coordination references only</p></div></div><div class="table-wrap"><table class="data-table" id="transitionTable"><thead><tr><th>Reference</th><th>Facility</th><th>Type</th><th>Coordinator</th><th>Outstanding steps</th><th>Status</th></tr></thead><tbody><tr><td>TR-2208</td><td>Central City</td><td>Discharge</td><td>R. Amadhila</td><td>2</td><td><span class="pill amber">At risk</span></td></tr><tr><td>TR-2209</td><td>Coastal Medical</td><td>Admission</td><td>E. Shikongo</td><td>1</td><td><span class="pill blue">In progress</span></td></tr><tr><td>TR-2210</td><td>Northview</td><td>Discharge</td><td>N. Iiyambo</td><td>0</td><td><span class="pill green">Coordinated</span></td></tr></tbody></table></div></div></section>
+</div></div><div class="panel"><div class="panel-head"><div><h3>Transition register</h3><p>Workflow coordination references only</p></div></div><div class="table-wrap"><table class="data-table" id="transitionTable"><thead><tr><th>Reference</th><th>Facility</th><th>Type</th><th>Coordinator</th><th>Outstanding steps</th><th>Status</th><th>Available actions</th></tr></thead><tbody></tbody></table></div></div></section>
 <section id="accountability" class="page hidden"><div class="page-head"><div><div class="eyebrow">Management visibility</div><h1>Accountability centre</h1><div class="sub">One operational view of ownership, acknowledgement, escalation and closure.</div></div><div class="head-right"><button class="btn" id="auditExport">↓ Export activity</button></div></div><div class="stats"><div class="stat"><div class="stat-top">Actions with an owner</div><div class="stat-num">91%</div><div class="stat-foot">Assigned responsibility recorded</div></div><div class="stat"><div class="stat-top">Acknowledgement rate</div><div class="stat-num">84%</div><div class="stat-foot">Receiving owner confirmation</div></div><div class="stat"><div class="stat-top">On-time closure</div><div class="stat-num">78%</div><div class="stat-foot">Within recorded due time</div></div><div class="stat"><div class="stat-top">Escalations today</div><div class="stat-num">7</div><div class="stat-foot">Past configured thresholds</div></div></div><div class="dashboard-grid"><div class="panel"><div class="panel-head"><div><h3>Accountability activity</h3><p>Illustrative audit events</p></div></div><div class="activity">
 <div class="event"><div class="event-icon">✓</div><div><strong>Action owner acknowledged</strong><p>FU-1049 · Outpatients · S. Nandi</p><time>Today, 08:42 · Owner confirmation recorded</time></div></div>
 <div class="event"><div class="event-icon am">↗</div><div><strong>Escalation threshold reached</strong><p>FU-1048 · Cardiology · Department manager notified</p><time>Today, 08:30 · Escalation event</time></div></div>
@@ -146,6 +146,17 @@ function makeRow(r){
 }
 function logLifecycle(r,stage,note,actor){r.lifecycleHistory=Array.isArray(r.lifecycleHistory)?r.lifecycleHistory:[];r.lifecycleHistory.push({stage,at:new Date().toISOString(),actor:actor||r.owner||'Demo workspace',note:note||''});}
 function persist(){try{localStorage.setItem(KEY,JSON.stringify(records))}catch(e){toast('This browser could not save demo data. Please check storage settings.')}}
+function seedTransitionDemoRows(){
+ const today=new Date();today.setHours(0,0,0,0);
+ const dateOffset=n=>{const d=new Date(today);d.setDate(d.getDate()+n);return d.toISOString().slice(0,10)};
+ const samples=[
+  {id:'seed-tr-2208',ref:'TR-2208',type:'transition',facility:'Central City',department:'Discharge coordination',transition:'Discharge',owner:'R. Amadhila',ownerRole:'Hospital administrator',steps:2,status:'In progress',priority:'Urgent',due:dateOffset(-1)},
+  {id:'seed-tr-2209',ref:'TR-2209',type:'transition',facility:'Coastal Medical',department:'Admission coordination',transition:'Admission',owner:'E. Shikongo',ownerRole:'Department manager',steps:1,status:'In progress',priority:'Normal',due:dateOffset(0)},
+  {id:'seed-tr-2210',ref:'TR-2210',type:'transition',facility:'Northview',department:'Discharge coordination',transition:'Discharge',owner:'N. Iiyambo',ownerRole:'Department manager',steps:0,status:'Coordinated',priority:'Normal',due:dateOffset(0)}
+ ];
+ samples.forEach(sample=>{if(!records.some(r=>r.ref===sample.ref)){sample.lifecycleHistory=[{stage:'Fictional sample transition loaded',at:new Date().toISOString(),actor:'CARELOOP demo',note:'Synthetic demonstration record; no patient information'}];records.push(sample)}});
+ persist();
+}
 function addSavedRows(){records.forEach(r=>{const id=r.type==='handover'?'handoverTable':r.type==='followup'?'followupTable':'transitionTable';const table=$(id);if(table)table.tBodies[0].appendChild(makeRow(r))});refreshCounts()}
 function refreshCounts(){const open=records.filter(r=>r.status!=='Completed'&&r.status!=='Acknowledged'&&r.status!=='Coordinated').length;const note=$('demoRecordCount');if(note)note.textContent=records.length+' locally saved demo records · '+open+' still open';}
 function exportLocalDemoRecords(){
@@ -283,6 +294,7 @@ function renderRolePreview(){
 }
 document.getElementById('rolePreview')?.addEventListener('change',renderRolePreview);
 renderRolePreview();
+seedTransitionDemoRows();
 addSavedRows();
 renderAccountabilityDemo();
 renderNetworkDemo();
