@@ -116,7 +116,7 @@ returns boolean
 language sql
 stable
 security definer
-set search_path = public
+set search_path = pg_catalog, public
 as $$
   select exists (
     select 1
@@ -139,7 +139,7 @@ returns boolean
 language sql
 stable
 security definer
-set search_path = public
+set search_path = pg_catalog, public
 as $
   select exists (
     select 1 from public.organization_memberships om
@@ -157,11 +157,36 @@ returns boolean
 language sql
 stable
 security definer
-set search_path = public
+set search_path = pg_catalog, public
 as $
   select exists (
     select 1 from public.organization_memberships om
     where om.organization_id = target_organization
+      and om.user_id = auth.uid()
+      and om.role = 'group_admin'
+  );
+$;
+
+create or replace function public.careloop_can_edit_hospital(target_hospital uuid)
+returns boolean
+language sql
+stable
+security definer
+set search_path = pg_catalog, public
+as $
+  select exists (
+    select 1
+    from public.hospital_memberships hm
+    where hm.hospital_id = target_hospital
+      and hm.user_id = auth.uid()
+      and hm.role in ('hospital_admin', 'department_manager', 'clinician', 'staff')
+  )
+  or exists (
+    select 1
+    from public.hospitals h
+    join public.organization_memberships om
+      on om.organization_id = h.organization_id
+    where h.id = target_hospital
       and om.user_id = auth.uid()
       and om.role = 'group_admin'
   );
@@ -172,7 +197,7 @@ returns boolean
 language sql
 stable
 security definer
-set search_path = public
+set search_path = pg_catalog, public
 as $$
   select exists (
     select 1
@@ -211,7 +236,7 @@ create or replace function public.careloop_write_audit_event()
 returns trigger
 language plpgsql
 security definer
-set search_path = public
+set search_path = pg_catalog, public
 as $$
 declare
   old_row jsonb;
@@ -304,15 +329,33 @@ drop policy if exists workflow_items_insert_member on public.workflow_items;
 create policy workflow_items_insert_member on public.workflow_items
 for insert to authenticated
 with check (
-  public.careloop_can_access_hospital(hospital_id)
+  public.careloop_can_edit_hospital(hospital_id)
   and created_by = auth.uid()
+  and (
+    owner_user_id is null
+    or exists (
+      select 1 from public.hospital_memberships owner_membership
+      where owner_membership.hospital_id = workflow_items.hospital_id
+        and owner_membership.user_id = workflow_items.owner_user_id
+    )
+  )
 );
 
 drop policy if exists workflow_items_update_member on public.workflow_items;
 create policy workflow_items_update_member on public.workflow_items
 for update to authenticated
-using (public.careloop_can_access_hospital(hospital_id))
-with check (public.careloop_can_access_hospital(hospital_id));
+using (public.careloop_can_edit_hospital(hospital_id))
+with check (
+  public.careloop_can_edit_hospital(hospital_id)
+  and (
+    owner_user_id is null
+    or exists (
+      select 1 from public.hospital_memberships owner_membership
+      where owner_membership.hospital_id = workflow_items.hospital_id
+        and owner_membership.user_id = workflow_items.owner_user_id
+    )
+  )
+);
 
 drop policy if exists workflow_items_delete_manager on public.workflow_items;
 create policy workflow_items_delete_manager on public.workflow_items
@@ -324,16 +367,27 @@ create policy audit_events_read_member on public.audit_events
 for select to authenticated
 using (public.careloop_can_access_hospital(hospital_id));
 
+-- Workflow creation/editing is limited to non-viewer hospital roles or group admins.
+-- Assigned owners must be members of the same hospital.
 -- Explicit API privileges: row-level security policies still constrain each row.
 grant usage on schema public to authenticated;
 grant select on public.organizations, public.hospitals, public.departments,
   public.profiles, public.organization_memberships, public.hospital_memberships,
   public.workflow_items, public.audit_events to authenticated;
 grant insert, update, delete on public.workflow_items to authenticated;
+revoke all on function public.careloop_can_access_hospital(uuid) from public, anon;
+revoke all on function public.careloop_can_access_organization(uuid) from public, anon;
+revoke all on function public.careloop_is_group_admin(uuid) from public, anon;
+revoke all on function public.careloop_can_edit_hospital(uuid) from public, anon;
+revoke all on function public.careloop_can_manage_hospital(uuid) from public, anon;
+revoke all on function public.careloop_set_updated_at() from public, anon, authenticated;
+revoke all on function public.careloop_write_audit_event() from public, anon, authenticated;
+
 grant execute on function public.careloop_can_access_hospital(uuid) to authenticated;
 grant execute on function public.careloop_can_access_organization(uuid) to authenticated;
 grant execute on function public.careloop_is_group_admin(uuid) to authenticated;
 grant execute on function public.careloop_can_manage_hospital(uuid) to authenticated;
+grant execute on function public.careloop_can_edit_hospital(uuid) to authenticated;
 
 -- No direct INSERT/UPDATE/DELETE policy is intentionally granted on audit_events.
 -- The trigger writes audit rows so application users cannot rewrite history.
