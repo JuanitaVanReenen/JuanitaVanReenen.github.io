@@ -1,0 +1,22 @@
+name: Package Wonder Garden for Playgama
+on:
+  push:
+    paths:
+      - 'wonder-garden/index.html'
+      - 'wonder-garden/playgama-bridge-config.json'
+      - '.github/workflows/package-wonder-garden.yml'
+  workflow_dispatch:
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create Playgama ZIP with files at archive root
+        run: |
+          cd wonder-garden
+          zip -j ../wonder-garden-playgama.zip index.html playgama-bridge-config.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: wonder-garden-playgama
+          path: wonder-garden-playgama.zip
+          if-no-files-found: error
