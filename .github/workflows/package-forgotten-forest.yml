@@ -12,14 +12,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Verify required files
-        run: |
-          test -s forgotten-forest/index.html
-          test -f forgotten-forest/playgama-bridge-config.json
-      - name: Build upload ZIP
+      - name: Download local Three.js engine
         run: |
           cd forgotten-forest
-          zip -9 ../Forgotten-Forest-PlayGama-Sandbox-READY.zip index.html playgama-bridge-config.json
+          curl --fail --location --retry 3 --output three.module.js https://unpkg.com/three@0.160.0/build/three.module.js
+          test -s three.module.js
+          head -c 100 three.module.js
+      - name: Verify and build upload ZIP
+        run: |
+          test -s forgotten-forest/index.html
+          test -s forgotten-forest/playgama-bridge-config.json
+          test -s forgotten-forest/three.module.js
+          cd forgotten-forest
+          zip -9 ../Forgotten-Forest-PlayGama-Sandbox-READY.zip index.html playgama-bridge-config.json three.module.js
           unzip -t ../Forgotten-Forest-PlayGama-Sandbox-READY.zip
           unzip -l ../Forgotten-Forest-PlayGama-Sandbox-READY.zip
       - uses: actions/upload-artifact@v4
