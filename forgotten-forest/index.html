@@ -35,6 +35,26 @@
 <div id="threatAlert" aria-live="polite"></div><div id="fearVignette" aria-hidden="true"></div><div id="discovery" aria-live="polite"><div class="dtitle" id="discoveryTitle">DISCOVERY</div><div class="dbody" id="discoveryBody"></div></div><button id="ffRewardAd" type="button">WATCH AD · +1 MEDKIT</button>
 <div id="hud"><div class="top"><div class="brand">THE FORGOTTEN FOREST</div><div class="objective" id="objective">Find the lost relics · 0 / 3</div><div class="inventory" id="inventory">SUPPLIES · WOOD 0 · BATTERIES 0 · MEDKITS 0</div></div><div class="status"><div id="clock">11:47 PM</div><div id="weatherStatus" style="margin-top:7px;color:#a9c4c6;font-size:10px;letter-spacing:2px">NIGHT AIR · STILL</div><div id="danger">THE WOODS ARE QUIET</div><div id="flareStatus" style="margin-top:8px;color:#e6c98d">FLARE · READY</div><div style="margin-top:10px">HEALTH</div><div class="meter"><div class="meterFill" id="healthFill"></div></div><div style="margin-top:10px">STAMINA</div><div class="stamina"><div class="staminaFill" id="staminaFill"></div></div><div style="margin-top:10px">FLASHLIGHT POWER</div><div class="meter"><div class="batteryFill" id="batteryFill"></div></div></div><button id="pauseBtn" type="button">Ⅱ PAUSE</button><div class="cross"></div><div class="vignette"></div><div class="bottom" id="prompt">FOLLOW THE OLD LANTERNS</div></div>
 <div id="touch"><div class="pad"><button class="up" data-key="KeyW">▲</button><button class="left" data-key="KeyA">◀</button><button class="down" data-key="KeyS">▼</button><button class="right" data-key="KeyD">▶</button></div><div style="display:flex;gap:8px;align-items:end;pointer-events:auto"><button class="act" id="touchLight">LIGHT · L</button><button class="act" id="touchSprint">SPRINT</button><button class="act" id="touchHeal">MEDKIT</button><button class="act" id="touchFlare">FLARE · 1</button><button class="act" id="touchDecoy">SOUND · G</button><button class="act" id="touchInteract">INTERACT</button></div></div>
+<script>
+/* EARLY STARTUP GUARD: keep the opening button responsive while the 3D module loads. */
+(function(){
+ const button=document.getElementById('begin');
+ window.__ffStartPending=false;
+ function showStartupError(message){
+  let box=document.getElementById('ffStartupError');
+  if(!box){box=document.createElement('div');box.id='ffStartupError';box.style.cssText='position:fixed;z-index:99999;left:12px;right:12px;bottom:12px;padding:14px 16px;background:#260d0d;color:#fff;border:1px solid #d66;font:14px/1.45 Arial,sans-serif;white-space:pre-wrap;max-height:35vh;overflow:auto';document.body.appendChild(box);}
+  box.textContent='THE FOREST COULD NOT START\n'+message;
+ }
+ window.addEventListener('error',function(e){showStartupError((e.message||'JavaScript error')+(e.filename?'\n'+e.filename.split('/').pop()+':'+e.lineno:''));});
+ window.addEventListener('unhandledrejection',function(e){const r=e.reason;showStartupError(r&&r.message?r.message:String(r||'Unknown startup promise error'));});
+ if(button){
+  button.addEventListener('click',function(){
+   if(typeof window.__ffBeginGame==='function')window.__ffBeginGame();
+   else {window.__ffStartPending=true;button.querySelector('span').textContent='LOADING THE FOREST…';}
+  },true);
+ }
+})();
+</script>
 <script type="module">
 import * as THREE from 'three';
 // FF_PLAYGAMA_BRIDGE_MONETIZATION_V1
@@ -585,6 +605,7 @@ function wardenGrowl(position=warden.position){if(!audioCtx||!audioOn)return;for
 function stalkerWhisper(position=stalker.position){if(!audioCtx||!audioOn)return;forestNoise(.9,.022,'bandpass',1450,position);forestTone(680,.65,.018,'sine',-390,position);forestNoise(.55,.016,'highpass',2100,position)}
 function creatureWarning(){if(!audioCtx||!audioOn)return;forestTone(520,.22,.035,'sine',-260);setTimeout(()=>forestTone(330,.34,.04,'sine',-180),170)}
 function begin(){if(started)return;started=true;start.style.display='none';hud.style.display='block';const ffAdButton=document.getElementById('ffRewardAd');if(ffAdButton&&!ffRewardGranted){ffAdButton.style.display='block';ffAdButton.onclick=ffShowRewarded;}if(pgBridgeReady)try{pgBridge.platform?.sendMessage?.('gameplay_started');}catch(e){}try{startAudio();}catch(e){console.error('Audio start failed:',e);}if(innerWidth>700){try{renderer.domElement.requestPointerLock?.();}catch(e){console.warn('Pointer lock unavailable:',e);}}else document.getElementById('touch').style.display='flex';}
+window.__ffBeginGame=begin;if(window.__ffStartPending){window.__ffStartPending=false;begin();}
 function pauseGame(){if(!started||ended||paused)return;paused=true;if(pgBridgeReady)try{pgBridge.platform?.sendMessage?.('gameplay_stopped');}catch(e){}document.getElementById('pauseMenu').style.display='flex';document.exitPointerLock?.();for(const k in keys)keys[k]=false;}
 function resumeGame(){if(!paused)return;paused=false;if(pgBridgeReady&&started&&!ended)try{pgBridge.platform?.sendMessage?.('gameplay_started');}catch(e){}document.getElementById('pauseMenu').style.display='none';if(innerWidth>700)renderer.domElement.requestPointerLock?.();}
 function syncPauseVolumes(){const pairs=[['pauseMusic','musicVolume','pauseMusicValue'],['pauseForest','forestVolume','pauseForestValue'],['pauseCreature','creatureVolume','pauseCreatureValue']];for(const [id,source,out] of pairs){const v=document.getElementById(id).value;document.getElementById(source).value=v;document.getElementById(out).textContent=v+'%';}applySoundSettings();}
