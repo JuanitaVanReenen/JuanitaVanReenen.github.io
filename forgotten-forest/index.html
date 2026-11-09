@@ -12,75 +12,6 @@
 
 #wardenScare{display:none;position:fixed;inset:0;z-index:30;pointer-events:none;align-items:center;justify-content:center;flex-direction:column;background:radial-gradient(ellipse at center,rgba(70,0,0,.35),rgba(0,0,0,.94) 72%);color:#f4e9df;text-align:center;text-shadow:0 0 18px #a00;animation:none}#wardenScare.show{display:flex;animation:wardenHit .82s steps(2,end)}#wardenScare strong{font:900 clamp(24px,7vw,58px) Arial,sans-serif;letter-spacing:.22em;margin-top:18px;color:#e9c7b5}#wardenScare span{font:11px Arial,sans-serif;letter-spacing:.35em;margin-top:12px;color:#c6a59a}.scareFace{position:relative;width:min(42vw,220px);height:min(54vw,270px);border-radius:48% 48% 40% 40%;background:radial-gradient(ellipse at 50% 35%,#4b514a 0,#151a17 48%,#020303 75%);box-shadow:0 0 55px 18px rgba(130,0,0,.34);transform:scale(1.08)}.scareFace:before,.scareFace:after{content:"";position:absolute;top:37%;width:22%;height:8%;background:#e3b46b;box-shadow:0 0 22px 8px #d33;border-radius:50%}.scareFace:before{left:17%;transform:rotate(12deg)}.scareFace:after{right:17%;transform:rotate(-12deg)}.scareFace i{position:absolute;left:35%;right:35%;bottom:18%;height:13%;background:#020202;border-radius:50%;box-shadow:0 0 15px #8c1515}.scareFace b,.scareFace em{position:absolute;top:-12%;width:18%;height:36%;background:#090c0a;clip-path:polygon(50% 0,100% 100%,0 78%)}.scareFace b{left:10%;transform:rotate(-16deg)}.scareFace em{right:10%;transform:rotate(16deg)}@keyframes wardenHit{0%{opacity:0;transform:scale(1.8)}12%{opacity:1;transform:scale(.94)}24%{transform:translateX(-8px)}38%{transform:translateX(9px)}52%{transform:translateX(-5px)}100%{opacity:0;transform:scale(1)}}
 </style>
-<script src="https://bridge.playgama.com/v2/stable/playgama-bridge.js"></script>
-<script>
-/* Playgama Bridge recovery loader.
-   Prefer the current v2 SDK; fall back to the stable v1 CDN only if v2 is
-   unavailable or initialization fails. game_ready is sent once, after both
-   successful SDK initialization and the first rendered game frame. */
-(function () {
-  var sent = false;
-  var frameSeen = false;
-  var bridgeReady = false;
-  var initPromise;
-
-  function getBridge() { return window.bridge || (typeof bridge !== 'undefined' ? bridge : null); }
-  function loadV1() {
-    return new Promise(function (resolve, reject) {
-      var script = document.createElement('script');
-      script.src = 'https://bridge.playgama.com/v1/stable/playgama-bridge.js';
-      script.onload = resolve;
-      script.onerror = function () { reject(new Error('Both Playgama Bridge CDN versions failed to load')); };
-      document.head.appendChild(script);
-    });
-  }
-  function initializeCurrent() {
-    var b = getBridge();
-    if (!b || typeof b.initialize !== 'function') return Promise.reject(new Error('Playgama Bridge SDK global is unavailable'));
-    return Promise.resolve().then(function () { return b.initialize(); }).then(function () { return b; });
-  }
-  initPromise = initializeCurrent().catch(function (firstError) {
-    console.warn('[Playgama Bridge] v2 initialization failed; trying stable v1 fallback.', firstError);
-    return loadV1().then(initializeCurrent);
-  }).then(function (b) {
-    bridgeReady = true;
-    window.__ffPlaygamaBridgeReady = true;
-    document.documentElement.dataset.playgamaBridge = 'ready';
-    sendGameReady(b);
-    return true;
-  }).catch(function (error) {
-    document.documentElement.dataset.playgamaBridge = 'failed';
-    console.error('[Playgama Bridge] SDK initialization failed:', error);
-    return false;
-  });
-
-  function sendGameReady(b) {
-    if (!bridgeReady || !frameSeen || sent) return;
-    if (!b || !b.platform || typeof b.platform.sendMessage !== 'function') {
-      console.error('[Playgama Bridge] platform.sendMessage is unavailable after initialization');
-      document.documentElement.dataset.playgamaGameReady = 'failed';
-      return;
-    }
-    sent = true;
-    Promise.resolve(b.platform.sendMessage('game_ready')).then(function () {
-      document.documentElement.dataset.playgamaGameReady = 'sent';
-      window.__ffPlaygamaGameReadySent = true;
-    }).catch(function (error) {
-      sent = false;
-      document.documentElement.dataset.playgamaGameReady = 'failed';
-      console.error('[Playgama Bridge] game_ready message failed:', error);
-    });
-  }
-
-  window.__ffPlaygamaBridgeReady = false;
-  window.__ffPlaygamaGameReadySent = false;
-  window.__ffPlaygamaBridgePromise = initPromise;
-  window.addEventListener('ff-forgotten-forest-first-frame', function () {
-    frameSeen = true;
-    initPromise.then(function () { sendGameReady(getBridge()); });
-  }, { once: true });
-})();
-</script>
 <script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js"}}</script>
 </head>
 <style>
@@ -97,7 +28,6 @@
 <div id="touch"><div class="pad"><button class="up" data-key="KeyW">▲</button><button class="left" data-key="KeyA">◀</button><button class="down" data-key="KeyS">▼</button><button class="right" data-key="KeyD">▶</button></div><div style="display:flex;gap:8px;align-items:end;pointer-events:auto"><button class="act" id="touchLight">LIGHT · L</button><button class="act" id="touchSprint">SPRINT</button><button class="act" id="touchHeal">MEDKIT</button><button class="act" id="touchFlare">FLARE · 1</button><button class="act" id="touchDecoy">SOUND · G</button><button class="act" id="touchInteract">INTERACT</button></div></div>
 <script type="module">
 import * as THREE from 'three';
-
 const scene=new THREE.Scene();scene.background=new THREE.Color(0x07100f);scene.fog=new THREE.FogExp2(0x091311,.025);
 const camera=new THREE.PerspectiveCamera(72,innerWidth/innerHeight,.1,180);camera.position.set(0,1.7,8);
 const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(devicePixelRatio,1.25));renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.05;document.body.appendChild(renderer.domElement);
@@ -582,15 +512,7 @@ for(let n=0;n<5;n++){const stain=new THREE.Mesh(new THREE.SphereGeometry(.12+n*.
 for(let i=0;i<9;i++){let z=4-i*4.5,x=Math.sin(i*.28)*2+(i%2?2.8:-2.8);const pole=new THREE.Mesh(new THREE.CylinderGeometry(.045,.07,1.5,7),wood);pole.position.set(x,.75,z);scene.add(pole);const orb=new THREE.Mesh(new THREE.SphereGeometry(.13,10,8),new THREE.MeshBasicMaterial({color:0xffbd72}));orb.position.set(x,1.55,z);scene.add(orb);const l=new THREE.PointLight(0xffa65d,1.3,5);l.position.copy(orb.position);scene.add(l)}
 // player flashlight
 const flashlight=new THREE.SpotLight(0xc9dfd4,65,28,Math.PI/7,.45,1.4);flashlight.position.set(0,1.6,0);flashlight.target.position.set(0,1.4,-1);camera.add(flashlight);camera.add(flashlight.target);const flashlightBounce=new THREE.PointLight(0x9ebeb0,.38,5.5,2);flashlightBounce.position.set(0,-.12,-.55);camera.add(flashlightBounce);scene.add(camera);let flashlightOn=true;function toggleFlashlight(){if(lightPower<=0&&inventory.battery<=0){prompt.textContent='THE FLASHLIGHT BATTERY IS EMPTY';return;}flashlightOn=!flashlightOn;flashlight.visible=flashlightOn;flashlightBounce.visible=flashlightOn;const b=document.getElementById('touchLight');if(b)b.textContent=flashlightOn?'LIGHT · ON':'LIGHT · OFF';document.getElementById('danger').textContent=flashlightOn?'FLASHLIGHT ON':'FLASHLIGHT OFF';}
-const keys={};let yaw=0,pitch=0,started=false,ended=false,paused=false,relicCount=0,elapsed=0,monsterActive=false,lastInteract=0,stamina=100,touchLook=null,flareAvailable=true,monsterStunnedUntil=0,audioCtx=null,ambientGain=null,heartbeatGain=null,audioMaster=null,musicBus=null,forestBus=null,creatureBus=null,audioOn=true,lastStepAt=0,nextAmbientCall=9, nextHaunt=28,hauntUntil=0,hauntMessage='',secondMonsterActive=false,secondDamageAt=0,decoyUntil=0,decoyCooldown=0,monsterMode='patrol',monsterLastSeen=new THREE.Vector3(28,0,-30),monsterSearchUntil=0,monsterPatrolIndex=0,monsterNextPatrol=0,nextCreatureBreath=12,nextWardenGrowl=7,nextThreatAlert=0,nextStalkerWhisper=16;
-// Playgama Bridge lifecycle integration. Gameplay remains playable if Bridge is unavailable locally.
-let ffBridgeReady=!!window.__ffPlaygamaBridgeReady;
-window.__ffPlaygamaBridgePromise.then(ready=>{ffBridgeReady=!!ready;});
-function ffBridgeSend(message){
- try{if((ffBridgeReady||window.__ffPlaygamaBridgeReady)&&window.bridge&&window.bridge.platform&&typeof window.bridge.platform.sendMessage==='function')window.bridge.platform.sendMessage(message);}catch(e){console.warn('Playgama Bridge message:',e);}
-}
-
-const start=document.getElementById('start'),hud=document.getElementById('hud'),prompt=document.getElementById('prompt');
+const keys={};let yaw=0,pitch=0,started=false,ended=false,paused=false,relicCount=0,elapsed=0,monsterActive=false,lastInteract=0,stamina=100,touchLook=null,flareAvailable=true,monsterStunnedUntil=0,audioCtx=null,ambientGain=null,heartbeatGain=null,audioMaster=null,musicBus=null,forestBus=null,creatureBus=null,audioOn=true,lastStepAt=0,nextAmbientCall=9, nextHaunt=28,hauntUntil=0,hauntMessage='',secondMonsterActive=false,secondDamageAt=0,decoyUntil=0,decoyCooldown=0,monsterMode='patrol',monsterLastSeen=new THREE.Vector3(28,0,-30),monsterSearchUntil=0,monsterPatrolIndex=0,monsterNextPatrol=0,nextCreatureBreath=12,nextWardenGrowl=7,nextThreatAlert=0,nextStalkerWhisper=16;const start=document.getElementById('start'),hud=document.getElementById('hud'),prompt=document.getElementById('prompt');
 function threatAlert(message){if(elapsed<nextThreatAlert)return;const el=document.getElementById('threatAlert');el.textContent=message;el.classList.remove('show');void el.offsetWidth;el.classList.add('show');nextThreatAlert=elapsed+5.5;}
 // A throwable sound lure gives players a tactical way to redirect nearby threats.
 const decoy=new THREE.Group();const decoyCore=new THREE.Mesh(new THREE.SphereGeometry(.16,12,10),new THREE.MeshBasicMaterial({color:0x9bd6c2}));const decoyRing=new THREE.Mesh(new THREE.TorusGeometry(.42,.035,6,24),new THREE.MeshBasicMaterial({color:0x78cdb4,transparent:true,opacity:.9}));decoyRing.rotation.x=Math.PI/2;decoy.add(decoyCore,decoyRing);decoy.visible=false;scene.add(decoy);
@@ -614,27 +536,15 @@ function wardenGrowl(position=warden.position){if(!audioCtx||!audioOn)return;for
 // The Pale Stalker uses breathy, spatial whispers instead of the heavier creature growl.
 function stalkerWhisper(position=stalker.position){if(!audioCtx||!audioOn)return;forestNoise(.9,.022,'bandpass',1450,position);forestTone(680,.65,.018,'sine',-390,position);forestNoise(.55,.016,'highpass',2100,position)}
 function creatureWarning(){if(!audioCtx||!audioOn)return;forestTone(520,.22,.035,'sine',-260);setTimeout(()=>forestTone(330,.34,.04,'sine',-180),170)}
-function begin(){started=true;ffBridgeSend('gameplay_started');start.style.display='none';hud.style.display='block';startAudio();if(innerWidth>700)renderer.domElement.requestPointerLock?.();else document.getElementById('touch').style.display='flex';}
-function pauseGame(){if(!started||ended||paused)return;paused=true;ffBridgeSend('gameplay_stopped');document.getElementById('pauseMenu').style.display='flex';document.exitPointerLock?.();for(const k in keys)keys[k]=false;}
-function resumeGame(){if(!paused)return;paused=false;ffBridgeSend('gameplay_started');document.getElementById('pauseMenu').style.display='none';if(innerWidth>700)renderer.domElement.requestPointerLock?.();}
+function begin(){started=true;start.style.display='none';hud.style.display='block';startAudio();if(innerWidth>700)renderer.domElement.requestPointerLock?.();else document.getElementById('touch').style.display='flex';}
+function pauseGame(){if(!started||ended||paused)return;paused=true;document.getElementById('pauseMenu').style.display='flex';document.exitPointerLock?.();for(const k in keys)keys[k]=false;}
+function resumeGame(){if(!paused)return;paused=false;document.getElementById('pauseMenu').style.display='none';if(innerWidth>700)renderer.domElement.requestPointerLock?.();}
 function syncPauseVolumes(){const pairs=[['pauseMusic','musicVolume','pauseMusicValue'],['pauseForest','forestVolume','pauseForestValue'],['pauseCreature','creatureVolume','pauseCreatureValue']];for(const [id,source,out] of pairs){const v=document.getElementById(id).value;document.getElementById(source).value=v;document.getElementById(out).textContent=v+'%';}applySoundSettings();}
 
 function useDecoy(){if(!started||ended||elapsed<decoyCooldown)return;const dir=new THREE.Vector3(-Math.sin(yaw),0,-Math.cos(yaw));decoy.position.copy(camera.position).add(dir.multiplyScalar(7));decoy.position.y=.22;decoy.visible=true;decoyUntil=elapsed+7;decoyCooldown=elapsed+20;prompt.textContent='SOUND LURE THROWN · SOMETHING HEARD IT';document.getElementById('touchDecoy').textContent='SOUND · WAIT';if(audioCtx&&audioOn){const now=audioCtx.currentTime;const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type='sine';o.frequency.setValueAtTime(820,now);o.frequency.exponentialRampToValueAtTime(280,now+.45);g.gain.setValueAtTime(.0001,now);g.gain.linearRampToValueAtTime(.13,now+.025);g.gain.exponentialRampToValueAtTime(.0001,now+.65);o.connect(g).connect(audioCtx.destination);o.start(now);o.stop(now+.7);}}
 function useFlare(){if(!started||ended||!flareAvailable)return;flareAvailable=false;document.getElementById('touchFlare').disabled=true;document.getElementById('flareStatus').textContent='FLARE · USED';prompt.textContent='THE LIGHT PUSHES IT BACK';const burst=new THREE.PointLight(0xffd99b,95,24,2);burst.position.copy(camera.position);scene.add(burst);const flash=new THREE.Mesh(new THREE.SphereGeometry(.35,12,8),new THREE.MeshBasicMaterial({color:0xffe5b5}));flash.position.copy(camera.position);scene.add(flash);setTimeout(()=>{scene.remove(burst);scene.remove(flash)},650);if(monsterActive){monsterStunnedUntil=elapsed+4;const away=new THREE.Vector3(monster.position.x-camera.position.x,0,monster.position.z-camera.position.z).normalize();monster.position.add(away.multiplyScalar(7));}if(wardenAwake&&!watchtowerReached){wardenStunnedUntil=elapsed+5;const away=new THREE.Vector3(warden.position.x-camera.position.x,0,warden.position.z-camera.position.z).normalize();warden.position.add(away.multiplyScalar(3.5));prompt.textContent='THE WARDEN SHRIEKS AND RECOILS FROM THE FLARE';if(audioCtx&&audioOn){forestTone(680,.42,.055,'sawtooth',-500);forestNoise(.55,.04,'bandpass',720);}}}
 
-for(const id of ['musicVolume','forestVolume','creatureVolume'])document.getElementById(id).addEventListener('input',applySoundSettings);for(const id of ['pauseMusic','pauseForest','pauseCreature'])document.getElementById(id).addEventListener('input',syncPauseVolumes);document.getElementById('pauseBtn').onclick=pauseGame;document.getElementById('resumeBtn').onclick=resumeGame;document.getElementById('restartBtn').onclick=()=>location.reload();
-let ffWasRunningBeforeHide=false;
-document.addEventListener('visibilitychange',()=>{
- if(document.hidden){
-  ffWasRunningBeforeHide=started&&!ended&&!paused;
-  if(ffWasRunningBeforeHide)pauseGame();
- }else if(ffWasRunningBeforeHide&&!ended){
-  ffWasRunningBeforeHide=false;
-  resumeGame();
- }
-});
-
-document.getElementById('begin').onclick=begin;document.getElementById('again').onclick=()=>location.reload();var escapePanel=document.getElementById('escapePuzzle'),escapeCountdown=null,escapeSeconds=50,escapeScareAt=0;function escapeKnock(){if(!audioCtx||!audioOn)return;const now=audioCtx.currentTime;for(let i=0;i<3;i++){const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type='sine';o.frequency.setValueAtTime(54-i*5,now+i*.19);g.gain.setValueAtTime(.0001,now+i*.19);g.gain.linearRampToValueAtTime(.16,now+i*.19+.025);g.gain.exponentialRampToValueAtTime(.0001,now+i*.19+.16);o.connect(g).connect(audioCtx.destination);o.start(now+i*.19);o.stop(now+i*.19+.18);}}function escapeScare(){escapePanel.classList.add('scare','flicker');escapeKnock();document.getElementById('escapeStatus').textContent='SOMETHING IS MOVING BEHIND THE WALL';setTimeout(()=>escapePanel.classList.remove('scare','flicker'),850);}function stopEscapeTimer(){if(escapeCountdown){clearInterval(escapeCountdown);escapeCountdown=null;}}function startEscapeTimer(){stopEscapeTimer();escapeSeconds=50;escapeScareAt=Date.now()+9000;const box=escapePanel.querySelector('.pbox');box.classList.remove('danger');document.getElementById('escapeTimer').textContent='THE LOCK IS LISTENING · 50 SECONDS';escapeCountdown=setInterval(()=>{if(!escapePuzzleOpen||escapeRoomSolved){stopEscapeTimer();return;}escapeSeconds--;document.getElementById('escapeTimer').textContent='THE DOOR IS BREATHING · '+escapeSeconds+' SECONDS';if(Date.now()>=escapeScareAt){escapeScare();escapeScareAt=Date.now()+9000+Math.random()*5000;}if(escapeSeconds<=12)box.classList.add('danger');if(escapeSeconds<=0){stopEscapeTimer();health=Math.max(1,health-12);updateInventory();escapeCode='';document.getElementById('escapeDigits').textContent='— — — —';document.getElementById('escapeStatus').textContent='A SHAPE SLAMS INTO THE DOOR · YOU LOSE 12 HEALTH';document.getElementById('objective').textContent='The archive is hunting you · Solve the lock quickly';escapeScare();setTimeout(()=>{if(escapePuzzleOpen&&!escapeRoomSolved)startEscapeTimer();},1800);}},1000);}function closeEscapePuzzle(){stopEscapeTimer();escapePuzzleOpen=false;escapePanel.style.display='none';escapePanel.classList.remove('scare','flicker');escapeCode='';document.getElementById('escapeDigits').textContent='— — — —';}document.getElementById('escapeClose').onclick=closeEscapePuzzle;document.getElementById('escapeKeys').addEventListener('click',e=>{const b=e.target.closest('button[data-n]');if(!b||!escapePuzzleOpen)return;const n=b.dataset.n;if(n==='clear')escapeCode='';else if(n==='back')escapeCode=escapeCode.slice(0,-1);else if(escapeCode.length<4)escapeCode+=n;document.getElementById('escapeDigits').textContent=(escapeCode+'— — — —').slice(0,7).split('').join(' ');if(escapeCode.length===4){if(escapeCode==='3174'){escapeRoomSolved=true;archiveDoorOpen=true;archiveDoor.position.z=-60.5;archiveLamp.intensity=1.45;document.getElementById('escapeStatus').textContent='ACCESS GRANTED · ARCHIVE DOOR OPEN';document.getElementById('objective').textContent='Ranger’s Lock solved · Enter the separate archive room';inventory.medkit++;lightPower=Math.min(100,lightPower+35);updateInventory();showDiscovery('THE RANGER’S SECRET ARCHIVE','The heavy archive door slides open beyond the bunker wall. Inside, a records desk and terminal reveal that the forest was mapped in four repeating cycles. The Warden was once a ranger assigned to keep the cycle closed. You found a medical kit and fresh flashlight cells.');stopEscapeTimer();document.getElementById('escapeTimer').textContent='THE FOOTSTEPS HAVE STOPPED';setTimeout(closeEscapePuzzle,1800);}else{document.getElementById('escapeStatus').textContent='INCORRECT · SOMETHING SCRATCHES THE DOOR';escapeScare();escapeCode='';setTimeout(()=>{if(escapePuzzleOpen)document.getElementById('escapeDigits').textContent='— — — —';},450);}}});
+for(const id of ['musicVolume','forestVolume','creatureVolume'])document.getElementById(id).addEventListener('input',applySoundSettings);for(const id of ['pauseMusic','pauseForest','pauseCreature'])document.getElementById(id).addEventListener('input',syncPauseVolumes);document.getElementById('pauseBtn').onclick=pauseGame;document.getElementById('resumeBtn').onclick=resumeGame;document.getElementById('restartBtn').onclick=()=>location.reload();document.getElementById('begin').onclick=begin;document.getElementById('again').onclick=()=>location.reload();var escapePanel=document.getElementById('escapePuzzle'),escapeCountdown=null,escapeSeconds=50,escapeScareAt=0;function escapeKnock(){if(!audioCtx||!audioOn)return;const now=audioCtx.currentTime;for(let i=0;i<3;i++){const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type='sine';o.frequency.setValueAtTime(54-i*5,now+i*.19);g.gain.setValueAtTime(.0001,now+i*.19);g.gain.linearRampToValueAtTime(.16,now+i*.19+.025);g.gain.exponentialRampToValueAtTime(.0001,now+i*.19+.16);o.connect(g).connect(audioCtx.destination);o.start(now+i*.19);o.stop(now+i*.19+.18);}}function escapeScare(){escapePanel.classList.add('scare','flicker');escapeKnock();document.getElementById('escapeStatus').textContent='SOMETHING IS MOVING BEHIND THE WALL';setTimeout(()=>escapePanel.classList.remove('scare','flicker'),850);}function stopEscapeTimer(){if(escapeCountdown){clearInterval(escapeCountdown);escapeCountdown=null;}}function startEscapeTimer(){stopEscapeTimer();escapeSeconds=50;escapeScareAt=Date.now()+9000;const box=escapePanel.querySelector('.pbox');box.classList.remove('danger');document.getElementById('escapeTimer').textContent='THE LOCK IS LISTENING · 50 SECONDS';escapeCountdown=setInterval(()=>{if(!escapePuzzleOpen||escapeRoomSolved){stopEscapeTimer();return;}escapeSeconds--;document.getElementById('escapeTimer').textContent='THE DOOR IS BREATHING · '+escapeSeconds+' SECONDS';if(Date.now()>=escapeScareAt){escapeScare();escapeScareAt=Date.now()+9000+Math.random()*5000;}if(escapeSeconds<=12)box.classList.add('danger');if(escapeSeconds<=0){stopEscapeTimer();health=Math.max(1,health-12);updateInventory();escapeCode='';document.getElementById('escapeDigits').textContent='— — — —';document.getElementById('escapeStatus').textContent='A SHAPE SLAMS INTO THE DOOR · YOU LOSE 12 HEALTH';document.getElementById('objective').textContent='The archive is hunting you · Solve the lock quickly';escapeScare();setTimeout(()=>{if(escapePuzzleOpen&&!escapeRoomSolved)startEscapeTimer();},1800);}},1000);}function closeEscapePuzzle(){stopEscapeTimer();escapePuzzleOpen=false;escapePanel.style.display='none';escapePanel.classList.remove('scare','flicker');escapeCode='';document.getElementById('escapeDigits').textContent='— — — —';}document.getElementById('escapeClose').onclick=closeEscapePuzzle;document.getElementById('escapeKeys').addEventListener('click',e=>{const b=e.target.closest('button[data-n]');if(!b||!escapePuzzleOpen)return;const n=b.dataset.n;if(n==='clear')escapeCode='';else if(n==='back')escapeCode=escapeCode.slice(0,-1);else if(escapeCode.length<4)escapeCode+=n;document.getElementById('escapeDigits').textContent=(escapeCode+'— — — —').slice(0,7).split('').join(' ');if(escapeCode.length===4){if(escapeCode==='3174'){escapeRoomSolved=true;archiveDoorOpen=true;archiveDoor.position.z=-60.5;archiveLamp.intensity=1.45;document.getElementById('escapeStatus').textContent='ACCESS GRANTED · ARCHIVE DOOR OPEN';document.getElementById('objective').textContent='Ranger’s Lock solved · Enter the separate archive room';inventory.medkit++;lightPower=Math.min(100,lightPower+35);updateInventory();showDiscovery('THE RANGER’S SECRET ARCHIVE','The heavy archive door slides open beyond the bunker wall. Inside, a records desk and terminal reveal that the forest was mapped in four repeating cycles. The Warden was once a ranger assigned to keep the cycle closed. You found a medical kit and fresh flashlight cells.');stopEscapeTimer();document.getElementById('escapeTimer').textContent='THE FOOTSTEPS HAVE STOPPED';setTimeout(closeEscapePuzzle,1800);}else{document.getElementById('escapeStatus').textContent='INCORRECT · SOMETHING SCRATCHES THE DOOR';escapeScare();escapeCode='';setTimeout(()=>{if(escapePuzzleOpen)document.getElementById('escapeDigits').textContent='— — — —';},450);}}});
 document.addEventListener('keydown',e=>{if((e.code==='Escape'||e.code==='KeyP')&&!e.repeat){if(paused)resumeGame();else pauseGame();return;}if(paused||escapePuzzleOpen)return;keys[e.code]=true;if(e.code==='KeyE')interact();if(e.code==='KeyG')useDecoy();if(e.code==='KeyM'&&!e.repeat&&audioMaster){audioOn=!audioOn;audioMaster.gain.setTargetAtTime(audioOn?.48:.0001,audioCtx.currentTime,.12);prompt.textContent=audioOn?'FOREST SOUND ON · PRESS M TO MUTE':'FOREST SOUND MUTED · PRESS M TO RESTORE';if(audioOn&&audioCtx.state==='suspended')audioCtx.resume();}});document.addEventListener('keyup',e=>keys[e.code]=false);document.addEventListener('mousemove',e=>{if(document.pointerLockElement===renderer.domElement){yaw-=e.movementX*.0022;pitch-=e.movementY*.0018;pitch=Math.max(-1.15,Math.min(1.15,pitch))}});
 // Mobile: drag the open screen to look around; movement pad remains independently usable.
 renderer.domElement.addEventListener('pointerdown',e=>{if(innerWidth<=700&&started&&!e.target.closest('button'))touchLook={x:e.clientX,y:e.clientY,id:e.pointerId}});
@@ -997,7 +907,8 @@ if(s5DrownedEntered){
  }
  if(s5DrownedClapper&&camera.position.distanceTo(new THREE.Vector3(1121.5,1.2,-73))<3){
   s5DrownedEntered=false;s5DrownedRoom.visible=false;s5UpRainEntered=false;
-  s5BellwayEntered=true;s5BellwayRoom.visible=true;s5BellwayAwake=false;s5BellwayStage=0;s5BellwayNextPulse=0;s5Bellwether.visible=false;  camera.position.set(1130,1.7,-73);yaw=-Math.PI/2;pitch=0;
+  s5BellwayEntered=true;s5BellwayRoom.visible=true;s5BellwayAwake=false;s5BellwayStage=0;s5BellwayNextPulse=0;s5Bellwether.visible=false;
+  camera.position.set(1130,1.7,-73);yaw=-Math.PI/2;pitch=0;
   showDiscovery('THE SOUND THAT CROSSED THE FOREST','The bell rings once. Every bubble in the passage stops. Far above, the forest answers. Trees bend toward the sound, and a path opens between their roots. Something with antlers steps out of the darkness.');
   document.getElementById('objective').textContent='THE FOREST THAT ANSWERS · Find the path between the roots';
   lastInteract=elapsed;return;
@@ -1086,8 +997,7 @@ if(s5DeepWakeEntered){
    }
    lastInteract=elapsed;return;
   }
-  prompt.textContent=s5DeepWakeHidden?'HIDDEN · PRESS E TO LEAVE THE LOCKER':'FIND A LOCKER OR LISTEN BESIDE A RESONATOR';
-  lastInteract=elapsed;return;
+  prompt.textContent=s5DeepWakeHidden?'HIDDEN · PRESS E TO LEAVE THE LOCKER':'FIND A LOCKER OR LISTEN BESIDE A RESONATOR';  lastInteract=elapsed;return;
  }
  if(s5DeepWakeSolved&&camera.position.distanceTo(new THREE.Vector3(1042.8,1.2,-73))<3){
   s5DeepWakeEntered=false;s5DeepWakeRoom.visible=false;s5UpRainEntered=true;s5UpRainRoom.visible=true;
@@ -1996,7 +1906,8 @@ if(s5LowerRoomEntered){
   showDiscovery('SERVICE LIFT RESTORED','You reroute power through the service console. Subject Null folds into the dark as the lift door unlocks.');
   document.getElementById('objective').textContent='THE LOWER DESCENT · Reach the service lift';
   lastInteract=elapsed;return;
- } const hideHit=s5LowerHides.find(h=>camera.position.distanceTo(h.position)<2.25);
+ }
+ const hideHit=s5LowerHides.find(h=>camera.position.distanceTo(h.position)<2.25);
  if(hideHit&&s5LowerThreatAwake&&!isHiding){
   isHiding=true;s5LowerHideZ=hideHit.position.z;s5LowerHideAt=elapsed;camera.position.set(296,1.7,s5LowerHideZ);
   document.getElementById('hideOverlay').classList.add('show');document.getElementById('hideHint').textContent='PRESS E TO EMERGE · HOLD YOUR BREATH';
@@ -2085,8 +1996,7 @@ if(s5FourthRoomEntered){
   s5FourthRecordRead=true;s5FourthAwake=true;s5FourthEscaped=false;s5FourthEscapeAt=elapsed+3.8;s5FourthExitUnlocked=false;s5FourthEchoProgress=0;s5FourthEchoWrong=0;s5FourthEchoSolved=false;s5FourthHunter.visible=false;s5FourthHunter.position.set(230,0,-73);s5FourthAdapt=0;s5FourthLastX=camera.position.x;s5FourthLastZ=camera.position.z;s5FourthVoiceAt=elapsed+2.2;
   s5FourthSeal.visible=true;
   showDiscovery('SUBJECT FOUR — THE ANSWER','“Subject Zero was a voice copied from a living person. Subject Four is the thing that learned to answer it. It has no face because it is still choosing one. Do not let it hear your name.” The specimen inside the pod moves after the recording ends.');
-  s5FourthSpecimen.rotation.z=.18;s5FourthLight.color.setHex(0xb64b52);
-  prompt.textContent='THE SPECIMEN MOVED · RETURN TO THE NURSERY';
+  s5FourthSpecimen.rotation.z=.18;s5FourthLight.color.setHex(0xb64b52);  prompt.textContent='THE SPECIMEN MOVED · RETURN TO THE NURSERY';
   document.getElementById('objective').textContent='SUBJECT FOUR · The recording is complete';
   if(audioCtx&&audioOn){forestTone(46,1.3,.11,'triangle',-25);forestNoise(1.1,.08,'bandpass',340);}
   lastInteract=elapsed;return;
@@ -2995,7 +2905,8 @@ const s5NameRevealWall=new THREE.Group();
 const nameSlab=new THREE.Mesh(new THREE.BoxGeometry(.3,3.2,5),new THREE.MeshStandardMaterial({color:0x62534a,roughness:1}));nameSlab.position.y=1.6;s5NameRevealWall.add(nameSlab);
 const nameInscription=new THREE.Mesh(new THREE.PlaneGeometry(3.6,1.1),new THREE.MeshBasicMaterial({color:0xc8b89c}));nameInscription.position.set(-.18,2.2,0);nameInscription.rotation.y=-Math.PI/2;s5NameRevealWall.add(nameInscription);s5NameRevealWall.position.set(1002,0,-73);s5NameVaultRoom.add(s5NameRevealWall);
 // The Sleeper is bound beneath a stone cradle until the seals are disturbed.
-const s5NameSleeper=new THREE.Group(),sleeperMat=new THREE.MeshStandardMaterial({color:0x0d0c0d,roughness:1});const sleeperBody=new THREE.Mesh(new THREE.CapsuleGeometry(.8,2.2,5,8),sleeperMat);sleeperBody.position.y=1.7;s5NameSleeper.add(sleeperBody);
+const s5NameSleeper=new THREE.Group(),sleeperMat=new THREE.MeshStandardMaterial({color:0x0d0c0d,roughness:1});
+const sleeperBody=new THREE.Mesh(new THREE.CapsuleGeometry(.8,2.2,5,8),sleeperMat);sleeperBody.position.y=1.7;s5NameSleeper.add(sleeperBody);
 const sleeperHead=new THREE.Mesh(new THREE.SphereGeometry(.62,12,10),sleeperMat);sleeperHead.scale.set(.8,1.35,.7);sleeperHead.position.y=3.25;s5NameSleeper.add(sleeperHead);
 const sleeperMouth=new THREE.Mesh(new THREE.BoxGeometry(.48,.08,.06),new THREE.MeshBasicMaterial({color:0x9b342e}));sleeperMouth.position.set(0,3.12,.42);s5NameSleeper.add(sleeperMouth);
 for(let k=0;k<2;k++){const arm=new THREE.Mesh(new THREE.CylinderGeometry(.12,.22,3.8,7),sleeperMat);arm.position.set(k?-.95:.95,1.6,0);arm.rotation.z=k?-.4:.4;s5NameSleeper.add(arm);}
@@ -3084,8 +2995,7 @@ const s5FirstChildClueSpecs=[
 for(let k=0;k<clueSpecs.length;k++){
  const g=new THREE.Group();
  const plinth=new THREE.Mesh(new THREE.CylinderGeometry(.62,.8,.55,9),new THREE.MeshStandardMaterial({color:0x38474a,metalness:.35,roughness:.72}));plinth.position.y=.28;g.add(plinth);
- let relic;
- if(k===0){relic=new THREE.Mesh(new THREE.BoxGeometry(.75,.06,.55),new THREE.MeshStandardMaterial({color:0xb4a17c,roughness:1,emissive:0x2b261b,emissiveIntensity:.3}));relic.position.y=.65;}
+ let relic; if(k===0){relic=new THREE.Mesh(new THREE.BoxGeometry(.75,.06,.55),new THREE.MeshStandardMaterial({color:0xb4a17c,roughness:1,emissive:0x2b261b,emissiveIntensity:.3}));relic.position.y=.65;}
  else if(k===1){relic=new THREE.Mesh(new THREE.TorusGeometry(.34,.13,8,16),new THREE.MeshStandardMaterial({color:0x7e928d,metalness:.72,roughness:.35,emissive:0x1b302e,emissiveIntensity:.3}));relic.position.y=.75;relic.rotation.x=Math.PI/2;}
  else{relic=new THREE.Mesh(new THREE.CylinderGeometry(.22,.28,.52,10),new THREE.MeshStandardMaterial({color:0x806c4d,metalness:.35,roughness:.65}));relic.position.y=.72;}
  g.add(relic);g.position.set(...clueSpecs[k].p);g.userData={index:k,plinth,relic,clue:clueSpecs[k]};s5UpRainRoom.add(g);s5UpRainClues.push(g);
@@ -3994,7 +3904,8 @@ if(ff125NaraEntered&&ff125NaraAwake&&!ff125NaraSurvived){
   g.children[1].intensity=lit?2.2:.08;
   g.children[2].material.color.setHex(lit?0xd5ffe0:0x405047);
  });
- const safe=ff125NaraRefuges[ff125NaraSafeIndex]; const distSafe=camera.position.distanceTo(safe.position);
+ const safe=ff125NaraRefuges[ff125NaraSafeIndex];
+ const distSafe=camera.position.distanceTo(safe.position);
  if(distSafe<2.8){
   if(elapsed-ff125NaraDamageAt>1.4)ff125NaraDamageAt=elapsed;
  }else if(elapsed-ff125NaraDamageAt>2.4){
@@ -4083,8 +3994,7 @@ if(s5BellwayEntered&&s5BellwayAwake){
    s5BellwayStage++;
    s5BellwayScareCount=0;
    gate.userData.seal.material.color.setHex(0xd6f6c8);
-   prompt.textContent='ROOT GATE '+s5BellwayStage+'/3 CROSSED · KEEP MOVING';
-   document.getElementById('objective').textContent='THE FOREST THAT ANSWERS · Cross root gate '+Math.min(3,s5BellwayStage+1)+' of 3';
+   prompt.textContent='ROOT GATE '+s5BellwayStage+'/3 CROSSED · KEEP MOVING';   document.getElementById('objective').textContent='THE FOREST THAT ANSWERS · Cross root gate '+Math.min(3,s5BellwayStage+1)+' of 3';
    if(audioCtx&&audioOn)forestTone(95+s5BellwayStage*24,.55,.1,'triangle',-29);
    if(s5BellwayStage===3){
     s5Bellwether.visible=false;s5BellwayExit.visible=false;
@@ -4791,8 +4701,7 @@ if(s5RootEntered){
  }
 }
 
-renderer.render(scene,camera);if(!window.__ffFirstFrameRendered){window.__ffFirstFrameRendered=true;window.dispatchEvent(new Event('ff-forgotten-forest-first-frame'));}}
-requestAnimationFrame(animate);
+renderer.render(scene,camera)}requestAnimationFrame(animate);
 addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(devicePixelRatio,1.25))});
 // DYNAMIC HAUNT EVENTS: randomized whispers, false footsteps and fog surges begin after the creature awakens; sprinting makes it hunt faster.
 // OPTIONAL LORE: three collectible journal pages reveal the previous survivor's story.
