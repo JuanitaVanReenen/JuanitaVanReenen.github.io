@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="A free, private stock reorder calculator for small businesses. Calculate reorder points and suggested order quantities in your browser.">
+<title>Stock Reorder Helper</title>
+<style>
+:root{color-scheme:light;--ink:#182235;--muted:#64748b;--line:#dbe2ea;--paper:#f5f7fa;--blue:#2458a6;--blue2:#eaf1fc;--green:#146c43}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.55 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+main{max-width:860px;margin:36px auto;padding:0 18px}.panel{background:white;border:1px solid var(--line);border-radius:16px;padding:24px;box-shadow:0 8px 28px #15243b0a}
+h1{font-size:clamp(1.8rem,4vw,2.5rem);line-height:1.1;margin:0 0 10px}.intro{color:var(--muted);margin:0 0 24px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+label{display:block;font-weight:650;font-size:.92rem;margin-bottom:6px}
+input{width:100%;padding:12px;border:1px solid #bdc8d6;border-radius:9px;font:inherit;color:var(--ink)}
+input:focus{outline:3px solid #c9dcfb;border-color:var(--blue)}
+small{display:block;color:var(--muted);margin-top:5px}
+button{margin-top:20px;background:var(--blue);color:white;border:0;border-radius:9px;padding:12px 20px;font:inherit;font-weight:700;cursor:pointer}
+button:hover{filter:brightness(.93)}
+.results{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:22px}
+.metric{background:var(--blue2);border-radius:12px;padding:16px}.metric span{display:block;color:#42536c;font-size:.85rem}.metric strong{display:block;font-size:1.55rem;margin-top:4px}
+.status{margin-top:14px;padding:14px;border-radius:10px;background:#eef7f1;color:var(--green);font-weight:650}
+.note{color:var(--muted);font-size:.88rem;margin-top:22px}
+footer{text-align:center;color:var(--muted);font-size:.85rem;padding:18px}
+@media(max-width:620px){.grid,.results{grid-template-columns:1fr}.panel{padding:18px}}
+</style>
+</head>
+<body>
+<main>
+<section class="panel">
+<h1>Stock Reorder Helper</h1>
+<p class="intro">A simple, free calculator to help small businesses estimate when to reorder and how much to order. No account, tracking or data upload.</p>
+<form id="calc">
+<div class="grid">
+<div><label for="stock">Current stock on hand</label><input id="stock" type="number" min="0" step="any" value="24" required><small>Units currently available.</small></div>
+<div><label for="sales">Average units sold per day</label><input id="sales" type="number" min="0" step="any" value="3" required><small>Use a recent daily average.</small></div>
+<div><label for="lead">Supplier lead time (days)</label><input id="lead" type="number" min="0" step="any" value="5" required><small>Days between ordering and delivery.</small></div>
+<div><label for="safety">Safety stock (units)</label><input id="safety" type="number" min="0" step="any" value="6" required><small>Extra units kept as a buffer.</small></div>
+<div><label for="target">Desired stock after delivery</label><input id="target" type="number" min="0" step="any" value="50" required><small>Your preferred stock level after replenishment.</small></div>
+</div>
+<button type="submit">Calculate reorder advice</button>
+</form>
+<div class="results" aria-live="polite">
+<div class="metric"><span>Reorder point</span><strong id="rop">21 units</strong></div>
+<div class="metric"><span>Estimated days left</span><strong id="days">8 days</strong></div>
+<div class="metric"><span>Suggested order</span><strong id="order">26 units</strong></div>
+</div>
+<div class="status" id="status" role="status">Stock is currently above the reorder point.</div>
+<p class="note">Calculation: reorder point = average daily sales × supplier lead time + safety stock. Suggested order = desired stock after delivery − current stock. This is a planning estimate, not a guarantee. It does not connect to your sales, suppliers or inventory system. Results are calculated locally in your browser and are not saved.</p>
+</section>
+<footer>Free open-source utility • Built for small businesses</footer>
+</main>
+<script>
+const form=document.getElementById('calc');
+const ids=['stock','sales','lead','safety','target'];
+const number=id=>Number(document.getElementById(id).value);
+function calculate(){
+ const [stock,sales,lead,safety,target]=ids.map(number);
+ if(ids.some(id=>document.getElementById(id).value===''||!Number.isFinite(number(id))||number(id)<0)){
+  document.getElementById('status').textContent='Please enter valid non-negative numbers in every field.';return;
+ }
+ const reorderPoint=sales*lead+safety;
+ const days=sales>0?stock/sales:null;
+ const order=Math.max(0,target-stock);
+ document.getElementById('rop').textContent=reorderPoint.toLocaleString(undefined,{maximumFractionDigits:2})+' units';
+ document.getElementById('days').textContent=days===null?'—':days.toLocaleString(undefined,{maximumFractionDigits:1})+' days';
+ document.getElementById('order').textContent=order.toLocaleString(undefined,{maximumFractionDigits:2})+' units';
+ const status=document.getElementById('status');
+ if(stock<=reorderPoint){status.textContent='Reorder point reached: consider placing an order now.';status.style.background='#fff3e6';status.style.color='#8a4b08';}
+ else{status.textContent='Stock is currently above the reorder point.';status.style.background='#eef7f1';status.style.color='#146c43';}
+}
+form.addEventListener('submit',event=>{event.preventDefault();calculate();});
+calculate();
+</script>
+</body>
+</html>
