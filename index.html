@@ -146,6 +146,7 @@ h2{font-size:clamp(30px,4vw,42px);line-height:1.1;letter-spacing:-1px;margin:0 0
 .bookgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}
 .book{overflow:hidden;border:1px solid var(--line);border-radius:17px;background:var(--surface)}
 .book img{width:100%;aspect-ratio:2/3;object-fit:cover;display:block}
+.book-cover-text{width:100%;aspect-ratio:2/3;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:22px;background:radial-gradient(circle at 50% 18%,rgba(178,75,92,.28),transparent 42%),linear-gradient(155deg,#171827,#321c2c 58%,#0c1422);border-bottom:1px solid var(--line);color:#fff}.book-cover-text .cover-kicker{font-size:9px;letter-spacing:2.2px;text-transform:uppercase;color:#e5b9c3;font-weight:800}.book-cover-text strong{display:block;margin:18px 0 12px;font-family:Georgia,serif;font-size:clamp(21px,2.2vw,30px);line-height:1.04;letter-spacing:1.2px}.book-cover-text span:last-child{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#e5b9c3}
 .caption{padding:14px}.caption h3{font-size:15px;margin:0 0 3px}.caption p{margin:0;color:var(--muted);font-size:12px}
 
 .screen-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
@@ -588,6 +589,8 @@ footer{padding:36px 0;color:#8293aa;font-size:12px}
     </div>
     <img class="books-banner" src="assets/books-portfolio-banner.png" alt="Juanita Van Reenen book portfolio">
     <div class="bookgrid">
+      <div class="book"><div class="book-cover-text" role="img" aria-label="BACKSTAGE HEAT by Juanita Van Reenen, rock-star romance novella"><span class="cover-kicker">An Original Romance Novella</span><strong>BACKSTAGE<br>HEAT</strong><span>Juanita Van Reenen</span></div><div class="caption"><h3>BACKSTAGE HEAT</h3><p>Rock-star romance · Romantic suspense · Completed novella</p></div></div>
+
       <div class="book"><img src="assets/books-portfolio-banner.png" style="object-position:0% 0%" alt="Empire of Desire artwork"><div class="caption"><h3>Empire of Desire</h3><p>Romance</p></div></div>
       <div class="book"><img src="assets/books-portfolio-banner.png" style="object-position:20% 0%" alt="Falling for the Forbidden Man artwork"><div class="caption"><h3>Falling for the Forbidden Man</h3><p>Romance</p></div></div>
       <div class="book"><img src="assets/books-portfolio-banner.png" style="object-position:48% 0%" alt="Six Months in Paris artwork"><div class="caption"><h3>Six Months in Paris</h3><p>Romance</p></div></div>
